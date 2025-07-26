@@ -1,0 +1,114 @@
+.panel-page {
+  min-height: 100vh;
+}
+
+.page-header {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+  background-color: rgba(107, 107, 255, 0.1);
+  border-bottom: 2px solid rgba(107, 107, 255, 0.3);
+}
+
+.page-title {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+}
+
+.page-description {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.page-content {
+  padding: var(--spacing-2xl) 0;
+}
+
+.panel-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--spacing-xl);
+  min-height: 500px;
+}
+
+.panel-sidebar {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.panel-sidebar h2 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-color);
+}
+
+.panel-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.panel-item {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.panel-item-1 {
+  background-color: rgba(255, 107, 107, 0.2);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.panel-item-2 {
+  background-color: rgba(107, 255, 107, 0.2);
+  border: 1px solid rgba(107, 255, 107, 0.4);
+}
+
+.panel-item-3 {
+  background-color: rgba(107, 107, 255, 0.2);
+  border: 1px solid rgba(107, 107, 255, 0.4);
+}
+
+.panel-item-4 {
+  background-color: rgba(255, 255, 107, 0.2);
+  border: 1px solid rgba(255, 255, 107, 0.4);
+}
+
+.panel-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.panel-workspace {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.panel-workspace h2 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-color);
+}
+
+.workspace-area {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .panel-layout {
+    grid-template-columns: 1fr;
+  }
+}
