@@ -5,14 +5,15 @@
 .page-header {
   text-align: center;
   padding: var(--spacing-2xl) 0;
-  background-color: rgba(255, 107, 107, 0.1);
-  border-bottom: 2px solid rgba(255, 107, 107, 0.3);
+  background: linear-gradient(135deg, rgba(255, 183, 197, 0.2), rgba(135, 206, 235, 0.2));
+  border-bottom: 2px solid rgba(255, 183, 197, 0.3);
 }
 
 .page-title {
   font-size: var(--font-size-3xl);
   margin-bottom: var(--spacing-md);
   color: var(--text-color);
+  font-weight: 700;
 }
 
 .page-description {
@@ -21,51 +22,102 @@
   margin: 0;
 }
 
-.page-content {
-  padding: var(--spacing-2xl) 0;
-}
-
-.create-sections {
+/* 魚デザイナーメインレイアウト */
+.fish-designer {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-areas: 
+    "preview"
+    "controls"
+    "actions";
   gap: var(--spacing-xl);
-  max-width: 800px;
+  padding: var(--spacing-xl);
+  max-width: 1400px;
   margin: 0 auto;
 }
 
-.create-section {
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius-lg);
-  border: 2px solid var(--border-color);
-  min-height: 200px;
+.fish-preview-section {
+  grid-area: preview;
 }
 
-.create-section h2 {
-  margin-bottom: var(--spacing-md);
-  font-size: var(--font-size-xl);
+.design-controls-section {
+  grid-area: controls;
 }
 
-.create-section-1 {
-  background-color: rgba(255, 183, 197, 0.1);
-  border-color: rgba(255, 183, 197, 0.3);
+.action-buttons-section {
+  grid-area: actions;
 }
 
-.create-section-2 {
-  background-color: rgba(107, 255, 183, 0.1);
-  border-color: rgba(107, 255, 183, 0.3);
+/* デスクトップレイアウト */
+@media (min-width: 1024px) {
+  .fish-designer {
+    grid-template-areas: 
+      "preview controls"
+      "actions actions";
+    grid-template-columns: 1fr 400px;
+    grid-template-rows: 1fr auto;
+  }
 }
 
-.create-section-3 {
-  background-color: rgba(183, 107, 255, 0.1);
-  border-color: rgba(183, 107, 255, 0.3);
-}
-
-@media (min-width: 768px) {
-  .create-sections {
+/* タブレットレイアウト */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fish-designer {
+    grid-template-areas: 
+      "preview preview"
+      "controls controls"
+      "actions actions";
     grid-template-columns: 1fr 1fr;
   }
-  
-  .create-section-3 {
-    grid-column: 1 / -1;
-  }
+}
+
+/* プレビューエリアスタイル */
+.fish-preview-section {
+  background: linear-gradient(135deg, 
+    rgba(135, 206, 235, 0.1) 0%, 
+    rgba(173, 216, 230, 0.1) 50%, 
+    rgba(135, 206, 235, 0.1) 100%);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid rgba(135, 206, 235, 0.3);
+  padding: var(--spacing-xl);
+  min-height: 400px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fish-preview-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* コントロールエリアスタイル */
+.design-controls-section {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid var(--border-color);
+  padding: var(--spacing-lg);
+}
+
+/* アクションボタンエリアスタイル */
+.action-buttons-section {
+  background-color: rgba(244, 162, 97, 0.1);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid rgba(244, 162, 97, 0.3);
+  padding: var(--spacing-lg);
+}
+
+/* アニメーション */
+.fish-designer > div {
+  transition: all var(--transition-base);
+}
+
+.fish-designer > div:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }

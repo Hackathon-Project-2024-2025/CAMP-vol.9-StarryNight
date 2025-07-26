@@ -1,0 +1,65 @@
+.design-controls {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--spacing-lg);
+}
+
+.controls-header {
+  text-align: center;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controls-title {
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-sm) 0;
+  font-weight: 600;
+}
+
+.controls-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.step-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md) 0;
+}
+
+/* カスタムスクロールバー */
+.step-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.step-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.step-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 183, 197, 0.5);
+  border-radius: 3px;
+}
+
+.step-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 183, 197, 0.7);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .design-controls {
+    gap: var(--spacing-md);
+  }
+  
+  .controls-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .step-content {
+    max-height: 400px;
+  }
+}

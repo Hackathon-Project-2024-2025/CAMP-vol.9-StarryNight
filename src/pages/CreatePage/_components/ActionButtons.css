@@ -1,0 +1,253 @@
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+/* 魚の名前設定 */
+.fish-naming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.naming-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.name-display-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+}
+
+.fish-name-display {
+  flex: 1;
+  color: var(--text-color);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+}
+
+.name-edit-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-base);
+  opacity: 0.7;
+}
+
+.name-edit-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.name-edit-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.name-input {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 183, 197, 0.3);
+  border-radius: var(--border-radius-md);
+  color: var(--text-color);
+  font-size: var(--font-size-md);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.name-input:focus {
+  border-color: rgba(255, 183, 197, 0.6);
+  box-shadow: 0 0 0 2px rgba(255, 183, 197, 0.2);
+}
+
+.name-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.name-edit-buttons {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.name-button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-base);
+}
+
+.name-button-save {
+  background-color: rgba(107, 255, 183, 0.2);
+  color: #4ade80;
+}
+
+.name-button-save:hover:not(:disabled) {
+  background-color: rgba(107, 255, 183, 0.3);
+  transform: scale(1.1);
+}
+
+.name-button-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.name-button-cancel {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.name-button-cancel:hover {
+  background-color: rgba(239, 68, 68, 0.3);
+  transform: scale(1.1);
+}
+
+/* アクションボタン */
+.button-group {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.action-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.action-button:hover::before {
+  left: 100%;
+}
+
+.button-icon {
+  font-size: var(--font-size-lg);
+}
+
+.button-text {
+  font-weight: inherit;
+}
+
+.action-button-reset {
+  background-color: rgba(156, 163, 175, 0.2);
+  color: #9ca3af;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.action-button-reset:hover {
+  background-color: rgba(156, 163, 175, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.action-button-save {
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.3), rgba(255, 183, 197, 0.3));
+  color: var(--text-color);
+  border: 1px solid rgba(244, 162, 97, 0.5);
+}
+
+.action-button-save:hover {
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.4), rgba(255, 183, 197, 0.4));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ヒント */
+.tips {
+  background-color: rgba(135, 206, 235, 0.1);
+  border: 1px solid rgba(135, 206, 235, 0.3);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+}
+
+.tip-text {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.tip-text strong {
+  color: var(--text-color);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .action-buttons {
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    justify-content: center;
+  }
+  
+  .name-edit-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .name-edit-buttons {
+    justify-content: center;
+  }
+}
+
+/* 小さな画面での調整 */
+@media (max-width: 480px) {
+  .action-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  .button-icon {
+    font-size: var(--font-size-md);
+  }
+  
+  .tip-text {
+    font-size: var(--font-size-xs);
+  }
+}

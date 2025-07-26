@@ -1,0 +1,189 @@
+.step-navigation {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ステップインジケーター */
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  flex: 1;
+  max-width: 120px;
+}
+
+.step-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.step-item.active {
+  background-color: rgba(255, 183, 197, 0.2);
+  border: 1px solid rgba(255, 183, 197, 0.5);
+}
+
+.step-item.completed {
+  background-color: rgba(107, 255, 183, 0.1);
+  border: 1px solid rgba(107, 255, 183, 0.3);
+}
+
+.step-icon {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-xs);
+  transition: transform var(--transition-base);
+}
+
+.step-item.active .step-icon {
+  transform: scale(1.2);
+}
+
+.step-info {
+  text-align: center;
+}
+
+.step-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.step-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.step-item.active .step-title {
+  color: var(--sakura-pink);
+}
+
+.step-item.completed .step-title {
+  color: #4ade80;
+}
+
+/* ステップコネクター */
+.step-connector {
+  position: absolute;
+  top: 50%;
+  right: -50%;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%);
+  z-index: -1;
+  transition: background-color var(--transition-base);
+}
+
+.step-connector.completed {
+  background-color: rgba(107, 255, 183, 0.5);
+}
+
+/* ナビゲーションコントロール */
+.step-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.step-button {
+  background-color: rgba(255, 183, 197, 0.2);
+  border: 1px solid rgba(255, 183, 197, 0.5);
+  color: var(--text-color);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.step-button:hover:not(:disabled) {
+  background-color: rgba(255, 183, 197, 0.3);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.step-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.step-counter {
+  background-color: rgba(244, 162, 97, 0.2);
+  color: var(--gold-accent);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border: 1px solid rgba(244, 162, 97, 0.3);
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .step-indicator {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .step-item {
+    flex-direction: row;
+    max-width: none;
+    text-align: left;
+  }
+  
+  .step-info {
+    text-align: left;
+    margin-left: var(--spacing-md);
+  }
+  
+  .step-connector {
+    display: none;
+  }
+  
+  .step-controls {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .step-button {
+    width: 100%;
+  }
+}
+
+/* より小さな画面での調整 */
+@media (max-width: 480px) {
+  .step-navigation {
+    padding: var(--spacing-md);
+  }
+  
+  .step-title {
+    font-size: var(--font-size-xs);
+  }
+  
+  .step-description {
+    display: none;
+  }
+  
+  .step-icon {
+    font-size: var(--font-size-lg);
+  }
+}
