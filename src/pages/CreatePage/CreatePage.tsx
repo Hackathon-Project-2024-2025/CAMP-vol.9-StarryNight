@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Layout from '../../components/Layout/Layout';
 import FishPreview from './_components/FishPreview';
 import DesignControls from './_components/DesignControls';
 import ActionButtons from './_components/ActionButtons';
 import type { FishDesign, FishBase, SelectedParts, FishCustomizations, DesignStep } from '../../types/common.types';
+import type { FishPreviewRef } from './_components/FishPreview';
 import './CreatePage.css';
 
 // デフォルトの魚デザイン
@@ -92,6 +93,7 @@ const createDefaultFishDesign = (): FishDesign => {
 export default function CreatePage() {
   const [fishDesign, setFishDesign] = useState<FishDesign>(createDefaultFishDesign());
   const [currentStep, setCurrentStep] = useState<DesignStep>('base');
+  const fishPreviewRef = useRef<FishPreviewRef>(null);
 
   const handleFishDesignChange = (newDesign: FishDesign) => {
     setFishDesign(newDesign);
@@ -102,9 +104,9 @@ export default function CreatePage() {
   };
 
   const handleSave = () => {
-    // TODO: 魚デザインを保存する処理
-    console.log('魚デザインを保存:', fishDesign);
-    alert('魚デザインを保存しました！');
+    if (fishPreviewRef.current) {
+      fishPreviewRef.current.exportAsImage();
+    }
   };
 
   const handleReset = () => {
@@ -123,6 +125,7 @@ export default function CreatePage() {
         <main className="fish-designer">
           <div className="fish-preview-section">
             <FishPreview 
+              ref={fishPreviewRef}
               fishDesign={fishDesign}
               className="main-preview"
             />

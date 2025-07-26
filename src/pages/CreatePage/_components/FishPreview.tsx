@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import type { FishDesign } from '../../../types/common.types';
 import './FishPreview.css';
 
@@ -7,7 +7,11 @@ interface FishPreviewProps {
   className?: string;
 }
 
-export default function FishPreview({ fishDesign, className = '' }: FishPreviewProps) {
+export interface FishPreviewRef {
+  exportAsImage: (filename?: string) => void;
+}
+
+const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, className = '' }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const drawFish = useCallback((ctx: CanvasRenderingContext2D, design: FishDesign, width: number, height: number) => {
@@ -176,6 +180,56 @@ export default function FishPreview({ fishDesign, className = '' }: FishPreviewP
     }
   }, []);
 
+  // 画像エクスポート機能
+  const exportAsImage = useCallback((filename?: string) => {
+    // 高解像度用のCanvasを作成
+    const exportCanvas = document.createElement('canvas');
+    const exportWidth = 800;
+    const exportHeight = 600;
+    
+    exportCanvas.width = exportWidth;
+    exportCanvas.height = exportHeight;
+    
+    const ctx = exportCanvas.getContext('2d');
+    if (!ctx) return;
+    
+    // 背景を透明または白に設定
+    ctx.fillStyle = 'rgba(135, 206, 235, 0.2)'; // 水色背景
+    ctx.fillRect(0, 0, exportWidth, exportHeight);
+    
+    // 魚を高解像度で描画
+    drawFish(ctx, fishDesign, exportWidth, exportHeight);
+    
+    // 画像をBlob形式で取得してダウンロード
+    exportCanvas.toBlob((blob) => {
+      if (!blob) return;
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      
+      // ファイル名生成
+      const timestamp = new Date().toISOString()
+        .replace(/[-:]/g, '')
+        .replace(/\.\d{3}Z$/, '')
+        .replace('T', '_');
+      
+      const sanitizedFishName = fishDesign.name.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_');
+      const defaultFilename = `${sanitizedFishName}_${timestamp}.png`;
+      
+      link.href = url;
+      link.download = filename || defaultFilename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 'image/png', 1.0);
+  }, [fishDesign, drawFish]);
+
+  // 外部からexportAsImageを呼び出せるようにする
+  useImperativeHandle(ref, () => ({
+    exportAsImage
+  }), [exportAsImage]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -224,4 +278,8 @@ export default function FishPreview({ fishDesign, className = '' }: FishPreviewP
       </div>
     </div>
   );
-}
+});
+
+FishPreview.displayName = 'FishPreview';
+
+export default FishPreview;

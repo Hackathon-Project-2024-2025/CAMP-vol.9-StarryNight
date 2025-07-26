@@ -100,16 +100,16 @@ export default function ActionButtons({
         <button
           className="action-button action-button-save"
           onClick={onSave}
-          title="魚を保存"
+          title="魚を画像として保存"
         >
-          <span className="button-icon">💾</span>
-          <span className="button-text">保存</span>
+          <span className="button-icon">📸</span>
+          <span className="button-text">画像保存</span>
         </button>
       </div>
       
       <div className="tips">
         <p className="tip-text">
-          💡 <strong>ヒント:</strong> 作成した魚は水槽で泳がせることができます！
+          💡 <strong>ヒント:</strong> 作成した魚は画像として保存して共有できます！
         </p>
       </div>
     </div>
