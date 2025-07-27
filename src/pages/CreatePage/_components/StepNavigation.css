@@ -80,13 +80,14 @@
 .step-connector {
   position: absolute;
   top: 50%;
-  right: -50%;
-  width: 100%;
+  left: 100%;
+  width: calc(100% - var(--spacing-md));
   height: 2px;
   background-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-50%);
   z-index: -1;
   transition: background-color var(--transition-base);
+  margin-left: var(--spacing-sm);
 }
 
 .step-connector.completed {

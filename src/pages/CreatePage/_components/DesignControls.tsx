@@ -67,6 +67,8 @@ export default function DesignControls({
           <PartsSelector
             selectedParts={fishDesign.parts}
             onPartSelect={handlePartsChange}
+            fishDesign={fishDesign}
+            onCustomize={handleCustomizationChange}
           />
         );
       case 'customize':

@@ -28,6 +28,8 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--spacing-md) 0;
+  min-height: 300px;
+  max-height: calc(100vh - 300px);
 }
 
 /* カスタムスクロールバー */
@@ -49,6 +51,14 @@
   background: rgba(255, 183, 197, 0.7);
 }
 
+/* タブレット対応 */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .step-content {
+    max-height: calc(70vh - 200px);
+    min-height: 350px;
+  }
+}
+
 /* モバイル対応 */
 @media (max-width: 768px) {
   .design-controls {
@@ -60,6 +70,19 @@
   }
   
   .step-content {
-    max-height: 400px;
+    max-height: 55vh;
+    min-height: 300px;
+  }
+}
+
+/* 小さなモバイル画面 */
+@media (max-width: 480px) {
+  .step-content {
+    max-height: 50vh;
+    min-height: 250px;
+  }
+  
+  .controls-title {
+    font-size: var(--font-size-md);
   }
 }

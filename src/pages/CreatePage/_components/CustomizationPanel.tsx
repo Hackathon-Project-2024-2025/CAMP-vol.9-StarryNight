@@ -197,8 +197,8 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
               <SliderControl
                 label="縦位置"
                 value={customizations.dorsalFinPosition.y}
-                min={-0.3}
-                max={0.3}
+                min={-0.2}
+                max={0.2}
                 step={0.05}
                 onChange={(value) => handlePositionChange('dorsalFinPosition', 'y', value)}
                 icon="↕️"

@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import type { SelectedParts, FishPart } from '../../../types/common.types';
+import type { SelectedParts, FishPart, FishDesign } from '../../../types/common.types';
+import SliderControl from './SliderControl';
+import ColorPicker from './ColorPicker';
 import './PartsSelector.css';
 
 interface PartsSelectorProps {
   selectedParts: SelectedParts;
   onPartSelect: (category: string, part: FishPart) => void;
+  fishDesign: FishDesign;
+  onCustomize: (property: string, value: string | number | { x: number; y: number }) => void;
 }
 
 // パーツカテゴリ情報
@@ -153,7 +157,7 @@ const availableParts: Record<string, FishPart[]> = {
   ]
 };
 
-export default function PartsSelector({ selectedParts, onPartSelect }: PartsSelectorProps) {
+export default function PartsSelector({ selectedParts, onPartSelect, fishDesign, onCustomize }: PartsSelectorProps) {
   const [activeCategory, setActiveCategory] = useState<string>('dorsalFin');
 
   const handleCategoryChange = (category: string) => {
@@ -170,6 +174,187 @@ export default function PartsSelector({ selectedParts, onPartSelect }: PartsSele
 
   const currentParts = availableParts[activeCategory] || [];
   const currentSelectedPart = getCurrentSelectedPart();
+
+  // パーツ調整機能
+  const handlePositionChange = (
+    property: 'eyePosition' | 'mouthPosition' | 'dorsalFinPosition' | 'tailFinPosition' | 'pectoralFinPosition', 
+    axis: 'x' | 'y', 
+    value: number
+  ) => {
+    const currentPosition = fishDesign.customizations[property];
+    const newPosition = {
+      ...currentPosition,
+      [axis]: value
+    };
+    onCustomize(property, newPosition);
+  };
+
+  const handleSliderChange = (property: string, value: number) => {
+    onCustomize(property, value);
+  };
+
+  const handleColorChange = (property: string, value: string) => {
+    onCustomize(property, value);
+  };
+
+  // 現在のカテゴリに応じた調整パネルの表示
+  const renderAdjustmentPanel = () => {
+    const { customizations } = fishDesign;
+    
+    switch (activeCategory) {
+      case 'dorsalFin':
+        return (
+          <div className="part-adjustment-panel">
+            <h4 className="adjustment-title">🔺 背ビレの調整</h4>
+            <SliderControl
+              label="横位置"
+              value={customizations.dorsalFinPosition.x}
+              min={-0.5}
+              max={0.5}
+              step={0.05}
+              onChange={(value) => handlePositionChange('dorsalFinPosition', 'x', value)}
+              icon="↔️"
+            />
+            <SliderControl
+              label="縦位置"
+              value={customizations.dorsalFinPosition.y}
+              min={-0.2}
+              max={0.2}
+              step={0.05}
+              onChange={(value) => handlePositionChange('dorsalFinPosition', 'y', value)}
+              icon="↕️"
+            />
+          </div>
+        );
+      
+      case 'pectoralFins':
+        return (
+          <div className="part-adjustment-panel">
+            <h4 className="adjustment-title">🌊 胸ビレの調整</h4>
+            <SliderControl
+              label="横位置"
+              value={customizations.pectoralFinPosition.x}
+              min={-0.4}
+              max={0.4}
+              step={0.05}
+              onChange={(value) => handlePositionChange('pectoralFinPosition', 'x', value)}
+              icon="↔️"
+            />
+            <SliderControl
+              label="縦位置"
+              value={customizations.pectoralFinPosition.y}
+              min={-0.5}
+              max={0.5}
+              step={0.05}
+              onChange={(value) => handlePositionChange('pectoralFinPosition', 'y', value)}
+              icon="↕️"
+            />
+          </div>
+        );
+      
+      case 'tailFin':
+        return (
+          <div className="part-adjustment-panel">
+            <h4 className="adjustment-title">🎋 尾ビレの調整</h4>
+            <SliderControl
+              label="横位置"
+              value={customizations.tailFinPosition.x}
+              min={-0.3}
+              max={0.3}
+              step={0.05}
+              onChange={(value) => handlePositionChange('tailFinPosition', 'x', value)}
+              icon="↔️"
+            />
+            <SliderControl
+              label="縦位置"
+              value={customizations.tailFinPosition.y}
+              min={-0.4}
+              max={0.4}
+              step={0.05}
+              onChange={(value) => handlePositionChange('tailFinPosition', 'y', value)}
+              icon="↕️"
+            />
+          </div>
+        );
+      
+      case 'eyes':
+        return (
+          <div className="part-adjustment-panel">
+            <h4 className="adjustment-title">👁️ 目の調整</h4>
+            <SliderControl
+              label="サイズ"
+              value={customizations.eyeSize}
+              min={0.5}
+              max={2.0}
+              step={0.1}
+              onChange={(value) => handleSliderChange('eyeSize', value)}
+              unit="倍"
+              icon="👁️"
+            />
+            <SliderControl
+              label="横位置"
+              value={customizations.eyePosition.x}
+              min={-0.4}
+              max={0.2}
+              step={0.05}
+              onChange={(value) => handlePositionChange('eyePosition', 'x', value)}
+              icon="↔️"
+            />
+            <SliderControl
+              label="縦位置"
+              value={customizations.eyePosition.y}
+              min={-0.4}
+              max={0.1}
+              step={0.05}
+              onChange={(value) => handlePositionChange('eyePosition', 'y', value)}
+              icon="↕️"
+            />
+            <ColorPicker
+              label="目の色"
+              currentColor={customizations.eyeColor}
+              onColorChange={(color) => handleColorChange('eyeColor', color)}
+              icon="👁️"
+            />
+          </div>
+        );
+      
+      case 'mouth':
+        return (
+          <div className="part-adjustment-panel">
+            <h4 className="adjustment-title">👄 口の調整</h4>
+            <SliderControl
+              label="横位置"
+              value={customizations.mouthPosition.x}
+              min={-0.2}
+              max={0.3}
+              step={0.05}
+              onChange={(value) => handlePositionChange('mouthPosition', 'x', value)}
+              icon="↔️"
+            />
+            <SliderControl
+              label="縦位置"
+              value={customizations.mouthPosition.y}
+              min={0.1}
+              max={0.6}
+              step={0.05}
+              onChange={(value) => handlePositionChange('mouthPosition', 'y', value)}
+              icon="↕️"
+            />
+          </div>
+        );
+      
+      case 'scales':
+        return (
+          <div className="part-adjustment-panel">
+            <h4 className="adjustment-title">⚫ ウロコの調整</h4>
+            <p className="adjustment-note">ウロコの模様は選択したパーツで変更されます</p>
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="parts-selector">
@@ -236,6 +421,9 @@ export default function PartsSelector({ selectedParts, onPartSelect }: PartsSele
           <span className="selection-value">{currentSelectedPart?.name}</span>
         </div>
       </div>
+
+      {/* パーツ調整パネル */}
+      {renderAdjustmentPanel()}
     </div>
   );
 }

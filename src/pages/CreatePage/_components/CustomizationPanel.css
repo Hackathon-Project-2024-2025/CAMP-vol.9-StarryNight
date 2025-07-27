@@ -176,6 +176,36 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+/* デスクトップ大画面対応 */
+@media (min-width: 1200px) {
+  .customization-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+  }
+  
+  .customization-section:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  
+  .preset-buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* タブレット対応 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .customization-panel {
+    padding: var(--spacing-lg);
+  }
+  
+  .position-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
 /* モバイル対応 */
 @media (max-width: 768px) {
   .customization-panel {

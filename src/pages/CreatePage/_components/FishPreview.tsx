@@ -20,19 +20,19 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
     
     switch (shape) {
       case 'round':
-        // 楕円形状の幅
-        return Math.sqrt(Math.max(0, 1 - absY * absY)) * 0.9;
+        // 楕円形状の幅 - より正確な楕円の計算
+        return Math.sqrt(Math.max(0, 1 - absY * absY)) * 0.75;
       case 'streamlined':
-        // 流線型の幅
-        return Math.sqrt(Math.max(0, 1 - absY * absY * 1.5)) * 0.95;
+        // 流線型の幅 - 先細りを強調
+        return Math.sqrt(Math.max(0, 1 - absY * absY * 2.0)) * 0.8;
       case 'flat':
-        // 平型の幅
-        return Math.sqrt(Math.max(0, 1 - absY * absY * 0.5)) * 0.85;
+        // 平型の幅 - 上下により平たく
+        return Math.sqrt(Math.max(0, 1 - absY * absY * 0.3)) * 0.7;
       case 'elongated':
-        // 細長型の幅
-        return Math.sqrt(Math.max(0, 1 - absY * absY * 2)) * 0.8;
+        // 細長型の幅 - より細く
+        return Math.sqrt(Math.max(0, 1 - absY * absY * 3.0)) * 0.6;
       default:
-        return Math.sqrt(Math.max(0, 1 - absY * absY)) * 0.9;
+        return Math.sqrt(Math.max(0, 1 - absY * absY)) * 0.75;
     }
   }, []);
 
@@ -192,9 +192,29 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
     finGradient.addColorStop(1, adjustBrightness(design.customizations.finColor, -15));
     ctx.fillStyle = finGradient;
 
-    // 背ビレ（魚の背中上部、中央やや後方）
+    // 背ビレ（魚の背中上部、中央やや後方）- 体型に応じた適切な位置計算
     const dorsalX = x - bodyWidth * 0.1 + design.customizations.dorsalFinPosition.x * bodyWidth * 0.5;
-    const dorsalY = y - bodyHeight * 0.9 + design.customizations.dorsalFinPosition.y * bodyHeight * 0.3;
+    
+    // 体型別の背ビレ基準位置を設定
+    let dorsalBaseY;
+    switch (design.base.shape) {
+      case 'round':
+        dorsalBaseY = y - bodyHeight * 0.85; // 丸型は少し下目
+        break;
+      case 'streamlined':
+        dorsalBaseY = y - bodyHeight * 0.75; // 流線型は中央寄り
+        break;
+      case 'flat':
+        dorsalBaseY = y - bodyHeight * 1.1; // 平型は上目
+        break;
+      case 'elongated':
+        dorsalBaseY = y - bodyHeight * 0.9; // 細長型は標準
+        break;
+      default:
+        dorsalBaseY = y - bodyHeight * 0.85;
+    }
+    
+    const dorsalY = dorsalBaseY + design.customizations.dorsalFinPosition.y * bodyHeight * 0.4;
     
     ctx.beginPath();
     switch (design.parts.dorsalFin.renderData.shape) {
@@ -395,24 +415,31 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
 
     // 体型に応じたウロコの配置
     const scalePattern = design.parts.scales.renderData.shape;
-    const scaleSize = size * 0.05;
+    const scaleSize = size * 0.04;  // ウロコサイズを少し小さく
     
     // 魚の形状に沿ったウロコ配置
     const rows = 4;  // ウロコの行数
-    const colsPerRow = [5, 7, 7, 5];  // 各行のウロコ数
+    const colsPerRow = [3, 5, 5, 3];  // 各行のウロコ数を減らして密度調整
     
     for (let row = 0; row < rows; row++) {
       const rowY = y + (row - 1.5) * bodyDimensions.height * 0.25;
       const cols = colsPerRow[row];
       
+      // 行のY位置に対する魚の幅係数を取得
+      const normalizedRowY = (rowY - y) / bodyDimensions.height;
+      const fishShapeFactor = getFishShapeFactorAtY(design.base.shape, normalizedRowY);
+      
       for (let col = 0; col < cols; col++) {
-        // 魚の形状に合わせた横位置の計算
+        // 正規化された横位置（-1〜1の範囲）
         const normalizedCol = (col - (cols - 1) / 2) / ((cols - 1) / 2);
-        const fishShapeFactor = getFishShapeFactorAtY(design.base.shape, (rowY - y) / bodyDimensions.height);
-        const scaleX = x + normalizedCol * bodyDimensions.width * fishShapeFactor * 0.8;
         
-        // ウロコが魚の体内にあるかチェック
-        if (Math.abs(normalizedCol) <= fishShapeFactor) {
+        // 実際の横位置計算（魚の形状に合わせて縮小）
+        const scaleX = x + normalizedCol * bodyDimensions.width * fishShapeFactor * 0.6;
+        
+        // より厳密な体内判定：正規化位置と形状係数を両方考慮
+        const isInsideBody = Math.abs(normalizedCol) <= 0.65 && fishShapeFactor > 0.2;
+        
+        if (isInsideBody) {
           ctx.save();
           ctx.globalAlpha = 0.6;
           ctx.beginPath();

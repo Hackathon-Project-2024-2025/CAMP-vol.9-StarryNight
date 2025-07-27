@@ -39,14 +39,14 @@
 .fish-preview-section {
   grid-area: preview;
   position: sticky;
-  top: var(--spacing-lg);
-  z-index: 10;
+  top: var(--spacing-md);
+  z-index: 5;
 }
 
 .design-controls-section {
   grid-area: controls;
   overflow-y: auto;
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 250px);
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 183, 197, 0.5) transparent;
 }
@@ -71,15 +71,40 @@
 
 .action-buttons-section {
   grid-area: actions;
-  position: sticky;
-  bottom: 0;
   background-color: var(--background-color);
   padding: var(--spacing-md) 0;
-  z-index: 10;
+  margin-top: var(--spacing-lg);
+}
+
+/* 大画面デスクトップレイアウト */
+@media (min-width: 1200px) {
+  .fish-designer {
+    grid-template-areas: 
+      "preview controls"
+      "preview actions";
+    grid-template-columns: 500px 1fr;
+    grid-template-rows: 1fr auto;
+    gap: var(--spacing-2xl);
+    max-width: 1600px;
+  }
+  
+  .fish-preview-section {
+    position: sticky;
+    top: var(--spacing-lg);
+    height: fit-content;
+    max-height: calc(100vh - 100px);
+    z-index: 5;
+  }
+  
+  .design-controls-section {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding-right: var(--spacing-lg);
+  }
 }
 
 /* デスクトップレイアウト */
-@media (min-width: 1024px) {
+@media (min-width: 1024px) and (max-width: 1199px) {
   .fish-designer {
     grid-template-areas: 
       "preview controls"
@@ -91,13 +116,14 @@
   
   .fish-preview-section {
     position: sticky;
-    top: var(--spacing-xl);
+    top: var(--spacing-lg);
     height: fit-content;
-    max-height: calc(100vh - 150px);
+    max-height: calc(100vh - 120px);
+    z-index: 5;
   }
   
   .design-controls-section {
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 120px);
     overflow-y: auto;
     padding-right: var(--spacing-md);
   }
@@ -105,6 +131,7 @@
   .action-buttons-section {
     position: static;
     background-color: transparent;
+    margin-top: var(--spacing-xl);
   }
 }
 
@@ -120,12 +147,14 @@
   
   .fish-preview-section {
     position: sticky;
-    top: var(--spacing-md);
-    height: 350px;
+    top: var(--spacing-sm);
+    height: 320px;
+    max-height: 40vh;
+    z-index: 5;
   }
   
   .design-controls-section {
-    max-height: 60vh;
+    max-height: 70vh;
     overflow-y: auto;
   }
 }
@@ -138,10 +167,11 @@
     rgba(135, 206, 235, 0.1) 100%);
   border-radius: var(--border-radius-lg);
   border: 2px solid rgba(135, 206, 235, 0.3);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-lg);
   min-height: 400px;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 
 .fish-preview-section::before {
@@ -163,6 +193,7 @@
   border-radius: var(--border-radius-lg);
   border: 2px solid var(--border-color);
   padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 /* アクションボタンエリアスタイル */
@@ -171,6 +202,90 @@
   border-radius: var(--border-radius-lg);
   border: 2px solid rgba(244, 162, 97, 0.3);
   padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* モバイル専用の調整 */
+@media (max-width: 767px) {
+  .design-controls-section {
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+  
+  .fish-designer {
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+  }
+  
+  .fish-preview-section {
+    position: sticky;
+    top: 0;
+    height: 280px;
+    max-height: 35vh;
+    z-index: 5;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .action-buttons-section {
+    position: static;
+    background-color: transparent;
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg) 0;
+  }
+}
+
+/* 小さなモバイル画面 */
+@media (max-width: 480px) {
+  .design-controls-section {
+    max-height: 60vh;
+  }
+  
+  .fish-preview-section {
+    height: 250px;
+    max-height: 30vh;
+  }
+  
+  .page-header {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .page-description {
+    font-size: var(--font-size-md);
+  }
+}
+
+/* 極小画面 */
+@media (max-width: 360px) {
+  .fish-designer {
+    padding: var(--spacing-xs);
+    gap: var(--spacing-xs);
+  }
+  
+  .design-controls-section {
+    max-height: 50vh;
+  }
+  
+  .fish-preview-section {
+    height: 200px;
+    max-height: 25vh;
+    padding: var(--spacing-sm);
+  }
+  
+  .page-header {
+    padding: var(--spacing-md) 0;
+  }
+  
+  .page-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .page-description {
+    font-size: var(--font-size-sm);
+  }
 }
 
 /* アニメーション */
