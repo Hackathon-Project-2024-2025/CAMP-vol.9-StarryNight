@@ -29,22 +29,53 @@
     "preview"
     "controls"
     "actions";
-  gap: var(--spacing-xl);
-  padding: var(--spacing-xl);
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
   max-width: 1400px;
   margin: 0 auto;
+  min-height: calc(100vh - 200px);
 }
 
 .fish-preview-section {
   grid-area: preview;
+  position: sticky;
+  top: var(--spacing-lg);
+  z-index: 10;
 }
 
 .design-controls-section {
   grid-area: controls;
+  overflow-y: auto;
+  max-height: calc(100vh - 300px);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 183, 197, 0.5) transparent;
+}
+
+.design-controls-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.design-controls-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.design-controls-section::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 183, 197, 0.5);
+  border-radius: 3px;
+  transition: background-color var(--transition-base);
+}
+
+.design-controls-section::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 183, 197, 0.8);
 }
 
 .action-buttons-section {
   grid-area: actions;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--background-color);
+  padding: var(--spacing-md) 0;
+  z-index: 10;
 }
 
 /* デスクトップレイアウト */
@@ -52,9 +83,28 @@
   .fish-designer {
     grid-template-areas: 
       "preview controls"
-      "actions actions";
-    grid-template-columns: 1fr 400px;
+      "preview actions";
+    grid-template-columns: 450px 1fr;
     grid-template-rows: 1fr auto;
+    gap: var(--spacing-xl);
+  }
+  
+  .fish-preview-section {
+    position: sticky;
+    top: var(--spacing-xl);
+    height: fit-content;
+    max-height: calc(100vh - 150px);
+  }
+  
+  .design-controls-section {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: var(--spacing-md);
+  }
+  
+  .action-buttons-section {
+    position: static;
+    background-color: transparent;
   }
 }
 
@@ -66,6 +116,17 @@
       "controls controls"
       "actions actions";
     grid-template-columns: 1fr 1fr;
+  }
+  
+  .fish-preview-section {
+    position: sticky;
+    top: var(--spacing-md);
+    height: 350px;
+  }
+  
+  .design-controls-section {
+    max-height: 60vh;
+    overflow-y: auto;
   }
 }
 

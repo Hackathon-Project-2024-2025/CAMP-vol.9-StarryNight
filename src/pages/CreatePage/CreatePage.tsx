@@ -76,8 +76,11 @@ const createDefaultFishDesign = (): FishDesign => {
     size: 1.0,
     finSize: 1.0,
     eyeSize: 1.0,
-    eyePosition: { x: 0.3, y: 0.3 },
-    mouthPosition: { x: 0.15, y: 0.5 }
+    eyePosition: { x: -0.1, y: -0.25 },        // 頭部上方の自然な位置
+    mouthPosition: { x: 0.0, y: 0.3 },         // 頭部前端下方の自然な位置
+    dorsalFinPosition: { x: 0.0, y: 0.0 },     // 背ビレの基準位置
+    tailFinPosition: { x: 0.0, y: 0.0 },       // 尾ビレの基準位置
+    pectoralFinPosition: { x: 0.0, y: 0.0 }    // 胸ビレの基準位置
   };
 
   return {

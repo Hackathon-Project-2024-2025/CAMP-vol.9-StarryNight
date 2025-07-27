@@ -8,6 +8,11 @@ interface CustomizationPanelProps {
   onCustomize: (property: string, value: string | number | { x: number; y: number }) => void;
 }
 
+// バッチ更新用の型定義
+interface BatchUpdate {
+  [key: string]: string | number | { x: number; y: number };
+}
+
 export default function CustomizationPanel({ fishDesign, onCustomize }: CustomizationPanelProps) {
   const { customizations } = fishDesign;
 
@@ -19,13 +24,27 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
     onCustomize(property, value);
   };
 
-  const handlePositionChange = (property: 'eyePosition' | 'mouthPosition', axis: 'x' | 'y', value: number) => {
+  const handlePositionChange = (
+    property: 'eyePosition' | 'mouthPosition' | 'dorsalFinPosition' | 'tailFinPosition' | 'pectoralFinPosition', 
+    axis: 'x' | 'y', 
+    value: number
+  ) => {
     const currentPosition = customizations[property];
     const newPosition = {
       ...currentPosition,
       [axis]: value
     };
     onCustomize(property, newPosition);
+  };
+
+  // バッチ更新のヘルパー関数
+  const applyBatchUpdates = (updates: BatchUpdate) => {
+    // タイマーを使用して順次適用（React の状態更新を確実にするため）
+    Object.entries(updates).forEach(([property, value], index) => {
+      setTimeout(() => {
+        onCustomize(property, value);
+      }, index * 50); // 50ms間隔で順次適用
+    });
   };
 
   return (
@@ -113,8 +132,8 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
               <SliderControl
                 label="横位置"
                 value={customizations.eyePosition.x}
-                min={-0.5}
-                max={0.8}
+                min={-0.4}
+                max={0.2}
                 step={0.05}
                 onChange={(value) => handlePositionChange('eyePosition', 'x', value)}
                 icon="↔️"
@@ -123,8 +142,8 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
               <SliderControl
                 label="縦位置"
                 value={customizations.eyePosition.y}
-                min={-0.5}
-                max={0.5}
+                min={-0.4}
+                max={0.1}
                 step={0.05}
                 onChange={(value) => handlePositionChange('eyePosition', 'y', value)}
                 icon="↕️"
@@ -137,8 +156,8 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
               <SliderControl
                 label="横位置"
                 value={customizations.mouthPosition.x}
-                min={-0.3}
-                max={0.5}
+                min={-0.2}
+                max={0.3}
                 step={0.05}
                 onChange={(value) => handlePositionChange('mouthPosition', 'x', value)}
                 icon="↔️"
@@ -147,10 +166,89 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
               <SliderControl
                 label="縦位置"
                 value={customizations.mouthPosition.y}
-                min={0.2}
-                max={0.8}
+                min={0.1}
+                max={0.6}
                 step={0.05}
                 onChange={(value) => handlePositionChange('mouthPosition', 'y', value)}
+                icon="↕️"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ヒレの位置設定 */}
+        <section className="customization-section">
+          <h4 className="section-title">🐟 ヒレの位置</h4>
+          
+          <div className="position-controls">
+            <div className="position-group">
+              <h5 className="position-label">🔺 背ビレの位置</h5>
+              
+              <SliderControl
+                label="横位置"
+                value={customizations.dorsalFinPosition.x}
+                min={-0.5}
+                max={0.5}
+                step={0.05}
+                onChange={(value) => handlePositionChange('dorsalFinPosition', 'x', value)}
+                icon="↔️"
+              />
+              
+              <SliderControl
+                label="縦位置"
+                value={customizations.dorsalFinPosition.y}
+                min={-0.3}
+                max={0.3}
+                step={0.05}
+                onChange={(value) => handlePositionChange('dorsalFinPosition', 'y', value)}
+                icon="↕️"
+              />
+            </div>
+            
+            <div className="position-group">
+              <h5 className="position-label">🎋 尾ビレの位置</h5>
+              
+              <SliderControl
+                label="横位置"
+                value={customizations.tailFinPosition.x}
+                min={-0.3}
+                max={0.3}
+                step={0.05}
+                onChange={(value) => handlePositionChange('tailFinPosition', 'x', value)}
+                icon="↔️"
+              />
+              
+              <SliderControl
+                label="縦位置"
+                value={customizations.tailFinPosition.y}
+                min={-0.4}
+                max={0.4}
+                step={0.05}
+                onChange={(value) => handlePositionChange('tailFinPosition', 'y', value)}
+                icon="↕️"
+              />
+            </div>
+            
+            <div className="position-group">
+              <h5 className="position-label">🌊 胸ビレの位置</h5>
+              
+              <SliderControl
+                label="横位置"
+                value={customizations.pectoralFinPosition.x}
+                min={-0.4}
+                max={0.4}
+                step={0.05}
+                onChange={(value) => handlePositionChange('pectoralFinPosition', 'x', value)}
+                icon="↔️"
+              />
+              
+              <SliderControl
+                label="縦位置"
+                value={customizations.pectoralFinPosition.y}
+                min={-0.5}
+                max={0.5}
+                step={0.05}
+                onChange={(value) => handlePositionChange('pectoralFinPosition', 'y', value)}
                 icon="↕️"
               />
             </div>
@@ -165,9 +263,11 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
             <button
               className="preset-button"
               onClick={() => {
-                onCustomize('size', 1.5);
-                onCustomize('finSize', 1.3);
-                onCustomize('eyeSize', 1.2);
+                applyBatchUpdates({
+                  size: 1.5,
+                  finSize: 1.3,
+                  eyeSize: 1.2
+                });
               }}
             >
               <span className="preset-icon">🐲</span>
@@ -177,9 +277,11 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
             <button
               className="preset-button"
               onClick={() => {
-                onCustomize('size', 0.8);
-                onCustomize('finSize', 0.9);
-                onCustomize('eyeSize', 1.3);
+                applyBatchUpdates({
+                  size: 0.8,
+                  finSize: 0.9,
+                  eyeSize: 1.3
+                });
               }}
             >
               <span className="preset-icon">🐣</span>
@@ -189,9 +291,11 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
             <button
               className="preset-button"
               onClick={() => {
-                onCustomize('bodyColor', '#ffd700');
-                onCustomize('finColor', '#ffed4e');
-                onCustomize('eyeColor', '#000000');
+                applyBatchUpdates({
+                  bodyColor: '#ffd700',
+                  finColor: '#ffed4e',
+                  eyeColor: '#000000'
+                });
               }}
             >
               <span className="preset-icon">👑</span>
@@ -201,9 +305,11 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
             <button
               className="preset-button"
               onClick={() => {
-                onCustomize('bodyColor', '#ff6b6b');
-                onCustomize('finColor', '#ff9999');
-                onCustomize('eyeColor', '#000000');
+                applyBatchUpdates({
+                  bodyColor: '#ff6b6b',
+                  finColor: '#ff9999',
+                  eyeColor: '#000000'
+                });
               }}
             >
               <span className="preset-icon">🌸</span>

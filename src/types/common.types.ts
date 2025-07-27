@@ -77,6 +77,9 @@ export interface FishCustomizations {
   eyeSize: number;        // 目サイズ (0.5-1.5)
   eyePosition: { x: number; y: number };
   mouthPosition: { x: number; y: number };
+  dorsalFinPosition: { x: number; y: number };    // 背ビレ位置
+  tailFinPosition: { x: number; y: number };      // 尾ビレ位置
+  pectoralFinPosition: { x: number; y: number };  // 胸ビレ位置
 }
 
 export type PartCategory = 'base' | 'dorsalFin' | 'pectoralFins' | 'tailFin' | 'eyes' | 'mouth' | 'scales' | 'pattern';
