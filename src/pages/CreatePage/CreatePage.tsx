@@ -89,6 +89,8 @@ const createDefaultFishDesign = (): FishDesign => {
     base: defaultBase,
     parts: defaultParts,
     customizations: defaultCustomizations,
+    bodyPattern: undefined, // デフォルトでは模様なし
+    accessories: [], // デフォルトではアクセサリーなし
     createdAt: new Date()
   };
 };

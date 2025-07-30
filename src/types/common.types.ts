@@ -33,6 +33,8 @@ export interface FishDesign {
   base: FishBase;
   parts: SelectedParts;
   customizations: FishCustomizations;
+  bodyPattern?: BodyPattern;
+  accessories: Accessory[];
   createdAt: Date;
 }
 
@@ -82,5 +84,41 @@ export interface FishCustomizations {
   pectoralFinPosition: { x: number; y: number };  // 胸ビレ位置
 }
 
-export type PartCategory = 'base' | 'dorsalFin' | 'pectoralFins' | 'tailFin' | 'eyes' | 'mouth' | 'scales' | 'pattern';
-export type DesignStep = 'base' | 'parts' | 'customize';
+export type PartCategory = 'base' | 'dorsalFin' | 'pectoralFins' | 'tailFin' | 'eyes' | 'mouth' | 'scales' | 'pattern' | 'accessory';
+export type DesignStep = 'base' | 'parts' | 'pattern' | 'accessory' | 'customize';
+
+// 体の模様パターン
+export interface BodyPattern {
+  id: string;
+  name: string;
+  type: 'solid' | 'spotted' | 'striped' | 'polka' | 'calico' | 'gradient';
+  description: string;
+  colors?: string[]; // パターンに使用する色（キャリコなど）
+  intensity?: number; // パターンの濃さ (0.1-1.0)
+  scale?: number; // パターンのサイズ (0.5-2.0)
+  direction?: 'horizontal' | 'vertical' | 'diagonal'; // 縞模様の方向
+  seed?: number; // 一貫した模様生成のためのシード値
+}
+
+// アクセサリー
+export interface Accessory {
+  id: string;
+  name: string;
+  category: 'crown' | 'hat' | 'glasses' | 'ribbon' | 'bow' | 'jewelry';
+  description: string;
+  position: { x: number; y: number }; // 相対位置
+  size: number; // サイズ倍率
+  rotation?: number; // 回転角度
+  color?: string; // アクセサリーの色
+  visible: boolean; // 表示/非表示
+}
+
+// ランダム生成の設定
+export interface RandomGenerationOptions {
+  includeBase?: boolean;
+  includeParts?: boolean;
+  includeColors?: boolean;
+  includePatterns?: boolean;
+  includeAccessories?: boolean;
+  keepCurrentSizes?: boolean;
+}

@@ -86,3 +86,44 @@
     font-size: var(--font-size-md);
   }
 }
+
+/* アクセサリーステップの特別スタイリング */
+.accessory-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.step-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+}
+
+.divider-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0 var(--spacing-sm);
+  background: var(--background-color);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .accessory-step {
+    gap: var(--spacing-lg);
+  }
+  
+  .step-divider {
+    margin: var(--spacing-md) 0;
+  }
+}

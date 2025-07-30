@@ -127,8 +127,16 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
     // 体を描画
     drawBody(ctx, design, centerX, centerY, baseSize);
     
+    // 体の模様を描画（体の上に重ねる）
+    if (design.bodyPattern) {
+      drawBodyPattern(ctx, design, centerX, centerY, baseSize);
+    }
+    
     // ヒレを描画
     drawFins(ctx, design, centerX, centerY, baseSize);
+    
+    // ウロコ模様を描画
+    drawScales(ctx, design, centerX, centerY, baseSize);
     
     // 目を描画
     drawEyes(ctx, design, centerX, centerY, baseSize);
@@ -136,8 +144,10 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
     // 口を描画
     drawMouth(ctx, design, centerX, centerY, baseSize);
     
-    // ウロコ模様を描画
-    drawScales(ctx, design, centerX, centerY, baseSize);
+    // アクセサリーを描画（最上層）
+    if (design.accessories && design.accessories.length > 0) {
+      drawAccessories(ctx, design, centerX, centerY, baseSize);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -479,6 +489,464 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
     }
   }, [getBodyDimensions, getFishShapeFactorAtY]);
 
+  // シード基準の疑似乱数生成器
+  const seededRandom = useCallback((seed: number) => {
+    let currentSeed = seed;
+    return () => {
+      currentSeed = (currentSeed * 9301 + 49297) % 233280;
+      return currentSeed / 233280;
+    };
+  }, []);
+
+  // 体の模様を描画する関数
+  const drawBodyPattern = useCallback((ctx: CanvasRenderingContext2D, design: FishDesign, x: number, y: number, size: number) => {
+    const pattern = design.bodyPattern;
+    if (!pattern) return;
+
+    const bodyDimensions = getBodyDimensions(design.base.shape, size);
+    const bodyWidth = bodyDimensions.width;
+    const bodyHeight = bodyDimensions.height;
+    const intensity = pattern.intensity || 0.6;
+    const scale = pattern.scale || 1.0;
+    
+    // シード基準の乱数生成器を作成
+    const random = seededRandom(pattern.seed || 12345);
+
+    ctx.save();
+    ctx.globalAlpha = intensity;
+
+    // 体の形状にクリッピングパスを設定
+    ctx.beginPath();
+    drawFishShape(ctx, x, y, bodyWidth, bodyHeight, design.base.shape);
+    ctx.clip();
+
+    switch (pattern.type) {
+      case 'spotted': {
+        // まだら模様
+        const spotColor = pattern.colors?.[0] || '#ffffff';
+        ctx.fillStyle = spotColor;
+        
+        const numSpots = Math.floor(15 * scale);
+        for (let i = 0; i < numSpots; i++) {
+          const spotX = x + (random() - 0.5) * bodyWidth * 1.4;
+          const spotY = y + (random() - 0.5) * bodyHeight * 1.4;
+          const spotSize = (random() * 8 + 4) * scale;
+          
+          // 体の形状内かチェック
+          const normalizedY = (spotY - y) / bodyHeight;
+          const fishShapeFactor = getFishShapeFactorAtY(design.base.shape, normalizedY);
+          const normalizedX = (spotX - x) / bodyWidth;
+          
+          if (Math.abs(normalizedX) <= fishShapeFactor * 0.8 && Math.abs(normalizedY) <= 0.8) {
+            ctx.beginPath();
+            ctx.ellipse(spotX, spotY, spotSize, spotSize * 0.8, random() * Math.PI, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        break;
+      }
+
+      case 'striped': {
+        // 縞模様 - より鮮明で魚の形状に沿った縞模様
+        const stripeColor = pattern.colors?.[0] || '#ffffff';
+        const direction = pattern.direction || 'horizontal';
+        const stripeWidth = Math.max(6, 8 * scale);
+        const spacing = Math.max(12, 16 * scale);
+
+        ctx.fillStyle = stripeColor;
+
+        // より大きな範囲で縞模様を描画
+        const drawRange = Math.max(bodyWidth, bodyHeight) * 2;
+
+        if (direction === 'horizontal') {
+          // 横縞
+          for (let i = -drawRange; i <= drawRange; i += spacing) {
+            ctx.fillRect(x - drawRange, y + i, drawRange * 2, stripeWidth);
+          }
+        } else if (direction === 'vertical') {
+          // 縦縞
+          for (let i = -drawRange; i <= drawRange; i += spacing) {
+            ctx.fillRect(x + i, y - drawRange, stripeWidth, drawRange * 2);
+          }
+        } else if (direction === 'diagonal') {
+          // 斜め縞
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(Math.PI / 4);
+          for (let i = -drawRange * 1.5; i <= drawRange * 1.5; i += spacing) {
+            ctx.fillRect(i, -drawRange * 1.5, stripeWidth, drawRange * 3);
+          }
+          ctx.restore();
+        }
+        break;
+      }
+
+      case 'polka': {
+        // 水玉模様
+        const dotColor = pattern.colors?.[0] || '#ffffff';
+        ctx.fillStyle = dotColor;
+        
+        const dotSize = 4 * scale;
+        const gridSize = 20 * scale;
+        
+        for (let i = -bodyWidth; i < bodyWidth; i += gridSize) {
+          for (let j = -bodyHeight; j < bodyHeight; j += gridSize) {
+            const dotX = x + i + (j % (gridSize * 2) === 0 ? gridSize / 2 : 0);
+            const dotY = y + j;
+            
+            // 体の形状内かチェック
+            const normalizedY = (dotY - y) / bodyHeight;
+            const fishShapeFactor = getFishShapeFactorAtY(design.base.shape, normalizedY);
+            const normalizedX = (dotX - x) / bodyWidth;
+            
+            if (Math.abs(normalizedX) <= fishShapeFactor * 0.6 && Math.abs(normalizedY) <= 0.6) {
+              ctx.beginPath();
+              ctx.arc(dotX, dotY, dotSize, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+        break;
+      }
+
+      case 'calico': {
+        // キャリコ（三色）模様
+        const colors = pattern.colors || ['#ff6b6b', '#ffffff', '#2c3e50'];
+        
+        // 各色のパッチを描画
+        colors.forEach((color, index) => {
+          ctx.fillStyle = color;
+          const numPatches = Math.floor((8 - index * 2) * scale);
+          
+          for (let i = 0; i < numPatches; i++) {
+            const patchX = x + (random() - 0.5) * bodyWidth * 1.2;
+            const patchY = y + (random() - 0.5) * bodyHeight * 1.2;
+            const patchWidth = (random() * 20 + 15) * scale;
+            const patchHeight = (random() * 15 + 10) * scale;
+            
+            // 体の形状内かチェック
+            const normalizedY = (patchY - y) / bodyHeight;
+            const fishShapeFactor = getFishShapeFactorAtY(design.base.shape, normalizedY);
+            const normalizedX = (patchX - x) / bodyWidth;
+            
+            if (Math.abs(normalizedX) <= fishShapeFactor * 0.7 && Math.abs(normalizedY) <= 0.7) {
+              ctx.save();
+              ctx.translate(patchX, patchY);
+              ctx.rotate(random() * Math.PI);
+              ctx.beginPath();
+              ctx.ellipse(0, 0, patchWidth, patchHeight, 0, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+        });
+        break;
+      }
+
+      case 'gradient': {
+        // グラデーション模様 - より鮮明で分かりやすい対比
+        const baseColor = design.customizations.bodyColor;
+        const colors = pattern.colors || [baseColor, adjustBrightness(baseColor, -60)];
+        
+        // 角度をランダム化（シード基準）
+        const angle = random() * Math.PI * 2;
+        const gradientLength = Math.max(bodyWidth, bodyHeight);
+        const startX = x + Math.cos(angle) * gradientLength * 0.7;
+        const startY = y + Math.sin(angle) * gradientLength * 0.7;
+        const endX = x - Math.cos(angle) * gradientLength * 0.7;
+        const endY = y - Math.sin(angle) * gradientLength * 0.7;
+        
+        const gradient = ctx.createLinearGradient(startX, startY, endX, endY);
+        
+        // 複数の色段階を作成
+        if (colors.length >= 2) {
+          gradient.addColorStop(0, colors[0]);
+          gradient.addColorStop(0.3, colors[0]);
+          gradient.addColorStop(0.7, colors[1]);
+          gradient.addColorStop(1, colors[1]);
+        } else {
+          colors.forEach((color, index) => {
+            gradient.addColorStop(index / (colors.length - 1), color);
+          });
+        }
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        drawFishShape(ctx, x, y, bodyWidth, bodyHeight, design.base.shape);
+        ctx.fill();
+        break;
+      }
+    }
+
+    ctx.restore();
+  }, [getBodyDimensions, drawFishShape, getFishShapeFactorAtY, seededRandom, adjustBrightness]);
+
+  // アクセサリーを描画する関数
+  const drawAccessories = useCallback((ctx: CanvasRenderingContext2D, design: FishDesign, x: number, y: number, size: number) => {
+    const accessories = design.accessories || [];
+    const visibleAccessories = accessories.filter(acc => acc.visible);
+    const bodyDimensions = getBodyDimensions(design.base.shape, size);
+
+    visibleAccessories.forEach(accessory => {
+      ctx.save();
+      
+      // 魚の頭部位置を正確に計算（右向きの魚の頭は右側）
+      const headX = x + bodyDimensions.width * 0.3;
+      const headY = y - bodyDimensions.height * 0.1; // 頭部中心
+      
+      // アクセサリーの位置計算（魚の解剖学的構造に基づく）
+      let accessoryX, accessoryY;
+      
+      if (['crown', 'hat', 'ribbon'].includes(accessory.category)) {
+        // 頭部上方アクセサリー
+        accessoryX = headX + accessory.position.x * bodyDimensions.width * 0.2;
+        accessoryY = headY + accessory.position.y * bodyDimensions.height;
+      } else if (accessory.category === 'glasses') {
+        // 目の位置のアクセサリー（既存の目の位置を参照）
+        const eyeX = headX + design.customizations.eyePosition.x * bodyDimensions.width * 0.3;
+        const eyeY = y + design.customizations.eyePosition.y * bodyDimensions.height;
+        accessoryX = eyeX + accessory.position.x * bodyDimensions.width * 0.1;
+        accessoryY = eyeY + accessory.position.y * bodyDimensions.height * 0.1;
+      } else {
+        // 胸部アクセサリー（bow, jewelry）
+        const chestX = x + bodyDimensions.width * 0.1;
+        const chestY = y + bodyDimensions.height * 0.2;
+        accessoryX = chestX + accessory.position.x * bodyDimensions.width * 0.3;
+        accessoryY = chestY + accessory.position.y * bodyDimensions.height * 0.5;
+      }
+      
+      const accessorySize = accessory.size * size * 0.15;
+
+      // 回転を適用
+      if (accessory.rotation) {
+        ctx.translate(accessoryX, accessoryY);
+        ctx.rotate((accessory.rotation * Math.PI) / 180);
+        ctx.translate(-accessoryX, -accessoryY);
+      }
+
+      ctx.fillStyle = accessory.color || '#ffd700';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.lineWidth = 1;
+
+      switch (accessory.category) {
+        case 'crown': {
+          // 王冠を描画
+          ctx.beginPath();
+          const crownWidth = accessorySize * 1.5;
+          const crownHeight = accessorySize;
+          
+          // 王冠のベース
+          ctx.rect(accessoryX - crownWidth/2, accessoryY, crownWidth, crownHeight * 0.3);
+          
+          // 王冠のトゲ部分
+          const numSpikes = 5;
+          for (let i = 0; i < numSpikes; i++) {
+            const spikeX = accessoryX - crownWidth/2 + (crownWidth / numSpikes) * (i + 0.5);
+            const spikeHeight = crownHeight * (i % 2 === 1 ? 0.8 : 0.6);
+            ctx.moveTo(spikeX - crownWidth/(numSpikes*3), accessoryY);
+            ctx.lineTo(spikeX, accessoryY - spikeHeight);
+            ctx.lineTo(spikeX + crownWidth/(numSpikes*3), accessoryY);
+          }
+          
+          ctx.fill();
+          ctx.stroke();
+          
+          // 宝石（ジュエル王冠の場合）
+          if (accessory.id.includes('jeweled')) {
+            ctx.fillStyle = '#ff1493';
+            for (let i = 0; i < 3; i++) {
+              const gemX = accessoryX - crownWidth/3 + (crownWidth/3) * i;
+              ctx.beginPath();
+              ctx.arc(gemX, accessoryY + crownHeight * 0.15, accessorySize * 0.1, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          break;
+        }
+
+        case 'hat': {
+          // 帽子を描画
+          if (accessory.id.includes('top')) {
+            // シルクハット
+            const hatWidth = accessorySize * 1.2;
+            const hatHeight = accessorySize * 1.5;
+            
+            ctx.beginPath();
+            // 帽子の筒部分
+            ctx.rect(accessoryX - hatWidth/3, accessoryY - hatHeight, hatWidth/1.5, hatHeight);
+            ctx.fill();
+            ctx.stroke();
+            
+            // つば
+            ctx.beginPath();
+            ctx.ellipse(accessoryX, accessoryY, hatWidth, hatWidth * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          } else {
+            // キャップ
+            const capSize = accessorySize * 1.1;
+            
+            ctx.beginPath();
+            ctx.arc(accessoryX, accessoryY, capSize, Math.PI, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            // つば
+            ctx.beginPath();
+            ctx.ellipse(accessoryX + capSize * 0.7, accessoryY, capSize * 0.8, capSize * 0.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          }
+          break;
+        }
+
+        case 'glasses': {
+          // メガネを描画
+          const lensSize = accessorySize * 0.8;
+          const frameWidth = lensSize * 2.5;
+          
+          ctx.strokeStyle = accessory.color || '#34495e';
+          ctx.lineWidth = 3;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+          
+          // 左レンズ
+          ctx.beginPath();
+          ctx.arc(accessoryX - frameWidth/4, accessoryY, lensSize, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          
+          // 右レンズ
+          ctx.beginPath();
+          ctx.arc(accessoryX + frameWidth/4, accessoryY, lensSize, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          
+          // ブリッジ
+          ctx.beginPath();
+          ctx.moveTo(accessoryX - lensSize/2, accessoryY);
+          ctx.lineTo(accessoryX + lensSize/2, accessoryY);
+          ctx.stroke();
+          
+          // サングラスの場合は暗くする
+          if (accessory.id.includes('sunglasses')) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.beginPath();
+            ctx.arc(accessoryX - frameWidth/4, accessoryY, lensSize - 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(accessoryX + frameWidth/4, accessoryY, lensSize - 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          break;
+        }
+
+        case 'ribbon': {
+          // リボンを描画
+          const ribbonSize = accessorySize;
+          
+          if (accessory.id.includes('bow')) {
+            // リボン結び
+            ctx.beginPath();
+            // 左の羽
+            ctx.ellipse(accessoryX - ribbonSize/2, accessoryY, ribbonSize/2, ribbonSize, Math.PI/6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            // 右の羽
+            ctx.beginPath();
+            ctx.ellipse(accessoryX + ribbonSize/2, accessoryY, ribbonSize/2, ribbonSize, -Math.PI/6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            // 中央の結び目
+            ctx.fillStyle = adjustBrightness(accessory.color || '#ff69b4', -30);
+            ctx.beginPath();
+            ctx.rect(accessoryX - ribbonSize/4, accessoryY - ribbonSize/3, ribbonSize/2, ribbonSize/1.5);
+            ctx.fill();
+            ctx.stroke();
+          } else {
+            // ヘッドバンド
+            const bandWidth = ribbonSize * 0.3;
+            ctx.beginPath();
+            ctx.arc(accessoryX, accessoryY, ribbonSize, Math.PI * 0.8, Math.PI * 2.2);
+            ctx.lineWidth = bandWidth;
+            ctx.stroke();
+          }
+          break;
+        }
+
+        case 'bow': {
+          // 蝶ネクタイを描画
+          const bowSize = accessorySize;
+          
+          ctx.beginPath();
+          // 左の羽
+          ctx.moveTo(accessoryX - bowSize, accessoryY);
+          ctx.quadraticCurveTo(accessoryX - bowSize/2, accessoryY - bowSize/2, accessoryX - bowSize/4, accessoryY);
+          ctx.quadraticCurveTo(accessoryX - bowSize/2, accessoryY + bowSize/2, accessoryX - bowSize, accessoryY);
+          
+          // 右の羽
+          ctx.moveTo(accessoryX + bowSize, accessoryY);
+          ctx.quadraticCurveTo(accessoryX + bowSize/2, accessoryY - bowSize/2, accessoryX + bowSize/4, accessoryY);
+          ctx.quadraticCurveTo(accessoryX + bowSize/2, accessoryY + bowSize/2, accessoryX + bowSize, accessoryY);
+          
+          ctx.fill();
+          ctx.stroke();
+          
+          // 中央の結び目
+          ctx.fillStyle = adjustBrightness(accessory.color || '#8b4513', -30);
+          ctx.beginPath();
+          ctx.rect(accessoryX - bowSize/6, accessoryY - bowSize/3, bowSize/3, bowSize/1.5);
+          ctx.fill();
+          ctx.stroke();
+          break;
+        }
+
+        case 'jewelry': {
+          // ジュエリーを描画
+          if (accessory.id.includes('necklace')) {
+            // ネックレス
+            const necklaceRadius = accessorySize * 1.5;
+            ctx.strokeStyle = accessory.color || '#c0c0c0';
+            ctx.lineWidth = 3;
+            
+            ctx.beginPath();
+            ctx.arc(accessoryX, accessoryY, necklaceRadius, Math.PI * 0.2, Math.PI * 0.8);
+            ctx.stroke();
+            
+            // ペンダント
+            ctx.fillStyle = '#ff1493';
+            ctx.beginPath();
+            ctx.moveTo(accessoryX, accessoryY + necklaceRadius - 5);
+            ctx.lineTo(accessoryX - 5, accessoryY + necklaceRadius + 5);
+            ctx.lineTo(accessoryX + 5, accessoryY + necklaceRadius + 5);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          } else if (accessory.id.includes('earrings')) {
+            // イヤリング
+            ctx.fillStyle = accessory.color || '#c0c0c0';
+            
+            // 左のイヤリング
+            ctx.beginPath();
+            ctx.arc(accessoryX - accessorySize, accessoryY, accessorySize * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            // 右のイヤリング（見える方のみ）
+            ctx.beginPath();
+            ctx.arc(accessoryX + accessorySize, accessoryY, accessorySize * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          }
+          break;
+        }
+      }
+      
+      ctx.restore();
+    });
+  }, [adjustBrightness, getBodyDimensions]);
+
   // 画像エクスポート機能
   const exportAsImage = useCallback((filename?: string) => {
     // 高解像度用のCanvasを作成
@@ -574,6 +1042,9 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
         <div className="bubble bubble-1"></div>
         <div className="bubble bubble-2"></div>
         <div className="bubble bubble-3"></div>
+        <div className="bubble bubble-4"></div>
+        <div className="bubble bubble-5"></div>
+        <div className="bubble bubble-6"></div>
       </div>
     </div>
   );

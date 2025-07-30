@@ -27,6 +27,18 @@ const steps: StepInfo[] = [
     description: 'ヒレや目などのパーツを選択'
   },
   {
+    key: 'pattern',
+    title: '模様追加',
+    icon: '🌈',
+    description: '体の模様パターンを選択'
+  },
+  {
+    key: 'accessory',
+    title: 'アクセサリー',
+    icon: '👑',
+    description: 'アクセサリーまたはランダム生成'
+  },
+  {
     key: 'customize',
     title: '仕上げ',
     icon: '🎨',

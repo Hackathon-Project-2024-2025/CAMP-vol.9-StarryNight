@@ -1,8 +1,11 @@
 import StepNavigation from './StepNavigation';
 import BaseSelector from './BaseSelector';
 import PartsSelector from './PartsSelector';
+import PatternSelector from './PatternSelector';
+import AccessorySelector from './AccessorySelector';
 import CustomizationPanel from './CustomizationPanel';
-import type { FishDesign, DesignStep, FishBase, FishPart } from '../../../types/common.types';
+import RandomGenerator from './RandomGenerator';
+import type { FishDesign, DesignStep, FishBase, FishPart, BodyPattern, Accessory } from '../../../types/common.types';
 import './DesignControls.css';
 
 interface DesignControlsProps {
@@ -53,6 +56,26 @@ export default function DesignControls({
     onDesignChange(updatedDesign);
   };
 
+  const handlePatternChange = (pattern?: BodyPattern) => {
+    const updatedDesign = {
+      ...fishDesign,
+      bodyPattern: pattern
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handleAccessoriesChange = (accessories: Accessory[]) => {
+    const updatedDesign = {
+      ...fishDesign,
+      accessories
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handleRandomGenerate = (newDesign: FishDesign) => {
+    onDesignChange(newDesign);
+  };
+
   const renderCurrentStepContent = () => {
     switch (currentStep) {
       case 'base':
@@ -70,6 +93,34 @@ export default function DesignControls({
             fishDesign={fishDesign}
             onCustomize={handleCustomizationChange}
           />
+        );
+      case 'pattern':
+        return (
+          <PatternSelector
+            selectedPattern={fishDesign.bodyPattern}
+            onPatternSelect={handlePatternChange}
+            baseColor={fishDesign.customizations.bodyColor}
+          />
+        );
+      case 'accessory':
+        return (
+          <div className="accessory-step">
+            <AccessorySelector
+              accessories={fishDesign.accessories || []}
+              onAccessoriesChange={handleAccessoriesChange}
+            />
+            
+            <div className="step-divider">
+              <div className="divider-line"></div>
+              <span className="divider-text">または</span>
+              <div className="divider-line"></div>
+            </div>
+            
+            <RandomGenerator
+              currentDesign={fishDesign}
+              onDesignGenerate={handleRandomGenerate}
+            />
+          </div>
         );
       case 'customize':
         return (

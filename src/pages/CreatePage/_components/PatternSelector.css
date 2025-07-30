@@ -1,0 +1,483 @@
+.pattern-selector {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+}
+
+.selector-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.selector-title {
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
+.selector-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* パターングリッド */
+.patterns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.pattern-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.pattern-option:hover {
+  border-color: rgba(255, 183, 197, 0.5);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.pattern-option.selected {
+  border-color: var(--accent-color);
+  background: rgba(255, 183, 197, 0.1);
+  box-shadow: var(--shadow-lg);
+}
+
+.pattern-preview {
+  height: 80px;
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  position: relative;
+  background: rgba(135, 206, 235, 0.1);
+}
+
+.pattern-demo {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 無地 */
+.pattern-solid {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius-sm);
+}
+
+/* まだら模様 */
+.pattern-spotted .base {
+  width: 100%;
+  height: 100%;
+}
+
+.pattern-spotted .spots {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8) 8px, transparent 8px),
+    radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.6) 6px, transparent 6px),
+    radial-gradient(circle at 45% 70%, rgba(255, 255, 255, 0.7) 7px, transparent 7px),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.5) 5px, transparent 5px),
+    radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.6) 6px, transparent 6px);
+}
+
+/* 縞模様 */
+.pattern-striped .stripe-base {
+  width: 100%;
+  height: 100%;
+}
+
+.pattern-striped.horizontal .stripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(255, 255, 255, 0.7) 8px,
+    rgba(255, 255, 255, 0.7) 16px
+  );
+}
+
+.pattern-striped.vertical .stripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(255, 255, 255, 0.7) 8px,
+    rgba(255, 255, 255, 0.7) 16px
+  );
+}
+
+/* 水玉模様 */
+.pattern-polka .base {
+  width: 100%;
+  height: 100%;
+}
+
+.pattern-polka .dots {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.8) 4px, transparent 4px),
+    radial-gradient(circle at 75% 25%, rgba(255, 255, 255, 0.8) 4px, transparent 4px),
+    radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.8) 4px, transparent 4px),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.8) 4px, transparent 4px),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 4px, transparent 4px);
+  background-size: 40px 40px;
+}
+
+/* キャリコ模様 */
+.pattern-calico {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.calico-red {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+  width: 30%;
+  height: 40%;
+  background: #ff6b6b;
+  border-radius: 50% 30% 40% 60%;
+  opacity: 0.8;
+}
+
+.calico-white {
+  position: absolute;
+  top: 30%;
+  right: 15%;
+  width: 35%;
+  height: 35%;
+  background: #ffffff;
+  border-radius: 40% 60% 30% 50%;
+  opacity: 0.9;
+}
+
+.calico-black {
+  position: absolute;
+  bottom: 20%;
+  left: 40%;
+  width: 25%;
+  height: 30%;
+  background: #2c3e50;
+  border-radius: 60% 40% 50% 30%;
+  opacity: 0.7;
+}
+
+/* グラデーション */
+.pattern-gradient {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius-sm);
+}
+
+.pattern-info {
+  text-align: center;
+}
+
+.pattern-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-weight: 500;
+}
+
+.pattern-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.selected-indicator {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background: var(--accent-color);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: bold;
+  box-shadow: var(--shadow-sm);
+}
+
+/* カスタマイゼーション */
+.pattern-customization {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+.customization-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.customization-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+  margin: 0;
+  font-weight: 500;
+}
+
+.advanced-toggle {
+  background: rgba(255, 183, 197, 0.1);
+  border: 1px solid rgba(255, 183, 197, 0.3);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.advanced-toggle:hover {
+  background: rgba(255, 183, 197, 0.2);
+  border-color: rgba(255, 183, 197, 0.5);
+}
+
+.toggle-text {
+  font-size: var(--font-size-xs);
+}
+
+.toggle-arrow {
+  transition: transform var(--transition-base);
+  font-size: var(--font-size-xs);
+}
+
+.toggle-arrow.open {
+  transform: rotate(180deg);
+}
+
+.current-pattern {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: rgba(135, 206, 235, 0.1);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.current-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.current-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.basic-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.advanced-settings {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-lg);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 色設定 */
+.pattern-colors {
+  margin-bottom: var(--spacing-lg);
+}
+
+.colors-title {
+  font-size: var(--font-size-md);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 500;
+}
+
+/* 縞の方向設定 */
+.stripe-direction {
+  margin-bottom: var(--spacing-lg);
+}
+
+.direction-title {
+  font-size: var(--font-size-md);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 500;
+}
+
+.direction-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.direction-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.direction-button:hover {
+  background: rgba(255, 183, 197, 0.1);
+  border-color: rgba(255, 183, 197, 0.3);
+}
+
+.direction-button.active {
+  background: rgba(255, 183, 197, 0.2);
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.direction-icon {
+  font-size: var(--font-size-sm);
+}
+
+.direction-name {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+/* ヒント */
+.pattern-tips {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.tip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: rgba(244, 162, 97, 0.05);
+  border-radius: var(--border-radius-sm);
+  border-left: 3px solid rgba(244, 162, 97, 0.3);
+}
+
+.tip:last-child {
+  margin-bottom: 0;
+}
+
+.tip-icon {
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tip-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .patterns-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-sm);
+  }
+  
+  .customization-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .direction-buttons {
+    flex-direction: column;
+  }
+  
+  .direction-button {
+    flex: none;
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .patterns-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pattern-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  .pattern-preview {
+    width: 80px;
+    height: 60px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .pattern-info {
+    text-align: left;
+    flex: 1;
+  }
+}
