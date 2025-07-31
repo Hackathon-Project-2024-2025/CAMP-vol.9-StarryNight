@@ -3,7 +3,7 @@ import HomePage from './pages/HomePage/HomePage';
 import CreatePage from './pages/CreatePage/CreatePage';
 import PanelPage from './pages/PanelPage/PanelPage';
 import './styles/global.css';
-import './App.css';
+import Home from './pages/Home/Home';
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/create" element={<CreatePage />} />
           <Route path="/panel" element={<PanelPage />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </Router>
     </div>
