@@ -110,7 +110,7 @@
   right: 0;
   bottom: 0;
   background: repeating-linear-gradient(
-    90deg,
+    0deg,
     transparent 0px,
     transparent 8px,
     rgba(255, 255, 255, 0.7) 8px,
@@ -125,7 +125,7 @@
   right: 0;
   bottom: 0;
   background: repeating-linear-gradient(
-    0deg,
+    90deg,
     transparent 0px,
     transparent 8px,
     rgba(255, 255, 255, 0.7) 8px,

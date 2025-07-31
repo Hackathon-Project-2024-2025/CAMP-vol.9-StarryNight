@@ -140,7 +140,6 @@ const defaultPositions: Record<Accessory['category'], { x: number; y: number }> 
   glasses: { x: 0.2, y: -0.3 },    // 目の位置（頭部前方）
   ribbon: { x: 0.0, y: -0.7 },     // 頭部上方（王冠より少し後ろ）
   bow: { x: 0.4, y: 0.15 },        // 胸部（首の下）
-  jewelry: { x: 0.4, y: 0.25 }     // 胸部（蝶ネクタイより少し下）
 };
 
 // 利用可能なアクセサリー
@@ -151,8 +150,7 @@ const availableAccessoryTemplates = [
   { id: 'glasses-round', name: '丸メガネ', category: 'glasses' as const, color: '#34495e' },
   { id: 'glasses-sunglasses', name: 'サングラス', category: 'glasses' as const, color: '#2c3e50' },
   { id: 'ribbon-bow', name: 'リボン', category: 'ribbon' as const, color: '#ff69b4' },
-  { id: 'bow-tie', name: '蝶ネクタイ', category: 'bow' as const, color: '#8b4513' },
-  { id: 'jewelry-necklace', name: 'ネックレス', category: 'jewelry' as const, color: '#c0c0c0' }
+  { id: 'bow-tie', name: '蝶ネクタイ', category: 'bow' as const, color: '#8b4513' }
 ];
 
 // ランダム選択ヘルパー関数
