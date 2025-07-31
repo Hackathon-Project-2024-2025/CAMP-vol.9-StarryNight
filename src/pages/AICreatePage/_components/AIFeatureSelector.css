@@ -1,0 +1,216 @@
+/* AI特徴選択コンポーネントのスタイル */
+
+.ai-feature-selector {
+  margin-bottom: var(--spacing-xl, 2rem);
+}
+
+.selector-header {
+  margin-bottom: var(--spacing-lg, 1.5rem);
+  text-align: center;
+}
+
+.selector-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-color, #eee);
+  margin-bottom: var(--spacing-sm, 0.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.selector-icon {
+  font-size: 1.2rem;
+}
+
+.selector-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.feature-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl, 2rem);
+}
+
+.feature-group {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md, 0.75rem);
+  padding: var(--spacing-lg, 1.5rem);
+  transition: all 0.3s ease;
+}
+
+.feature-group:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 107, 107, 0.2);
+}
+
+.group-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color, #eee);
+  margin-bottom: var(--spacing-md, 1rem);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 0.5rem);
+  padding-bottom: var(--spacing-sm, 0.5rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.group-icon {
+  font-size: 1rem;
+}
+
+.group-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg, 1.5rem);
+}
+
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 0.5rem);
+}
+
+.select-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.25rem);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.label-icon {
+  font-size: 0.9rem;
+}
+
+.label-text {
+  line-height: 1.4;
+}
+
+.select-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-sm, 0.5rem);
+  padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
+  color: var(--text-color, #eee);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.select-input:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.select-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 107, 107, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+}
+
+.select-input option {
+  background: var(--background-color, #1a1a2e);
+  color: var(--text-color, #eee);
+  padding: var(--spacing-sm, 0.5rem);
+}
+
+.select-description {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  line-height: 1.4;
+  font-style: italic;
+  padding-left: var(--spacing-sm, 0.5rem);
+  border-left: 2px solid rgba(255, 107, 107, 0.3);
+}
+
+/* アニメーション効果 */
+.select-field {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .group-fields {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md, 1rem);
+  }
+  
+  .feature-group {
+    padding: var(--spacing-md, 1rem);
+  }
+  
+  .selector-title {
+    font-size: 1.2rem;
+  }
+  
+  .group-title {
+    font-size: 1rem;
+  }
+  
+  .select-input {
+    padding: var(--spacing-sm, 0.5rem);
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .feature-groups {
+    gap: var(--spacing-lg, 1.5rem);
+  }
+  
+  .selector-title {
+    flex-direction: column;
+    gap: var(--spacing-xs, 0.25rem);
+  }
+  
+  .group-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs, 0.25rem);
+  }
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .feature-group {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .feature-group:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .select-input {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .select-input:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .select-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+}

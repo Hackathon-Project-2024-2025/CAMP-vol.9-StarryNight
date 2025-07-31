@@ -21,6 +21,9 @@ export default function Header({ isDarkMode, onToggleDarkMode }: HeaderProps) {
               <Link to="/create" className="nav-link">作成</Link>
             </li>
             <li className="nav-item">
+              <Link to="/ai-create" className="nav-link">AI作成</Link>
+            </li>
+            <li className="nav-item">
               <Link to="/panel" className="nav-link">パネル</Link>
             </li>
           </ul>
