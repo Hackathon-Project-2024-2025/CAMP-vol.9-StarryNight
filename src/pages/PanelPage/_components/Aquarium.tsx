@@ -643,10 +643,21 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
   ) => {
     ctx.save();
     
+    // 魚の向きを判定（左向きかどうか）
+    const isMovingLeft = Math.cos(angle) < 0;
+    
     // 回転と位置を適用
     ctx.translate(x, y);
-    ctx.rotate(angle);
-    ctx.scale(scale, scale);
+    
+    if (isMovingLeft) {
+      // 左向きの場合：X軸反転 + 角度補正
+      ctx.scale(-scale, scale);
+      ctx.rotate(Math.PI - angle); // 角度を補正して正しい向きに
+    } else {
+      // 右向きの場合：通常処理
+      ctx.scale(scale, scale);
+      ctx.rotate(angle);
+    }
     
     // FishPreviewと同じサイズ計算ロジックを使用（水槽用にスケール調整）
     const baseSize = design.customizations.size * 70; // 80から70に調整して水槽サイズに適合
