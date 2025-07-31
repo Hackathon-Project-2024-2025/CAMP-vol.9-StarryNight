@@ -151,6 +151,7 @@ export default function CreatePage() {
               onReset={handleReset}
               fishName={fishDesign.name}
               onNameChange={(name) => setFishDesign(prev => ({ ...prev, name }))}
+              fishDesign={fishDesign}
             />
           </div>
         </main>

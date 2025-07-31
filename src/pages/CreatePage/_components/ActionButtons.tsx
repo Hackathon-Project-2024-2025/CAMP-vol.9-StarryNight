@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { saveFishToAquarium } from '../../../services/storage/localStorage';
+import type { FishDesign } from '../../../types/common.types';
 import './ActionButtons.css';
 
 interface ActionButtonsProps {
@@ -6,16 +9,20 @@ interface ActionButtonsProps {
   onReset: () => void;
   fishName: string;
   onNameChange: (name: string) => void;
+  fishDesign: FishDesign;
 }
 
 export default function ActionButtons({ 
   onSave, 
   onReset, 
   fishName, 
-  onNameChange 
+  onNameChange,
+  fishDesign
 }: ActionButtonsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(fishName);
+  const [isMovingToAquarium, setIsMovingToAquarium] = useState(false);
+  const navigate = useNavigate();
 
   const handleNameEdit = () => {
     setIsEditing(true);
@@ -37,6 +44,30 @@ export default function ActionButtons({
       handleNameSave();
     } else if (e.key === 'Escape') {
       handleNameCancel();
+    }
+  };
+
+  const handleMoveToAquarium = async () => {
+    try {
+      setIsMovingToAquarium(true);
+      
+      // 最新の名前で金魚データを更新
+      const updatedFishDesign = {
+        ...fishDesign,
+        name: fishName
+      };
+      
+      // 金魚を水槽に保存
+      saveFishToAquarium(updatedFishDesign);
+      
+      // 少し待ってから水槽ページに移動
+      setTimeout(() => {
+        navigate('/panel');
+      }, 500);
+      
+    } catch (error) {
+      console.error('Error moving fish to aquarium:', error);
+      setIsMovingToAquarium(false);
     }
   };
 
@@ -105,11 +136,23 @@ export default function ActionButtons({
           <span className="button-icon">📸</span>
           <span className="button-text">画像保存</span>
         </button>
+        
+        <button
+          className="action-button action-button-aquarium"
+          onClick={handleMoveToAquarium}
+          disabled={isMovingToAquarium}
+          title="魚を水槽に移動"
+        >
+          <span className="button-icon">🐠</span>
+          <span className="button-text">
+            {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
+          </span>
+        </button>
       </div>
       
       <div className="tips">
         <p className="tip-text">
-          💡 <strong>ヒント:</strong> 作成した魚は画像として保存して共有できます！
+          💡 <strong>ヒント:</strong> 作成した魚は画像保存または水槽に移動してみんなと共有できます！
         </p>
       </div>
     </div>
