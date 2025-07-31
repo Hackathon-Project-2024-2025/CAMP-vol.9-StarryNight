@@ -122,3 +122,15 @@ export interface RandomGenerationOptions {
   includeAccessories?: boolean;
   keepCurrentSizes?: boolean;
 }
+
+// 波紋エフェクト関連
+export interface Ripple {
+  id: string;
+  x: number;           // 波紋の中心X座標
+  y: number;           // 波紋の中心Y座標
+  radius: number;      // 現在の半径
+  maxRadius: number;   // 最大半径
+  opacity: number;     // 透明度
+  createdAt: number;   // 生成時刻
+  isActive: boolean;   // アクティブ状態
+}

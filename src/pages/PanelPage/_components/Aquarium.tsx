@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
-import type { FishDesign } from '../../../types/common.types';
+import { useEffect, useRef, useCallback } from 'react';
+import type { FishDesign, Ripple } from '../../../types/common.types';
 import { SwimmingFish } from './SwimmingFish';
 import './Aquarium.css';
 
@@ -21,7 +21,8 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
   const animationRef = useRef<number>(0);
   const swimmingFishRef = useRef<SwimmingFish[]>([]);
   const bubblesRef = useRef<Bubble[]>([]);
-  const [isAnimating, setIsAnimating] = useState(true);
+  const ripplesRef = useRef<Ripple[]>([]);
+  const rippleIdCounter = useRef(0);
 
   // 色の明度調整ヘルパー関数
   const adjustBrightness = useCallback((color: string, amount: number) => {
@@ -739,44 +740,209 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
     });
   }, []);
 
+  // 波紋を作成
+  const createRipple = useCallback((x: number, y: number) => {
+    const newRipple: Ripple = {
+      id: `ripple-${rippleIdCounter.current++}`,
+      x,
+      y,
+      radius: 0,
+      maxRadius: 100 + Math.random() * 50, // 100-150の最大半径
+      opacity: 0.8,
+      createdAt: Date.now(),
+      isActive: true
+    };
+    ripplesRef.current = [...ripplesRef.current, newRipple];
+  }, []);
+
+  // 波紋を更新
+  const updateRipples = useCallback((ripples: Ripple[]) => {
+    const now = Date.now();
+    const updatedRipples = ripples.map(ripple => {
+      if (!ripple.isActive) return ripple;
+
+      const elapsed = now - ripple.createdAt;
+      const progress = elapsed / 2000; // 2秒で消失
+
+      if (progress >= 1) {
+        return { ...ripple, isActive: false };
+      }
+
+      // 半径の拡大（イージングアウト）
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const newRadius = ripple.maxRadius * easedProgress;
+
+      // 透明度の減少
+      const newOpacity = 0.8 * (1 - progress);
+
+      return {
+        ...ripple,
+        radius: newRadius,
+        opacity: newOpacity
+      };
+    });
+
+    // 非アクティブな波紋を削除
+    ripplesRef.current = updatedRipples.filter(ripple => ripple.isActive);
+  }, []);
+
+  // 波紋を描画
+  const drawRipples = useCallback((ctx: CanvasRenderingContext2D, ripples: Ripple[]) => {
+    ripples.forEach(ripple => {
+      if (!ripple.isActive || ripple.radius <= 0) return;
+
+      ctx.save();
+      ctx.globalAlpha = ripple.opacity;
+      
+      // 外側の輪
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 内側の輪（少し小さく）
+      ctx.strokeStyle = 'rgba(135, 206, 235, 0.7)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(ripple.x, ripple.y, ripple.radius * 0.7, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 中心の光点
+      if (ripple.radius < ripple.maxRadius * 0.3) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.beginPath();
+        ctx.arc(ripple.x, ripple.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    });
+  }, []);
+
   // 水槽の背景を描画
   const drawAquariumBg = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    // 水のグラデーション
+    // 温かい海の水のグラデーション
     const waterGradient = ctx.createLinearGradient(0, 0, 0, height);
-    waterGradient.addColorStop(0, 'rgba(135, 206, 235, 0.3)');
-    waterGradient.addColorStop(0.3, 'rgba(100, 149, 237, 0.4)');
-    waterGradient.addColorStop(0.7, 'rgba(70, 130, 180, 0.5)');
-    waterGradient.addColorStop(1, 'rgba(25, 25, 112, 0.6)');
+    waterGradient.addColorStop(0, 'rgba(176, 224, 230, 0.4)'); // より明るい水色
+    waterGradient.addColorStop(0.2, 'rgba(135, 206, 250, 0.45)'); // ライトスカイブルー
+    waterGradient.addColorStop(0.5, 'rgba(72, 161, 238, 0.5)'); // ドジャーブルー
+    waterGradient.addColorStop(0.8, 'rgba(30, 144, 255, 0.55)'); // より深い青
+    waterGradient.addColorStop(1, 'rgba(0, 105, 148, 0.6)'); // 深海色
     
     ctx.fillStyle = waterGradient;
     ctx.fillRect(0, 0, width, height);
     
-    // 底砂
-    ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
-    ctx.fillRect(0, height - 30, width, 30);
+    // 温かみのある底砂（明るいベージュ系）
+    const sandGradient = ctx.createLinearGradient(0, height - 40, 0, height);
+    sandGradient.addColorStop(0, 'rgba(238, 203, 173, 0.6)'); // ナバホホワイト
+    sandGradient.addColorStop(1, 'rgba(205, 133, 63, 0.7)'); // ペルー
+    ctx.fillStyle = sandGradient;
+    ctx.fillRect(0, height - 40, width, 40);
     
-    // 水草（簡単な線で表現）
-    ctx.strokeStyle = 'rgba(34, 139, 34, 0.6)';
-    ctx.lineWidth = 8;
+    // サンゴ礁の描画
+    ctx.save();
+    
+    // 左側のサンゴ群
+    const drawCoral = (x: number, y: number, size: number, color: string) => {
+      ctx.fillStyle = color;
+      
+      // メインの幹
+      ctx.beginPath();
+      ctx.ellipse(x, y, size * 0.3, size * 0.8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 枝分かれ
+      for (let i = 0; i < 5; i++) {
+        const angle = (i * Math.PI * 2) / 5;
+        const branchX = x + Math.cos(angle) * size * 0.6;
+        const branchY = y - size * 0.2 + Math.sin(angle) * size * 0.4;
+        
+        ctx.beginPath();
+        ctx.ellipse(branchX, branchY, size * 0.15, size * 0.4, angle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+    
+    // 左側のサンゴ群
+    drawCoral(60, height - 80, 40, 'rgba(255, 127, 80, 0.8)'); // コーラル色
+    drawCoral(90, height - 60, 30, 'rgba(255, 99, 71, 0.7)'); // トマト色
+    drawCoral(120, height - 75, 35, 'rgba(255, 160, 122, 0.8)'); // ライトサーモン
+    
+    // 右側のサンゴ群
+    drawCoral(width - 80, height - 85, 45, 'rgba(255, 182, 193, 0.8)'); // ライトピンク
+    drawCoral(width - 110, height - 65, 32, 'rgba(255, 20, 147, 0.7)'); // ディープピンク
+    drawCoral(width - 50, height - 70, 28, 'rgba(255, 105, 180, 0.8)'); // ホットピンク
+    
+    // 中央のサンゴ
+    if (width > 400) {
+      drawCoral(width * 0.3, height - 55, 25, 'rgba(255, 215, 0, 0.7)'); // ゴールド
+      drawCoral(width * 0.7, height - 62, 30, 'rgba(255, 140, 0, 0.8)'); // ダークオレンジ
+    }
+    
+    // 海藻（より温かい色調）
+    ctx.strokeStyle = 'rgba(46, 125, 50, 0.7)'; // フォレストグリーン
+    ctx.lineWidth = 6;
     ctx.lineCap = 'round';
     
-    // 左側の水草
-    for (let i = 0; i < 3; i++) {
-      const x = 30 + i * 20;
+    // 左側の海藻
+    for (let i = 0; i < 4; i++) {
+      const x = 25 + i * 15;
+      const waveOffset = Math.sin(Date.now() * 0.001 + i) * 5; // 揺れる動き
+      
       ctx.beginPath();
-      ctx.moveTo(x, height - 30);
-      ctx.quadraticCurveTo(x + 10, height - 80, x - 5, height - 120);
+      ctx.moveTo(x, height - 40);
+      ctx.quadraticCurveTo(x + 8 + waveOffset, height - 90, x - 3 + waveOffset, height - 130);
+      ctx.stroke();
+      
+      // 葉っぱの部分
+      ctx.strokeStyle = 'rgba(76, 175, 80, 0.6)'; // ライトグリーン
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x - 3 + waveOffset, height - 130);
+      ctx.quadraticCurveTo(x + 5 + waveOffset, height - 140, x - 1 + waveOffset, height - 150);
+      ctx.stroke();
+      
+      ctx.strokeStyle = 'rgba(46, 125, 50, 0.7)';
+      ctx.lineWidth = 6;
+    }
+    
+    // 右側の海藻
+    for (let i = 0; i < 3; i++) {
+      const x = width - 70 + i * 15;
+      const waveOffset = Math.sin(Date.now() * 0.001 + i + Math.PI) * 4;
+      
+      ctx.beginPath();
+      ctx.moveTo(x, height - 40);
+      ctx.quadraticCurveTo(x - 8 + waveOffset, height - 85, x + 4 + waveOffset, height - 125);
       ctx.stroke();
     }
     
-    // 右側の水草
-    for (let i = 0; i < 3; i++) {
-      const x = width - 90 + i * 20;
+    // 小さな岩礁
+    ctx.fillStyle = 'rgba(105, 105, 105, 0.6)'; // ダークグレー
+    
+    // 左の岩
+    ctx.beginPath();
+    ctx.ellipse(40, height - 25, 15, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // 右の岩
+    ctx.beginPath();
+    ctx.ellipse(width - 60, height - 20, 12, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // 中央の小さな岩
+    if (width > 300) {
       ctx.beginPath();
-      ctx.moveTo(x, height - 30);
-      ctx.quadraticCurveTo(x - 10, height - 80, x + 5, height - 120);
-      ctx.stroke();
+      ctx.ellipse(width * 0.4, height - 15, 8, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.ellipse(width * 0.6, height - 18, 10, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
+    
+    ctx.restore();
   }, []);
 
   // アニメーションループ
@@ -799,19 +965,25 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
     updateBubbles(bubblesRef.current, width, height);
     drawBubbles(ctx, bubblesRef.current);
     
+    // 波紋を更新・描画
+    updateRipples(ripplesRef.current);
+    drawRipples(ctx, ripplesRef.current);
+    
     // 魚を更新・描画
     swimmingFishRef.current.forEach(swimmingFish => {
       if (swimmingFish.state.isVisible) {
+        // 波紋の感知と追跡チェック
+        swimmingFish.detectAndChaseRipple(ripplesRef.current);
+        swimmingFish.checkChasingRipple(ripplesRef.current);
+        
         swimmingFish.update();
         const pos = swimmingFish.getPosition();
         drawFish(ctx, swimmingFish.fishDesign, pos.x, pos.y, pos.scale, pos.angle);
       }
     });
     
-    if (isAnimating) {
-      animationRef.current = requestAnimationFrame(animate);
-    }
-  }, [isAnimating, drawAquariumBg, updateBubbles, drawBubbles, drawFish]);
+    animationRef.current = requestAnimationFrame(animate);
+  }, [drawAquariumBg, updateBubbles, drawBubbles, updateRipples, drawRipples, drawFish]);
 
   // 魚リストが変更された時の処理
   useEffect(() => {
@@ -828,6 +1000,19 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
     // 泡を初期化
     bubblesRef.current = initBubbles(width, height);
   }, [fishList, initBubbles]);
+
+  // マウスクリックハンドラ
+  const handleCanvasClick = useCallback((event: MouseEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    // 波紋を作成
+    createRipple(x, y);
+  }, [createRipple]);
 
   // キャンバスの初期化とリサイズ処理
   useEffect(() => {
@@ -854,46 +1039,36 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
 
     updateCanvasSize();
     
+    // マウスクリックイベントリスナーを追加
+    canvas.addEventListener('click', handleCanvasClick);
+    
     const resizeObserver = new ResizeObserver(updateCanvasSize);
     resizeObserver.observe(canvas);
     
     return () => {
+      canvas.removeEventListener('click', handleCanvasClick);
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [handleCanvasClick]);
 
-  // アニメーション開始・停止
+  // アニメーション開始
   useEffect(() => {
-    if (isAnimating) {
-      animate();
-    } else if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
+    animate();
     
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isAnimating, animate]);
-
-  const toggleAnimation = () => {
-    setIsAnimating(!isAnimating);
-  };
+  }, [animate]);
 
   return (
     <div className={`aquarium ${className}`}>
       <div className="aquarium-header">
         <h2 className="aquarium-title">🐠 みんなの金魚水槽</h2>
         <div className="aquarium-controls">
-          <button 
-            className="control-button"
-            onClick={toggleAnimation}
-            title={isAnimating ? 'アニメーション停止' : 'アニメーション開始'}
-          >
-            {isAnimating ? '⏸️' : '▶️'}
-          </button>
           <span className="fish-count">{fishList.length}匹が泳いでいます</span>
+          <span className="ripple-hint">💧 クリックで波紋を作ろう！</span>
         </div>
       </div>
       

@@ -30,19 +30,11 @@
   gap: var(--spacing-md);
 }
 
-.control-button {
-  background: rgba(135, 206, 235, 0.2);
-  border: 1px solid rgba(135, 206, 235, 0.4);
-  border-radius: var(--border-radius-sm);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  cursor: pointer;
-  transition: all var(--transition-base);
-  font-size: var(--font-size-lg);
-}
-
-.control-button:hover {
-  background: rgba(135, 206, 235, 0.3);
-  transform: scale(1.05);
+.ripple-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  opacity: 0.8;
 }
 
 .fish-count {
