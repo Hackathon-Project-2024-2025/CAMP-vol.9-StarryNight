@@ -301,7 +301,7 @@
 
 .ai-action-buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: var(--spacing-md);
 }
 
@@ -352,6 +352,22 @@
   color: white;
 }
 
+.ai-aquarium-button {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.ai-aquarium-button:hover:not(:disabled) {
+  background: #3b82f6;
+  color: white;
+}
+
+.ai-aquarium-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
 .ai-button-icon {
   font-size: var(--font-size-lg);
 }
@@ -383,6 +399,7 @@
   
   .ai-action-buttons {
     grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
   }
 }
 

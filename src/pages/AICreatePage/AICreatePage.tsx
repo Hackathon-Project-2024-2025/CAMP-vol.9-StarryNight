@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout/Layout';
 import FishPreview from '../CreatePage/_components/FishPreview';
 import type { FishPreviewRef } from '../CreatePage/_components/FishPreview';
 import { generateWithChatGPT } from '../../services/ai/chatgptService';
 import { generateWithGemini } from '../../services/ai/geminiService';
 import { buildAIPrompt, validateAIResponse } from '../../services/ai/aiPromptBuilder';
+import { saveFishToAquarium } from '../../services/storage/localStorage';
 import type { 
   AISelections, 
   AIGenerationResult, 
@@ -181,7 +183,9 @@ export default function AICreatePage() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [fishName, setFishName] = useState<string>('AI生成金魚');
   const [customText, setCustomText] = useState<string>('');
+  const [isMovingToAquarium, setIsMovingToAquarium] = useState<boolean>(false);
   const fishPreviewRef = useRef<FishPreviewRef>(null);
+  const navigate = useNavigate();
 
   const handleStepChange = (step: AIDesignStep) => {
     setCurrentStep(step);
@@ -273,6 +277,30 @@ export default function AICreatePage() {
     setFishName(newName);
     if (generationStatus === 'success') {
       setFishDesign(prev => ({ ...prev, name: newName }));
+    }
+  };
+
+  const handleMoveToAquarium = async () => {
+    try {
+      setIsMovingToAquarium(true);
+      
+      // 最新の名前で金魚データを更新
+      const updatedFishDesign = {
+        ...fishDesign,
+        name: fishName
+      };
+      
+      // 金魚を水槽に保存
+      saveFishToAquarium(updatedFishDesign);
+      
+      // 少し待ってから水槽ページに移動
+      setTimeout(() => {
+        navigate('/panel');
+      }, 500);
+      
+    } catch (error) {
+      console.error('Error moving fish to aquarium:', error);
+      setIsMovingToAquarium(false);
     }
   };
 
@@ -403,6 +431,18 @@ export default function AICreatePage() {
                 >
                   <span className="ai-button-icon">🔄</span>
                   <span className="ai-button-text">リセット</span>
+                </button>
+                
+                <button
+                  className="ai-action-button ai-aquarium-button"
+                  onClick={handleMoveToAquarium}
+                  disabled={generationStatus !== 'success' || isMovingToAquarium}
+                  title="金魚を水槽に移動"
+                >
+                  <span className="ai-button-icon">🐠</span>
+                  <span className="ai-button-text">
+                    {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
+                  </span>
                 </button>
               </div>
             </div>

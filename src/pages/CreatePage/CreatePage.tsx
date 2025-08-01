@@ -129,11 +129,23 @@ export default function CreatePage() {
         
         <main className="fish-designer">
           <div className="fish-preview-section">
-            <FishPreview 
-              ref={fishPreviewRef}
-              fishDesign={fishDesign}
-              className="main-preview"
-            />
+            <div className="fish-preview-area">
+              <FishPreview 
+                ref={fishPreviewRef}
+                fishDesign={fishDesign}
+                className="main-preview"
+              />
+            </div>
+            
+            <div className="fish-control-card">
+              <ActionButtons
+                onSave={handleSave}
+                onReset={handleReset}
+                fishName={fishDesign.name}
+                onNameChange={(name) => setFishDesign(prev => ({ ...prev, name }))}
+                fishDesign={fishDesign}
+              />
+            </div>
           </div>
           
           <div className="design-controls-section">
@@ -142,16 +154,6 @@ export default function CreatePage() {
               onStepChange={handleStepChange}
               fishDesign={fishDesign}
               onDesignChange={handleFishDesignChange}
-            />
-          </div>
-          
-          <div className="action-buttons-section">
-            <ActionButtons
-              onSave={handleSave}
-              onReset={handleReset}
-              fishName={fishDesign.name}
-              onNameChange={(name) => setFishDesign(prev => ({ ...prev, name }))}
-              fishDesign={fishDesign}
             />
           </div>
         </main>
