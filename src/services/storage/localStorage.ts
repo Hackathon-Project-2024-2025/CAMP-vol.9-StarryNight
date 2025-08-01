@@ -1,7 +1,8 @@
-import type { Theme, UserPreferences } from '../../types/common.types';
+import type { Theme, UserPreferences, FishDesign } from '../../types/common.types';
 
 const THEME_KEY = 'starry-night-theme';
 const USER_PREFERENCES_KEY = 'starry-night-preferences';
+const AQUARIUM_FISH_KEY = 'starry-night-aquarium-fish';
 
 export const getStoredTheme = (): Theme | null => {
   try {
@@ -45,5 +46,52 @@ export const clearStorage = (): void => {
     localStorage.removeItem(USER_PREFERENCES_KEY);
   } catch (error) {
     console.error('Error clearing localStorage:', error);
+  }
+};
+
+// 金魚水槽関連の機能
+export const saveFishToAquarium = (fishDesign: FishDesign): void => {
+  try {
+    const existingFish = getAquariumFish();
+    
+    // 同じIDの金魚があれば更新、なければ追加
+    const fishIndex = existingFish.findIndex(fish => fish.id === fishDesign.id);
+    if (fishIndex >= 0) {
+      existingFish[fishIndex] = fishDesign;
+    } else {
+      existingFish.push(fishDesign);
+    }
+    
+    localStorage.setItem(AQUARIUM_FISH_KEY, JSON.stringify(existingFish));
+  } catch (error) {
+    console.error('Error saving fish to aquarium:', error);
+  }
+};
+
+export const getAquariumFish = (): FishDesign[] => {
+  try {
+    const fishData = localStorage.getItem(AQUARIUM_FISH_KEY);
+    return fishData ? JSON.parse(fishData) : [];
+  } catch (error) {
+    console.error('Error loading fish from aquarium:', error);
+    return [];
+  }
+};
+
+export const removeFishFromAquarium = (fishId: string): void => {
+  try {
+    const existingFish = getAquariumFish();
+    const updatedFish = existingFish.filter(fish => fish.id !== fishId);
+    localStorage.setItem(AQUARIUM_FISH_KEY, JSON.stringify(updatedFish));
+  } catch (error) {
+    console.error('Error removing fish from aquarium:', error);
+  }
+};
+
+export const clearAquarium = (): void => {
+  try {
+    localStorage.removeItem(AQUARIUM_FISH_KEY);
+  } catch (error) {
+    console.error('Error clearing aquarium:', error);
   }
 };

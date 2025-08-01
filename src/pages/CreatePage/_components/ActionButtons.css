@@ -191,6 +191,24 @@
   box-shadow: var(--shadow-lg);
 }
 
+.action-button-aquarium {
+  background: linear-gradient(135deg, rgba(135, 206, 235, 0.3), rgba(107, 183, 255, 0.3));
+  color: var(--text-color);
+  border: 1px solid rgba(135, 206, 235, 0.5);
+}
+
+.action-button-aquarium:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(135, 206, 235, 0.4), rgba(107, 183, 255, 0.4));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.action-button-aquarium:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+}
+
 /* ヒント */
 .tips {
   background-color: rgba(135, 206, 235, 0.1);
