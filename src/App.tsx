@@ -4,7 +4,7 @@ import CreatePage from './pages/CreatePage/CreatePage';
 import AICreatePage from './pages/AICreatePage/AICreatePage';
 import PanelPage from './pages/PanelPage/PanelPage';
 import './styles/global.css';
-import './App.css';
+import Home from './pages/Home/Home';
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
           <Route path="/create" element={<CreatePage />} />
           <Route path="/ai-create" element={<AICreatePage />} />
           <Route path="/panel" element={<PanelPage />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </Router>
     </div>
