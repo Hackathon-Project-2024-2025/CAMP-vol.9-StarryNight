@@ -1,0 +1,179 @@
+/* AI金魚キャンバス - 一体型描画システム */
+
+.ai-fish-canvas-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f9ff 0%, #e6f3ff 100%);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 123, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-fish-canvas {
+  display: block;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #ddeeff 100%);
+  box-shadow: inset 0 2px 8px rgba(0, 123, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.ai-fish-canvas:hover {
+  box-shadow: 
+    inset 0 2px 8px rgba(0, 123, 255, 0.1),
+    0 4px 16px rgba(0, 123, 255, 0.15);
+}
+
+.ai-fish-canvas-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ai-fish-canvas-placeholder p {
+  margin: 0;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 異なるサイズバリエーション */
+.ai-fish-canvas-container.large {
+  min-height: 600px;
+}
+
+.ai-fish-canvas-container.medium {
+  min-height: 400px;
+}
+
+.ai-fish-canvas-container.small {
+  min-height: 300px;
+}
+
+/* アニメーション効果 */
+.ai-fish-canvas-container.generating {
+  animation: generatingPulse 2s ease-in-out infinite;
+}
+
+@keyframes generatingPulse {
+  0%, 100% {
+    box-shadow: 
+      0 8px 32px rgba(0, 123, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 
+      0 8px 32px rgba(0, 123, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* 成功状態 */
+.ai-fish-canvas-container.success {
+  animation: successGlow 1s ease-out;
+}
+
+@keyframes successGlow {
+  0% {
+    box-shadow: 
+      0 8px 32px rgba(0, 123, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 
+      0 8px 32px rgba(40, 167, 69, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  100% {
+    box-shadow: 
+      0 8px 32px rgba(0, 123, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* エラー状態 */
+.ai-fish-canvas-container.error {
+  border-color: rgba(220, 53, 69, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(220, 53, 69, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .ai-fish-canvas-container {
+    margin: 0 1rem;
+    max-width: calc(100vw - 2rem);
+  }
+  
+  .ai-fish-canvas {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .ai-fish-canvas-placeholder {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-fish-canvas-container {
+    border-radius: 12px;
+    margin: 0 0.5rem;
+  }
+  
+  .ai-fish-canvas-placeholder {
+    font-size: 0.9rem;
+  }
+  
+  .ai-fish-canvas-placeholder p {
+    padding: 0.75rem;
+  }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .ai-fish-canvas-container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .ai-fish-canvas {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  }
+  
+  .ai-fish-canvas-placeholder {
+    color: #b0b0b0;
+  }
+  
+  .ai-fish-canvas-placeholder p {
+    background: rgba(26, 26, 46, 0.8);
+    color: #e0e0e0;
+  }
+}
+
+/* 高コントラストモード */
+@media (prefers-contrast: high) {
+  .ai-fish-canvas-container {
+    border: 3px solid currentColor;
+    box-shadow: none;
+  }
+  
+  .ai-fish-canvas {
+    background: var(--background-color);
+    box-shadow: none;
+  }
+}
