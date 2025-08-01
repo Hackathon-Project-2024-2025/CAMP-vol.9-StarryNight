@@ -67,7 +67,8 @@ const accessoryCategories = [
   { key: 'hat', name: '帽子', icon: '🎩' },
   { key: 'glasses', name: 'メガネ', icon: '👓' },
   { key: 'ribbon', name: 'リボン', icon: '🎀' },
-  { key: 'bow', name: '蝶ネクタイ', icon: '🎀' }
+  { key: 'bow', name: '蝶ネクタイ', icon: '🎀' },
+  { key: 'jewelry', name: 'ジュエリー', icon: '💎' }
 ];
 
 // 魚の解剖学的構造に基づくデフォルト位置
@@ -76,7 +77,8 @@ const defaultPositions: Record<Accessory['category'], { x: number; y: number }> 
   hat: { x: 0.2, y: -0.9 },        // 頭部上方（少し高め）
   glasses: { x: 0.2, y: -0.3 },    // 目の位置（頭部前方）
   ribbon: { x: 0.0, y: -0.7 },     // 頭部上方（王冠より少し後ろ）
-  bow: { x: 0.4, y: 0.15 }         // 胸部（首の下）
+  bow: { x: 0.4, y: 0.15 },        // 胸部（首の下）
+  jewelry: { x: 0.3, y: 0.0 }      // 首周り
 };
 
 // デフォルトのアクセサリー設定
@@ -87,7 +89,8 @@ const createDefaultAccessory = (template: typeof availableAccessories[0]): Acces
     hat: { x: 0.2, y: -0.9 },        // 頭部上方（少し高め）
     glasses: { x: 0.2, y: -0.3 },    // 目の位置（頭部前方）
     ribbon: { x: 0.0, y: -0.7 },     // 頭部上方（王冠より少し後ろ）
-    bow: { x: 0.4, y: 0.15 }         // 胸部（首の下）
+    bow: { x: 0.4, y: 0.15 },        // 胸部（首の下）
+    jewelry: { x: 0.3, y: 0.0 }      // 首周り
   };
 
   const defaultColors: Record<Accessory['category'], string> = {
@@ -95,7 +98,8 @@ const createDefaultAccessory = (template: typeof availableAccessories[0]): Acces
     hat: '#2c3e50',      // 濃い灰色
     glasses: '#34495e',  // 灰色
     ribbon: '#ff69b4',   // ピンク
-    bow: '#8b4513'       // 茶色
+    bow: '#8b4513',      // 茶色
+    jewelry: '#silver'   // 銀色
   };
 
   return {

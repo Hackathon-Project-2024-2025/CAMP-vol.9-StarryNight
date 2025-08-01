@@ -11,7 +11,7 @@
 
 /* Header Styles */
 .header {
-  background-color: rgba(26, 26, 46, 0.8);
+  background-color: var(--card-background);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
@@ -35,7 +35,7 @@
 }
 
 .logo-text {
-  background: linear-gradient(135deg, var(--text-color), var(--sakura-pink));
+  background: linear-gradient(135deg, var(--text-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -96,24 +96,11 @@
   transform: scale(1.1);
 }
 
-/* Dark Mode Styles */
-.layout.dark-mode {
-  --background-color: #000;
-  --text-color: #fff;
-  --text-secondary: #ccc;
-  --border-color: #444;
-}
-
-.layout.light-mode {
-  --background-color: #0f0f1e;
-  --text-color: #eee;
-  --text-secondary: #aaa;
-  --border-color: #333;
-}
+/* テーマシステムは variables.css で管理 */
 
 /* Footer Styles */
 .footer {
-  background-color: rgba(15, 15, 30, 0.9);
+  background-color: var(--surface-color);
   border-top: 1px solid var(--border-color);
   margin-top: var(--spacing-2xl);
 }

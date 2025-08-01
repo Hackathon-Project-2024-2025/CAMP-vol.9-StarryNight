@@ -5,8 +5,8 @@
 .page-header {
   text-align: center;
   padding: var(--spacing-2xl) 0;
-  background: linear-gradient(135deg, rgba(255, 183, 197, 0.2), rgba(135, 206, 235, 0.2));
-  border-bottom: 2px solid rgba(255, 183, 197, 0.3);
+  background: linear-gradient(135deg, var(--card-background), var(--surface-color));
+  border-bottom: 2px solid var(--border-color);
 }
 
 .page-title {

@@ -140,6 +140,7 @@ const defaultPositions: Record<Accessory['category'], { x: number; y: number }> 
   glasses: { x: 0.2, y: -0.3 },    // 目の位置（頭部前方）
   ribbon: { x: 0.0, y: -0.7 },     // 頭部上方（王冠より少し後ろ）
   bow: { x: 0.4, y: 0.15 },        // 胸部（首の下）
+  jewelry: { x: 0.3, y: 0.0 }      // 首周り
 };
 
 // 利用可能なアクセサリー

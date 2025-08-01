@@ -1,6 +1,7 @@
 import type { Theme, UserPreferences, FishDesign } from '../../types/common.types';
 
 const THEME_KEY = 'starry-night-theme';
+const DARK_MODE_KEY = 'starry-night-dark-mode';
 const USER_PREFERENCES_KEY = 'starry-night-preferences';
 const AQUARIUM_FISH_KEY = 'starry-night-aquarium-fish';
 
@@ -43,9 +44,29 @@ export const setUserPreferences = (preferences: UserPreferences): void => {
 export const clearStorage = (): void => {
   try {
     localStorage.removeItem(THEME_KEY);
+    localStorage.removeItem(DARK_MODE_KEY);
     localStorage.removeItem(USER_PREFERENCES_KEY);
   } catch (error) {
     console.error('Error clearing localStorage:', error);
+  }
+};
+
+// ダークモード専用の保存・読み込み機能
+export const getDarkMode = (): boolean => {
+  try {
+    const darkMode = localStorage.getItem(DARK_MODE_KEY);
+    return darkMode === 'true';
+  } catch (error) {
+    console.error('Error reading dark mode from localStorage:', error);
+    return false; // デフォルトはライトモード
+  }
+};
+
+export const setDarkMode = (isDarkMode: boolean): void => {
+  try {
+    localStorage.setItem(DARK_MODE_KEY, isDarkMode.toString());
+  } catch (error) {
+    console.error('Error saving dark mode to localStorage:', error);
   }
 };
 

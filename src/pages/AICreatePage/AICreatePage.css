@@ -6,8 +6,8 @@
 .ai-page-header {
   text-align: center;
   padding: var(--spacing-2xl) 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-  border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+  background: linear-gradient(135deg, var(--card-background), var(--surface-color));
+  border-bottom: 2px solid var(--border-color);
 }
 
 .ai-page-title {
@@ -23,7 +23,7 @@
 
 .ai-title-icon {
   font-size: 3.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 4px 8px var(--bubble-shadow));
 }
 
 .ai-page-description {
