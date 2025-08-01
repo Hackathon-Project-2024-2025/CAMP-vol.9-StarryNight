@@ -1,0 +1,264 @@
+.customization-panel {
+  padding: var(--spacing-md);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.panel-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.panel-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-sm) 0;
+  font-weight: 600;
+}
+
+.panel-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.customization-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.customization-section {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-title {
+  font-size: var(--font-size-md);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-lg) 0;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid rgba(255, 183, 197, 0.2);
+}
+
+/* 位置コントロール */
+.position-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.position-group {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.position-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 600;
+  text-align: center;
+  padding: var(--spacing-sm);
+  background-color: rgba(255, 183, 197, 0.1);
+  border-radius: var(--border-radius-sm);
+}
+
+/* プリセットボタン */
+.preset-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+
+.preset-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, rgba(255, 183, 197, 0.1), rgba(244, 162, 97, 0.1));
+  border: 1px solid rgba(255, 183, 197, 0.3);
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.preset-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.preset-button:hover {
+  background: linear-gradient(135deg, rgba(255, 183, 197, 0.2), rgba(244, 162, 97, 0.2));
+  border-color: rgba(255, 183, 197, 0.5);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.preset-button:hover::before {
+  left: 100%;
+}
+
+.preset-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.preset-icon {
+  font-size: var(--font-size-xl);
+  display: block;
+}
+
+.preset-text {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+/* セクション別スタイリング */
+.customization-section:nth-child(1) {
+  border-left: 3px solid rgba(255, 183, 197, 0.5);
+}
+
+.customization-section:nth-child(2) {
+  border-left: 3px solid rgba(244, 162, 97, 0.5);
+}
+
+.customization-section:nth-child(3) {
+  border-left: 3px solid rgba(135, 206, 235, 0.5);
+}
+
+.customization-section:nth-child(4) {
+  border-left: 3px solid rgba(152, 206, 180, 0.5);
+}
+
+/* カスタムスクロールバー */
+.customization-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.customization-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.customization-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 183, 197, 0.5);
+  border-radius: 3px;
+}
+
+.customization-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 183, 197, 0.7);
+}
+
+/* ホバー効果 */
+.customization-section:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* デスクトップ大画面対応 */
+@media (min-width: 1200px) {
+  .customization-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+  }
+  
+  .customization-section:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  
+  .preset-buttons {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* タブレット対応 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .customization-panel {
+    padding: var(--spacing-lg);
+  }
+  
+  .position-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .customization-panel {
+    padding: var(--spacing-sm);
+  }
+  
+  .customization-sections {
+    gap: var(--spacing-lg);
+  }
+  
+  .customization-section {
+    padding: var(--spacing-md);
+  }
+  
+  .preset-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .position-controls {
+    gap: var(--spacing-md);
+  }
+}
+
+/* 小さな画面での調整 */
+@media (max-width: 480px) {
+  .panel-title {
+    font-size: var(--font-size-md);
+  }
+  
+  .section-title {
+    font-size: var(--font-size-sm);
+  }
+  
+  .preset-button {
+    padding: var(--spacing-sm);
+  }
+  
+  .preset-icon {
+    font-size: var(--font-size-lg);
+  }
+  
+  .customization-section {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* ダークモード対応の追加効果 */
+@media (prefers-color-scheme: dark) {
+  .customization-section {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .preset-button {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}

@@ -1,0 +1,323 @@
+.parts-selector {
+  padding: var(--spacing-md);
+}
+
+.selector-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.selector-title {
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-sm) 0;
+  font-weight: 600;
+}
+
+.selector-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* カテゴリタブ */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-lg);
+  justify-content: center;
+}
+
+.category-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.category-tab:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 183, 197, 0.3);
+  color: var(--text-color);
+}
+
+.category-tab.active {
+  background-color: rgba(255, 183, 197, 0.2);
+  border-color: rgba(255, 183, 197, 0.5);
+  color: var(--sakura-pink);
+}
+
+.tab-icon {
+  font-size: var(--font-size-md);
+}
+
+.tab-name {
+  font-weight: 500;
+}
+
+/* パーツ選択エリア */
+.parts-area {
+  margin-bottom: var(--spacing-lg);
+}
+
+.parts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.part-option {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  text-align: center;
+}
+
+.part-option:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 183, 197, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.part-option.selected {
+  background-color: rgba(255, 183, 197, 0.15);
+  border-color: rgba(255, 183, 197, 0.6);
+  box-shadow: var(--shadow-lg);
+}
+
+/* パーツプレビュー */
+.part-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  margin-bottom: var(--spacing-md);
+  background: radial-gradient(circle, rgba(135, 206, 235, 0.1), transparent);
+  border-radius: var(--border-radius-md);
+}
+
+.part-icon {
+  font-size: var(--font-size-2xl);
+  opacity: 0.8;
+  transition: all var(--transition-base);
+}
+
+.part-option:hover .part-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.part-option.selected .part-icon {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* パーツ情報 */
+.part-info {
+  text-align: center;
+}
+
+.part-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-weight: 600;
+}
+
+.part-option.selected .part-name {
+  color: var(--sakura-pink);
+}
+
+.part-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* 選択インジケーター */
+.selected-indicator {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  background-color: var(--sakura-pink);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: bold;
+  animation: checkmark 0.3s ease-in-out;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 現在の選択表示 */
+.current-selection {
+  background-color: rgba(244, 162, 97, 0.1);
+  border: 1px solid rgba(244, 162, 97, 0.3);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.selection-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.selection-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.selection-value {
+  font-size: var(--font-size-sm);
+  color: var(--gold-accent);
+  font-weight: 600;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(244, 162, 97, 0.2);
+  border-radius: var(--border-radius-sm);
+}
+
+/* デスクトップ大画面対応 */
+@media (min-width: 1200px) {
+  .parts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .category-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--spacing-sm);
+  }
+  
+  .part-adjustment-panel {
+    padding: var(--spacing-xl);
+  }
+}
+
+/* タブレット対応 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .parts-selector {
+    padding: var(--spacing-lg);
+  }
+  
+  .parts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+  
+  .category-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+  }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .parts-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+  
+  .category-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: var(--spacing-sm);
+  }
+  
+  .category-tab {
+    flex-shrink: 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .part-preview {
+    height: 50px;
+  }
+  
+  .part-icon {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* 小さな画面での調整 */
+@media (max-width: 480px) {
+  .parts-selector {
+    padding: var(--spacing-sm);
+  }
+  
+  .parts-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .part-option {
+    padding: var(--spacing-sm);
+  }
+  
+  .part-name {
+    font-size: var(--font-size-xs);
+  }
+  
+  .part-description {
+    display: none;
+  }
+}
+
+/* パーツ調整パネル */
+.part-adjustment-panel {
+  background-color: rgba(255, 183, 197, 0.1);
+  border: 1px solid rgba(255, 183, 197, 0.3);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.adjustment-title {
+  font-size: var(--font-size-md);
+  color: var(--sakura-pink);
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.adjustment-note {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  font-style: italic;
+}

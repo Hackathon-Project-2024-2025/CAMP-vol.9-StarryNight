@@ -1,0 +1,129 @@
+.design-controls {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--spacing-lg);
+}
+
+.controls-header {
+  text-align: center;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controls-title {
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-sm) 0;
+  font-weight: 600;
+}
+
+.controls-description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.step-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md) 0;
+  min-height: 300px;
+  max-height: calc(100vh - 300px);
+}
+
+/* カスタムスクロールバー */
+.step-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.step-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.step-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 183, 197, 0.5);
+  border-radius: 3px;
+}
+
+.step-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 183, 197, 0.7);
+}
+
+/* タブレット対応 */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .step-content {
+    max-height: calc(70vh - 200px);
+    min-height: 350px;
+  }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .design-controls {
+    gap: var(--spacing-md);
+  }
+  
+  .controls-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .step-content {
+    max-height: 55vh;
+    min-height: 300px;
+  }
+}
+
+/* 小さなモバイル画面 */
+@media (max-width: 480px) {
+  .step-content {
+    max-height: 50vh;
+    min-height: 250px;
+  }
+  
+  .controls-title {
+    font-size: var(--font-size-md);
+  }
+}
+
+/* アクセサリーステップの特別スタイリング */
+.accessory-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.step-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+}
+
+.divider-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0 var(--spacing-sm);
+  background: var(--background-color);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .accessory-step {
+    gap: var(--spacing-lg);
+  }
+  
+  .step-divider {
+    margin: var(--spacing-md) 0;
+  }
+}
