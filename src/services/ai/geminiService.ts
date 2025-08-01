@@ -91,7 +91,7 @@ function buildGeminiRequest(systemPrompt: string, userPrompt: string, config: AI
       temperature: config.temperature || 0.8,
       topK: 40,
       topP: 0.95,
-      maxOutputTokens: config.maxTokens || 2048,
+      maxOutputTokens: config.maxTokens || 8192,
       responseMimeType: 'application/json'
     },
     systemInstruction: {
