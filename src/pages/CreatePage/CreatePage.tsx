@@ -123,7 +123,7 @@ export default function CreatePage() {
     <Layout>
       <div className="create-page">
         <header className="page-header">
-          <h1 className="page-title">🐠 魚デザイナー</h1>
+          {/* <h1 className="page-title">🐠 魚デザイナー</h1> */}
           <p className="page-description">あなただけのオリジナル金魚を作りましょう</p>
         </header>
         

@@ -371,10 +371,10 @@ export default function AICreatePage() {
     <Layout>
       <div className="ai-create-page">
         <header className="ai-page-header">
-          <h1 className="ai-page-title">
+          {/* <h1 className="ai-page-title">
             <span className="ai-title-icon">🤖</span>
             AI金魚クリエイター
-          </h1>
+          </h1> */}
           <p className="ai-page-description">
             5つのステップでAIが美しい金魚を生成します
           </p>

@@ -69,7 +69,7 @@ export default function PanelPage() {
     <Layout>
       <div className="panel-page">
         <header className="page-header">
-          <h1 className="page-title">🐠 みんなの金魚水槽</h1>
+          {/* <h1 className="page-title">🐠 みんなの金魚水槽</h1> */}
           <p className="page-description">
             作成した金魚たちが泳ぐ共有水槽です
           </p>
