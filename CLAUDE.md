@@ -29,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-このプロジェクトは、React + TypeScript + Vite + React Routerを使用したSPA（Single Page Application）です。日本風のデザインテーマで、写真編集・パネル作成機能を持つWebアプリケーションを開発しています。
+このプロジェクトは、React + TypeScript + Vite + React Routerを使用したSPA（Single Page Application）です。日本風のデザインテーマ「星空の夜」で、金魚のカスタマイズ・AI生成・水槽管理機能を持つWebアプリケーションです。
 
 ### 技術スタック
 
@@ -38,6 +38,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Vite**: 7.0.4（高速開発環境）
 - **React Router DOM**: 7.7.1（SPA ルーティング）
 - **ESLint**: 9.30.1（TypeScript対応）
+- **Google Generative AI**: 0.24.1（Gemini API統合）
+
+### 主要機能
+
+- **金魚カスタマイズ**: 手動による詳細な金魚デザイン作成
+- **AI金魚生成**: ChatGPT/Gemini APIを使用した自動金魚生成
+- **Canvas描画システム**: リアルタイム金魚プレビューとエクスポート
+- **水槽管理**: 作成済み金魚の表示・管理・アニメーション
+- **ダークモード**: テーマ切り替え機能
+- **LocalStorage**: データ永続化
 
 ### 開発方針
 - **React.FC使用禁止**: 通常の関数定義を使用
@@ -94,50 +104,100 @@ npm run preview
 starry-night/
 ├── src/
 │   ├── App.tsx                 # ルーティング設定
-│   ├── App.css                 # アプリ全体のスタイル
 │   ├── main.tsx                # エントリーポイント
 │   │
 │   ├── pages/                  # ページコンポーネント
-│   │   ├── HomePage/
-│   │   │   ├── HomePage.tsx
-│   │   │   ├── HomePage.css
-│   │   │   └── _components/
-│   │   │       ├── HeroSection.tsx
-│   │   │       ├── HeroSection.css
-│   │   │       ├── MainContent.tsx
-│   │   │       └── MainContent.css
-│   │   ├── CreatePage/
+│   │   ├── Home/
+│   │   │   └── Home.tsx        # ホームページ（バブルアニメーション）
+│   │   ├── CreatePage/         # 手動金魚作成ページ
 │   │   │   ├── CreatePage.tsx
-│   │   │   └── CreatePage.css
-│   │   └── PanelPage/
+│   │   │   ├── CreatePage.css
+│   │   │   └── _components/    # 15個の専用コンポーネント
+│   │   │       ├── FishPreview.tsx        # Canvas描画プレビュー
+│   │   │       ├── DesignControls.tsx     # デザイン制御パネル
+│   │   │       ├── ActionButtons.tsx      # 保存・リセットボタン
+│   │   │       ├── StepNavigation.tsx     # ステップナビゲーション
+│   │   │       ├── BaseSelector.tsx       # 体型選択
+│   │   │       ├── PartsSelector.tsx      # パーツ選択
+│   │   │       ├── ColorPicker.tsx        # 色選択
+│   │   │       ├── PatternSelector.tsx    # 模様選択
+│   │   │       ├── AccessorySelector.tsx  # アクセサリー選択
+│   │   │       ├── CustomizationPanel.tsx # カスタマイズパネル
+│   │   │       ├── SliderControl.tsx      # スライダー制御
+│   │   │       └── RandomGenerator.tsx    # ランダム生成
+│   │   ├── AICreatePage/       # AI金魚生成ページ
+│   │   │   ├── AICreatePage.tsx
+│   │   │   ├── AICreatePage.css
+│   │   │   └── _components/    # 13個のAI専用コンポーネント
+│   │   │       ├── AIStepNavigation.tsx   # AIステップナビ
+│   │   │       ├── Step1ModelSelection.tsx # AIモデル選択
+│   │   │       ├── Step2BasicFeatures.tsx  # 基本特徴設定
+│   │   │       ├── Step3DetailSettings.tsx # 詳細設定
+│   │   │       ├── Step4Accessories.tsx    # アクセサリー設定
+│   │   │       ├── Step5Generate.tsx       # 生成実行
+│   │   │       ├── AIModelSelector.tsx     # モデル選択UI
+│   │   │       ├── AIFeatureSelector.tsx   # 特徴選択UI
+│   │   │       ├── AITextInput.tsx         # テキスト入力
+│   │   │       ├── AIGenerateButton.tsx    # 生成ボタン
+│   │   │       ├── AIStatusIndicator.tsx   # 状態表示
+│   │   │       └── AIActionButtons.tsx     # アクション
+│   │   └── PanelPage/          # 水槽管理ページ
 │   │       ├── PanelPage.tsx
-│   │       └── PanelPage.css
+│   │       ├── PanelPage.css
+│   │       └── _components/
+│   │           ├── Aquarium.tsx            # 水槽表示
+│   │           ├── FishList.tsx            # 金魚一覧
+│   │           └── SwimmingFish.ts         # 金魚アニメーション
 │   │
 │   ├── components/             # 共通コンポーネント
-│   │   └── Layout/
-│   │       ├── Layout.tsx      # 全体レイアウト（ダークモード機能付き）
-│   │       ├── Layout.css
-│   │       └── _components/
-│   │           ├── Header.tsx  # ナビゲーション
-│   │           └── Footer.tsx
+│   │   ├── Layout/
+│   │   │   ├── Layout.tsx      # 全体レイアウト（ダークモード）
+│   │   │   ├── Layout.css
+│   │   │   └── _components/
+│   │   │       ├── Header.tsx  # ナビゲーション
+│   │   │       └── Footer.tsx
+│   │   └── AIFishCanvas/       # AI用Canvas描画
+│   │       ├── AIFishCanvas.tsx
+│   │       ├── AIFishCanvas.css
+│   │       ├── CreativeControls.tsx
+│   │       └── CreativeControls.css
 │   │
 │   ├── hooks/                  # カスタムフック
-│   │   └── useTheme.ts         # テーマ管理（将来拡張用）
+│   │   └── useTheme.ts         # テーマ管理
 │   │
 │   ├── services/               # サービス層
+│   │   ├── ai/                 # AI統合サービス
+│   │   │   ├── aiPromptBuilder.ts         # AI プロンプト構築
+│   │   │   ├── chatgptService.ts          # ChatGPT API統合
+│   │   │   ├── creativeFishPrompts.ts     # クリエイティブプロンプト
+│   │   │   ├── geminiImageService.ts      # Gemini画像生成
+│   │   │   └── geminiService.ts           # Gemini API統合
 │   │   └── storage/
-│   │       └── localStorage.ts # ローカルストレージ操作
+│   │       └── localStorage.ts            # データ永続化
 │   │
 │   ├── types/                  # 型定義
-│   │   └── common.types.ts     # 共通型定義
+│   │   ├── common.types.ts     # 共通型定義（金魚デザイン等）
+│   │   ├── ai.types.ts         # AI生成専用型定義
+│   │   └── aiFish.types.ts     # AI金魚専用型定義
 │   │
 │   ├── styles/                 # スタイル関連
-│   │   ├── variables.css       # CSS変数定義
-│   │   └── global.css          # グローバルスタイル
+│   │   ├── App.css
+│   │   ├── Home.css            # ホームページ専用スタイル
+│   │   ├── global.css          # グローバルスタイル
+│   │   ├── index.css
+│   │   ├── reset.css           # CSSリセット
+│   │   └── variables.css       # CSS変数定義
 │   │
+│   ├── assets/                 # 静的アセット
 │   └── vite-env.d.ts           # Vite型定義
 │
 ├── public/                     # 静的ファイル
+│   └── images/                 # 背景画像
+│       ├── background.png
+│       ├── back1.png
+│       ├── back2.png
+│       ├── back3.png
+│       └── back4.png
 ├── index.html                  # HTMLエントリーポイント
 ├── vite.config.ts              # Vite設定
 ├── tsconfig.json               # TypeScript設定（ルート）
@@ -149,9 +209,62 @@ starry-night/
 
 ## ルーティング構成
 
-- `/` → HomePage（トップページ）
-- `/create` → CreatePage（作成ページ）
-- `/panel` → PanelPage（パネルページ）
+- `/` → Home（ホームページ - バブルアニメーション）
+- `/create` → CreatePage（手動金魚作成ページ）
+- `/ai-create` → AICreatePage（AI金魚生成ページ）
+- `/panel` → PanelPage（水槽管理ページ）
+
+## 主要機能詳細
+
+### 1. ホームページ (`/`)
+- **動的バブルエフェクト**: Intersection Observerを使用したパフォーマンス最適化
+- **日本風ビジュアル**: 5枚の背景画像を使用したレイヤーデザイン
+
+### 2. 手動作成ページ (`/create`)
+- **5段階デザインシステム**: base → parts → pattern → accessory → customize
+- **リアルタイムCanvas描画**: 即座のビジュアルフィードバック
+- **精密なカスタマイズ**: 体型・パーツ・色・模様・アクセサリー・位置調整
+- **エクスポート機能**: PNG画像として保存
+
+### 3. AI作成ページ (`/ai-create`)
+- **5ステップウィザード**: Model → Basic → Details → Accessory → Generate
+- **デュアルAI統合**: ChatGPTとGemini APIの選択式使用
+- **プロンプトエンジニアリング**: 構造化されたAI指示生成
+- **JSONバリデーション**: AI応答の形式検証
+- **水槽連携**: 生成後の直接水槽保存
+
+### 4. 水槽管理ページ (`/panel`)
+- **アニメーション水槽**: 作成済み金魚の泌遊アニメーション
+- **金魚管理**: サイドバーでの一覧表示・削除機能
+- **自動更新**: ページ可視性変化時のデータ再読み込み
+
+## AI統合機能
+
+### 対応モデル
+- **ChatGPT**: OpenAI API統合
+- **Gemini**: Google Generative AI統合
+
+### AI機能特徴
+- **プロンプトビルダー**: 構造化された指示生成
+- **JSONレスポンス**: 一貫したデータ形式
+- **エラーハンドリング**: API限制・ネットワークエラー対応
+- **バリデーション**: AI応答の形式・内容検証
+
+## データ管理
+
+### LocalStorage機能
+- **金魚データ永続化**: 作成した金魚の保存・読み込み
+- **テーマ設定**: ダークモード状態の保存
+- **CRUD操作**: 作成・読み込み・更新・削除
+
+## 環境変数設定
+
+プロジェクトルートに `.env` ファイルを作成し、以下のAPIキーを設定してください:
+
+```env
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_CHATGPT_API_KEY=your_chatgpt_api_key_here
+```
 
 ## コーディング規約
 
@@ -213,279 +326,10 @@ export default function Component() { ... }
 
 ---
 
-# React初心者向け開発ガイド
+## 開発時の注意事項
 
-## Reactの基本概念
-
-### 1. コンポーネント（Component）
-Reactアプリは「コンポーネント」という小さな部品を組み合わせて作られています。
-
-```typescript
-// コンポーネントの例
-export default function HelloWorld() {
-  return <h1>Hello, World!</h1>;
-}
-```
-
-### 2. Props（プロパティ）
-コンポーネント間でデータを渡すための仕組みです。
-
-```typescript
-interface GreetingProps {
-  name: string;
-}
-
-export default function Greeting({ name }: GreetingProps) {
-  return <h1>Hello, {name}!</h1>;
-}
-
-// 使用例: <Greeting name="太郎" />
-```
-
-### 3. State（状態）
-コンポーネント内で変化するデータを管理します。
-
-```typescript
-import { useState } from 'react';
-
-export default function Counter() {
-  const [count, setCount] = useState(0);
-  
-  return (
-    <div>
-      <p>カウント: {count}</p>
-      <button onClick={() => setCount(count + 1)}>
-        +1
-      </button>
-    </div>
-  );
-}
-```
-
-## このプロジェクトのファイル構造理解
-
-### データの流れ
-```
-main.tsx (エントリーポイント)
-    ↓
-App.tsx (ルーティング設定)
-    ↓
-Layout.tsx (共通レイアウト)
-    ↓
-各ページ (HomePage, CreatePage, PanelPage)
-    ↓
-各ページの_componentsフォルダ内のサブコンポーネント
-```
-
-### 重要なファイルの役割
-
-#### `src/main.tsx`
-- アプリケーションの起動点
-- ReactをHTMLのroot要素にマウント
-
-#### `src/App.tsx`
-- ルーティング設定
-- React Routerでページ遷移を管理
-
-#### `src/components/Layout/Layout.tsx`
-- 全ページ共通のレイアウト
-- Header, Footer, ダークモード機能を提供
-
-#### `src/pages/*/` フォルダ
-- 各ページのメインコンポーネント
-- `_components`フォルダに関連するサブコンポーネント
-
-#### `src/styles/`
-- `variables.css`: CSS変数定義（色、サイズなど）
-- `global.css`: 全体に適用されるスタイル
-
-## 実践的な作業手順
-
-### 新しいページを追加する
-
-1. **ページフォルダの作成**
-```bash
-mkdir src/pages/NewPage
-```
-
-2. **メインコンポーネントの作成**
-```typescript
-// src/pages/NewPage/NewPage.tsx
-import Layout from '../../components/Layout/Layout';
-import './NewPage.css';
-
-export default function NewPage() {
-  return (
-    <Layout>
-      <div className="new-page">
-        <h1>新しいページ</h1>
-      </div>
-    </Layout>
-  );
-}
-```
-
-3. **CSSファイルの作成**
-```css
-/* src/pages/NewPage/NewPage.css */
-.new-page {
-  padding: var(--spacing-xl);
-}
-```
-
-4. **ルーティングに追加**
-```typescript
-// src/App.tsx
-import NewPage from './pages/NewPage/NewPage';
-
-// Routes内に追加
-<Route path="/new" element={<NewPage />} />
-```
-
-5. **ナビゲーションに追加**
-```typescript
-// src/components/Layout/_components/Header.tsx
-<li className="nav-item">
-  <Link to="/new" className="nav-link">新ページ</Link>
-</li>
-```
-
-### 新しいコンポーネントを作成する
-
-1. **サブコンポーネントフォルダの作成**
-```bash
-mkdir src/pages/HomePage/_components
-```
-
-2. **コンポーネントファイルの作成**
-```typescript
-// src/pages/HomePage/_components/NewComponent.tsx
-interface NewComponentProps {
-  title: string;
-  onClick?: () => void;
-}
-
-export default function NewComponent({ title, onClick }: NewComponentProps) {
-  return (
-    <div className="new-component" onClick={onClick}>
-      <h2>{title}</h2>
-    </div>
-  );
-}
-```
-
-3. **親コンポーネントで使用**
-```typescript
-// src/pages/HomePage/HomePage.tsx
-import NewComponent from './_components/NewComponent';
-
-export default function HomePage() {
-  const handleClick = () => {
-    console.log('クリックされました！');
-  };
-
-  return (
-    <Layout>
-      <NewComponent title="テスト" onClick={handleClick} />
-    </Layout>
-  );
-}
-```
-
-### スタイリングの方法
-
-1. **CSS変数を活用**
-```css
-/* CSS変数を使用 */
-.my-component {
-  color: var(--text-color);
-  padding: var(--spacing-md);
-  background-color: var(--background-color);
-}
-```
-
-2. **レスポンシブ対応**
-```css
-.my-component {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-md);
-}
-
-@media (min-width: 768px) {
-  .my-component {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-```
-
-## よくある問題と解決法
-
-### Import/Exportエラー
-```typescript
-// ❌ 間違い
-import Component from './Component'
-
-// ✅ 正しい（拡張子を含める）
-import Component from './Component.tsx'
-
-// ❌ 間違い
-export const Component = () => { ... }
-
-// ✅ 正しい（default export使用）
-export default function Component() { ... }
-```
-
-### 型エラー
-```typescript
-// ❌ 型が不明
-function handleClick(event) { ... }
-
-// ✅ 型を明示
-function handleClick(event: React.MouseEvent<HTMLButtonElement>) { ... }
-
-// または
-import type { MouseEvent } from 'react';
-function handleClick(event: MouseEvent<HTMLButtonElement>) { ... }
-```
-
-### CSS適用されない
-```typescript
-// ❌ CSS importを忘れている
-export default function Component() { ... }
-
-// ✅ CSSをimport
-import './Component.css';
-export default function Component() { ... }
-```
-
-## デバッグ方法
-
-### 1. ブラウザの開発者ツール
-- F12で開発者ツールを開く
-- Consoleタブでエラーを確認
-- Elementsタブでスタイルを確認
-
-### 2. console.logでデバッグ
-```typescript
-export default function Component({ data }: Props) {
-  console.log('データ:', data); // デバッグ用
-  
-  return <div>{data.title}</div>;
-}
-```
-
-### 3. TypeScriptエラーの読み方
-```
-Property 'name' does not exist on type 'User'
-→ User型に'name'プロパティが存在しません
-```
-
-## 推奨学習リソース
-
-- [React公式ドキュメント](https://ja.react.dev/)
-- [TypeScript公式ドキュメント](https://www.typescriptlang.org/ja/docs/)
-- [MDN Web Docs](https://developer.mozilla.org/ja/)
-
-このガイドを参考に、段階的にReactの理解を深めていってください！
+- **APIキー設定**: AI機能を使用するためには `.env` ファイルにAPIキーを設定してください
+- **LocalStorage**: 金魚データはLocalStorageに保存されるため、ブラウザーのデータクリアで消失します
+- **Canvas描画**: 金魚のCanvas描画はパフォーマンスを考慮した実装です
+- **エラーハンドリング**: AI APIのレートリミットやネットワークエラーに対する適切なエラーメッセージが表示されます
 </project_info>
