@@ -4,6 +4,7 @@ import './AIStatusIndicator.css';
 interface AIStatusIndicatorProps {
   status: AIGenerationStatus;
   errorMessage?: string;
+  fishName?: string;
 }
 
 // ステータス情報定義

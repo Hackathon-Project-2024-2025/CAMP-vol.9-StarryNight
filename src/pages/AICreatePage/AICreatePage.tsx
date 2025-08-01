@@ -1,23 +1,31 @@
 import { useState, useRef } from 'react';
 import Layout from '../../components/Layout/Layout';
 import FishPreview from '../CreatePage/_components/FishPreview';
-import AIModelSelector from './_components/AIModelSelector';
-import AIFeatureSelector from './_components/AIFeatureSelector';
-import AITextInput from './_components/AITextInput';
-import AIGenerateButton from './_components/AIGenerateButton';
-import AIStatusIndicator from './_components/AIStatusIndicator';
-import AIActionButtons from './_components/AIActionButtons';
-import type { FishDesign } from '../../types/common.types';
 import type { FishPreviewRef } from '../CreatePage/_components/FishPreview';
-import type { AISelections, AIGenerationStatus } from '../../types/ai.types';
-import { buildAIPrompt, validateAIResponse, type AIResponse } from '../../services/ai/aiPromptBuilder';
-import { generateWithGemini } from '../../services/ai/geminiService';
 import { generateWithChatGPT } from '../../services/ai/chatgptService';
+import { generateWithGemini } from '../../services/ai/geminiService';
+import { buildAIPrompt, validateAIResponse } from '../../services/ai/aiPromptBuilder';
+import type { 
+  AISelections, 
+  AIGenerationResult, 
+  AIGenerationStatus,
+  AIDesignStep
+} from '../../types/ai.types';
+import type { FishDesign, FishBase, SelectedParts, FishCustomizations } from '../../types/common.types';
+
+// 新しいステップコンポーネント
+import AIStepNavigation from './_components/AIStepNavigation';
+import Step1ModelSelection from './_components/Step1ModelSelection';
+import Step2BasicFeatures from './_components/Step2BasicFeatures';
+import Step3DetailSettings from './_components/Step3DetailSettings';
+import Step4Accessories from './_components/Step4Accessories';
+import Step5Generate from './_components/Step5Generate';
+
 import './AICreatePage.css';
 
-// デフォルトのAI選択設定
+// デフォルトのAI選択値
 const createDefaultAISelections = (): AISelections => ({
-  model: 'gemini',
+  model: 'chatgpt',
   bodyType: 'round',
   baseColor: 'red',
   size: 'medium',
@@ -31,260 +39,395 @@ const createDefaultAISelections = (): AISelections => ({
   customText: ''
 });
 
-// デフォルトの魚デザインを生成（プレビュー用初期値）
-const createDefaultFishDesign = (): FishDesign => ({
-  id: `ai-fish-${Date.now()}`,
-  name: 'AI生成金魚',
-  base: {
-    id: 'base-round',
-    name: '丸型',
+// デフォルトの魚デザイン（ベース）
+const createDefaultFishDesign = (): FishDesign => {
+  const defaultBase: FishBase = {
+    id: 'ai-base-round',
+    name: 'AI基本型',
     shape: 'round',
     defaultColor: '#ff6b6b',
     size: { width: 100, height: 60 },
-    description: 'AI生成による丸型金魚'
-  },
-  parts: {
+    description: 'AI生成用の基本体型'
+  };
+
+  const defaultParts: SelectedParts = {
     dorsalFin: {
-      id: 'dorsal-basic',
-      name: '基本背ビレ',
+      id: 'ai-dorsal-basic',
+      name: 'AI背ビレ',
       category: 'dorsalFin',
       thumbnail: '',
       description: 'AI生成背ビレ',
       renderData: { shape: 'triangular', size: 1.0 }
     },
     pectoralFins: {
-      id: 'pectoral-basic',
-      name: '基本胸ビレ',
+      id: 'ai-pectoral-basic',
+      name: 'AI胸ビレ',
       category: 'pectoralFins',
       thumbnail: '',
       description: 'AI生成胸ビレ',
       renderData: { shape: 'oval', size: 1.0 }
     },
     tailFin: {
-      id: 'tail-fan',
-      name: '扇型尾ビレ',
+      id: 'ai-tail-fan',
+      name: 'AI尾ビレ',
       category: 'tailFin',
       thumbnail: '',
       description: 'AI生成尾ビレ',
       renderData: { shape: 'fan', size: 1.0 }
     },
     eyes: {
-      id: 'eyes-round',
-      name: '丸い目',
+      id: 'ai-eyes-round',
+      name: 'AI目',
       category: 'eyes',
       thumbnail: '',
       description: 'AI生成の目',
-      renderData: { shape: 'circle', size: 1.0 }
+      renderData: { shape: 'round', size: 1.0 }
     },
     mouth: {
-      id: 'mouth-small',
-      name: '小さい口',
+      id: 'ai-mouth-small',
+      name: 'AI口',
       category: 'mouth',
       thumbnail: '',
       description: 'AI生成の口',
       renderData: { shape: 'small', size: 1.0 }
     },
     scales: {
-      id: 'scales-basic',
-      name: '基本ウロコ',
+      id: 'ai-scales-basic',
+      name: 'AI鱗',
       category: 'scales',
       thumbnail: '',
-      description: 'AI生成ウロコ',
+      description: 'AI生成の鱗',
       renderData: { shape: 'basic', size: 1.0 }
     }
-  },
-  customizations: {
+  };
+
+  const defaultCustomizations: FishCustomizations = {
     bodyColor: '#ff6b6b',
-    finColor: '#ff9999',
-    eyeColor: '#000000',
+    finColor: '#ff8e8e',
+    eyeColor: '#2c2c2c',
     size: 1.0,
     finSize: 1.0,
     eyeSize: 1.0,
-    eyePosition: { x: -0.1, y: -0.25 },
-    mouthPosition: { x: 0.0, y: 0.3 },
-    dorsalFinPosition: { x: 0.0, y: 0.0 },
-    tailFinPosition: { x: 0.0, y: 0.0 },
-    pectoralFinPosition: { x: 0.0, y: 0.0 }
-  },
-  bodyPattern: undefined,
-  accessories: [],
-  createdAt: new Date()
-});
+    eyePosition: { x: 0, y: 0 },
+    mouthPosition: { x: 0, y: 0 },
+    dorsalFinPosition: { x: 0, y: 0 },
+    tailFinPosition: { x: 0, y: 0 },
+    pectoralFinPosition: { x: 0, y: 0 }
+  };
 
-// AI応答をFishDesignオブジェクトに変換するヘルパー関数
-const convertAIResponseToFishDesign = (aiResponse: AIResponse): FishDesign => {
+  return {
+    id: `ai-fish-${Date.now()}`,
+    name: 'AI生成金魚',
+    base: defaultBase,
+    parts: defaultParts,
+    customizations: defaultCustomizations,
+    bodyPattern: undefined,
+    accessories: [],
+    createdAt: new Date()
+  };
+};
+
+// AI応答をFishDesignに変換
+const convertAIResponseToFishDesign = (aiResponse: unknown): FishDesign => {
   const baseDesign = createDefaultFishDesign();
+  const response = aiResponse as Record<string, unknown>;
   
   return {
     ...baseDesign,
     id: `ai-fish-${Date.now()}`,
-    name: aiResponse.name || 'AI生成金魚',
+    name: (response.name as string) || 'AI生成金魚',
     customizations: {
       ...baseDesign.customizations,
-      bodyColor: aiResponse.bodyColor || baseDesign.customizations.bodyColor,
-      finColor: aiResponse.finColor || baseDesign.customizations.finColor,
-      eyeColor: aiResponse.eyeColor || baseDesign.customizations.eyeColor,
-      size: Math.max(0.5, Math.min(2.0, aiResponse.size || 1.0)),
-      finSize: Math.max(0.5, Math.min(2.0, aiResponse.finSize || 1.0)),
-      eyeSize: Math.max(0.5, Math.min(2.0, aiResponse.eyeSize || 1.0))
+      bodyColor: (response.bodyColor as string) || baseDesign.customizations.bodyColor,
+      finColor: (response.finColor as string) || baseDesign.customizations.finColor,
+      eyeColor: (response.eyeColor as string) || baseDesign.customizations.eyeColor,
+      size: Math.max(0.5, Math.min(2.0, (response.size as number) || 1.0)),
+      finSize: Math.max(0.5, Math.min(2.0, (response.finSize as number) || 1.0)),
+      eyeSize: Math.max(0.5, Math.min(2.0, (response.eyeSize as number) || 1.0))
     },
-    bodyPattern: aiResponse.bodyPattern ? {
+    bodyPattern: response.bodyPattern ? {
       id: `pattern-${Date.now()}`,
-      name: aiResponse.bodyPattern.type || 'AI生成パターン',
-      type: (aiResponse.bodyPattern.type as 'solid' | 'spotted' | 'striped' | 'polka' | 'calico' | 'gradient') || 'solid',
+      name: ((response.bodyPattern as Record<string, unknown>).type as string) || 'AI生成パターン',
+      type: (((response.bodyPattern as Record<string, unknown>).type as string) as 'solid' | 'spotted' | 'striped' | 'polka' | 'calico' | 'gradient') || 'solid',
       description: 'AI生成による体の模様',
-      colors: aiResponse.bodyPattern.colors || [aiResponse.bodyColor],
-      intensity: Math.max(0.1, Math.min(1.0, aiResponse.bodyPattern.intensity || 0.6)),
-      scale: Math.max(0.5, Math.min(2.0, aiResponse.bodyPattern.scale || 1.0)),
+      colors: ((response.bodyPattern as Record<string, unknown>).colors as string[]) || [response.bodyColor as string],
+      intensity: Math.max(0.1, Math.min(1.0, ((response.bodyPattern as Record<string, unknown>).intensity as number) || 0.6)),
+      scale: Math.max(0.5, Math.min(2.0, ((response.bodyPattern as Record<string, unknown>).scale as number) || 1.0)),
       seed: Math.floor(Math.random() * 100000)
     } : undefined,
-    accessories: aiResponse.accessories?.map((acc, index) => ({
-      id: acc.id || `ai-accessory-${index}`,
-      name: acc.category || 'AI装飾',
-      category: (acc.category as 'crown' | 'hat' | 'glasses' | 'ribbon' | 'bow' | 'jewelry') || 'hat',
+    accessories: ((response.accessories as Array<Record<string, unknown>>) || []).map((acc, index) => ({
+      id: (acc.id as string) || `ai-accessory-${index}`,
+      name: (acc.category as string) || 'AI装飾',
+      category: ((acc.category as string) as 'crown' | 'hat' | 'glasses' | 'ribbon' | 'bow' | 'jewelry') || 'hat',
       description: 'AI生成アクセサリー',
       position: {
-        x: Math.max(-1, Math.min(1, acc.position?.x || 0)),
-        y: Math.max(-1, Math.min(1, acc.position?.y || 0))
+        x: Math.max(-1, Math.min(1, ((acc.position as Record<string, unknown>)?.x as number) || 0)),
+        y: Math.max(-1, Math.min(1, ((acc.position as Record<string, unknown>)?.y as number) || 0))
       },
-      size: Math.max(0.5, Math.min(2.0, acc.size || 1.0)),
+      size: Math.max(0.5, Math.min(2.0, (acc.size as number) || 1.0)),
       rotation: 0,
-      color: acc.color || '#ffd700',
-      visible: acc.visible !== false
-    })) || [],
+      color: (acc.color as string) || '#ffd700',
+      visible: (acc.visible as boolean) !== false
+    })),
     createdAt: new Date()
   };
 };
 
 export default function AICreatePage() {
+  const [currentStep, setCurrentStep] = useState<AIDesignStep>('model');
   const [aiSelections, setAiSelections] = useState<AISelections>(createDefaultAISelections());
   const [fishDesign, setFishDesign] = useState<FishDesign>(createDefaultFishDesign());
   const [generationStatus, setGenerationStatus] = useState<AIGenerationStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [fishName, setFishName] = useState<string>('AI生成金魚');
+  const [customText, setCustomText] = useState<string>('');
   const fishPreviewRef = useRef<FishPreviewRef>(null);
+
+  const handleStepChange = (step: AIDesignStep) => {
+    setCurrentStep(step);
+  };
 
   const handleSelectionsChange = (newSelections: Partial<AISelections>) => {
     setAiSelections(prev => ({ ...prev, ...newSelections }));
   };
 
+  const handleCustomTextChange = (text: string) => {
+    setCustomText(text);
+    setAiSelections(prev => ({ ...prev, customText: text }));
+  };
+
   const handleGenerate = async () => {
     setGenerationStatus('generating');
     setErrorMessage('');
-    
+
     try {
-      // AIプロンプトの構築
-      const { system, user } = buildAIPrompt(aiSelections);
+      let result: AIGenerationResult;
       
-      // AIモデルに応じた生成サービスの選択
-      const generateFunction = aiSelections.model === 'gemini' ? generateWithGemini : generateWithChatGPT;
-      
-      // AI生成の実行
-      const result = await generateFunction(system, user, {
-        model: aiSelections.model,
-        temperature: 0.8,
-        maxTokens: 2048
-      });
-      
-      if (!result.success || !result.data) {
-        throw new Error(result.error || 'AI生成に失敗しました');
+      if (aiSelections.model === 'gemini') {
+        // Gemini JSON生成モード（Canvas描画用）
+        const { system, user } = buildAIPrompt(aiSelections);
+        
+        result = await generateWithGemini(system, user, {
+          model: aiSelections.model,
+          temperature: 0.8,
+          maxTokens: 2048
+        });
+
+        if (result.success && result.data) {
+          if (validateAIResponse(result.data)) {
+            const newDesign = convertAIResponseToFishDesign(result.data);
+            setFishDesign(newDesign);
+            setGenerationStatus('success');
+          } else {
+            throw new Error('AI応答の形式が不正です');
+          }
+        } else {
+          throw new Error(result.error || 'AI生成に失敗しました');
+        }
+      } else {
+        // ChatGPT JSON生成モード
+        const { system, user } = buildAIPrompt(aiSelections);
+        
+        result = await generateWithChatGPT(system, user, {
+          model: aiSelections.model,
+          temperature: 0.8,
+          maxTokens: 2048
+        });
+
+        if (result.success && result.data) {
+          if (validateAIResponse(result.data)) {
+            const newDesign = convertAIResponseToFishDesign(result.data);
+            setFishDesign(newDesign);
+            setGenerationStatus('success');
+          } else {
+            throw new Error('AI応答の形式が不正です');
+          }
+        } else {
+          throw new Error(result.error || 'AI生成に失敗しました');
+        }
       }
-      
-      // AI応答の検証
-      if (!validateAIResponse(result.data)) {
-        throw new Error('AI応答の形式が正しくありません');
-      }
-      
-      const aiResponse = result.data as AIResponse;
-      
-      // AI応答をFishDesignオブジェクトに変換
-      const newDesign = convertAIResponseToFishDesign(aiResponse);
-      
-      setFishDesign(newDesign);
-      setGenerationStatus('success');
-      
     } catch (error) {
       console.error('AI generation error:', error);
-      const errorMsg = error instanceof Error ? error.message : 'AI生成中に不明なエラーが発生しました。';
-      setErrorMessage(errorMsg);
+      setErrorMessage(error instanceof Error ? error.message : 'AI生成中にエラーが発生しました');
       setGenerationStatus('error');
     }
   };
 
   const handleSave = () => {
     if (fishPreviewRef.current) {
-      fishPreviewRef.current.exportAsImage();
+      fishPreviewRef.current.exportAsImage(fishName.replace(/\s+/g, '-').toLowerCase() || 'ai-generated-fish');
     }
   };
 
   const handleReset = () => {
+    setCurrentStep('model');
     setAiSelections(createDefaultAISelections());
     setFishDesign(createDefaultFishDesign());
+    setFishName('AI生成金魚');
+    setCustomText('');
     setGenerationStatus('idle');
     setErrorMessage('');
   };
 
-  const handleNameChange = (name: string) => {
-    setFishDesign(prev => ({ ...prev, name }));
+  const handleNameChange = (newName: string) => {
+    setFishName(newName);
+    if (generationStatus === 'success') {
+      setFishDesign(prev => ({ ...prev, name: newName }));
+    }
+  };
+
+  // ステップナビゲーションの制御
+  const canGoNext = () => {
+    switch (currentStep) {
+      case 'model': return !!aiSelections.model;
+      case 'basic': return !!aiSelections.bodyType && !!aiSelections.baseColor;
+      case 'details': return !!aiSelections.fins && !!aiSelections.eyes;
+      case 'accessory': return true; // アクセサリーは任意
+      case 'generate': return false; // 最終ステップ
+      default: return false;
+    }
+  };
+
+  const canGoPrev = () => {
+    return currentStep !== 'model';
+  };
+
+  // 現在のステップに応じたコンテンツをレンダリング
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 'model':
+        return (
+          <Step1ModelSelection
+            selectedModel={aiSelections.model}
+            onModelChange={(model) => handleSelectionsChange({ model })}
+          />
+        );
+      case 'basic':
+        return (
+          <Step2BasicFeatures
+            selections={aiSelections}
+            onSelectionsChange={handleSelectionsChange}
+          />
+        );
+      case 'details':
+        return (
+          <Step3DetailSettings
+            selections={aiSelections}
+            onSelectionsChange={handleSelectionsChange}
+          />
+        );
+      case 'accessory':
+        return (
+          <Step4Accessories
+            selections={aiSelections}
+            onSelectionsChange={handleSelectionsChange}
+          />
+        );
+      case 'generate':
+        return (
+          <Step5Generate
+            selections={aiSelections}
+            customText={customText}
+            onCustomTextChange={handleCustomTextChange}
+            onGenerate={handleGenerate}
+            generationStatus={generationStatus}
+            errorMessage={errorMessage}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <Layout>
       <div className="ai-create-page">
-        <header className="page-header">
-          <h1 className="page-title">🤖 AI金魚デザイナー</h1>
-          <p className="page-description">
-            AIの力であなただけのオリジナル金魚を作りましょう
+        <header className="ai-page-header">
+          <h1 className="ai-page-title">
+            <span className="ai-title-icon">🤖</span>
+            AI金魚クリエイター
+          </h1>
+          <p className="ai-page-description">
+            5つのステップでAIが美しい金魚を生成します
           </p>
         </header>
-        
+
         <main className="ai-fish-designer">
-          <div className="ai-controls-section">
-            <div className="ai-controls-container">
-              <AIModelSelector
-                selectedModel={aiSelections.model}
-                onModelChange={(model) => handleSelectionsChange({ model })}
+          <div className="ai-fish-preview-section">
+            <div className="ai-fish-preview-area">
+              <FishPreview
+                ref={fishPreviewRef}
+                fishDesign={fishDesign}
+                className={`ai-main-preview ${generationStatus}`}
               />
+            </div>
+            
+            <div className="ai-fish-control-card">
+              <div className="ai-fish-info">
+                <h3 className="ai-fish-name-display">{fishName}</h3>
+                <p className="ai-generation-status-text">
+                  {generationStatus === 'idle' && '設定完了後に生成できます'}
+                  {generationStatus === 'generating' && 'AI生成中..🤖'}
+                  {generationStatus === 'success' && '生成完了！✨'}
+                  {generationStatus === 'error' && '生成エラー❌'}
+                </p>
+              </div>
               
-              <AIFeatureSelector
-                selections={aiSelections}
-                onSelectionsChange={handleSelectionsChange}
-              />
+              <div className="ai-name-edit-section">
+                <label className="ai-name-label">金魚の名前:</label>
+                <input
+                  type="text"
+                  value={fishName}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  className="ai-name-input"
+                  placeholder="金魚の名前"
+                  maxLength={20}
+                />
+              </div>
               
-              <AITextInput
-                value={aiSelections.customText || ''}
-                onChange={(customText) => handleSelectionsChange({ customText })}
-              />
-              
-              <AIGenerateButton
-                onGenerate={handleGenerate}
-                isGenerating={generationStatus === 'generating'}
-                disabled={generationStatus === 'generating'}
-              />
-              
-              <AIStatusIndicator
-                status={generationStatus}
-                errorMessage={errorMessage}
-              />
+              <div className="ai-action-buttons">
+                <button
+                  className="ai-action-button ai-save-button"
+                  onClick={handleSave}
+                  disabled={generationStatus !== 'success'}
+                  title="金魚を画像として保存"
+                >
+                  <span className="ai-button-icon">💾</span>
+                  <span className="ai-button-text">保存</span>
+                </button>
+                
+                <button
+                  className="ai-action-button ai-reset-button"
+                  onClick={handleReset}
+                  title="すべてリセット"
+                >
+                  <span className="ai-button-icon">🔄</span>
+                  <span className="ai-button-text">リセット</span>
+                </button>
+              </div>
             </div>
           </div>
           
-          <div className="ai-preview-section">
-            <FishPreview 
-              ref={fishPreviewRef}
-              fishDesign={fishDesign}
-              className="ai-fish-preview"
+          <div className="ai-design-controls-section">
+            <div className="ai-controls-header">
+              <h2 className="ai-controls-title">🤖 AI設定</h2>
+              <p className="ai-controls-description">
+                ステップに従ってAIが美しい金魚を生成します
+              </p>
+            </div>
+
+            <AIStepNavigation
+              currentStep={currentStep}
+              onStepChange={handleStepChange}
+              canGoNext={canGoNext()}
+              canGoPrev={canGoPrev()}
             />
+
+            <div className="ai-step-content">
+              {renderStepContent()}
+            </div>
           </div>
           
-          <div className="ai-action-section">
-            <AIActionButtons
-              onSave={handleSave}
-              onReset={handleReset}
-              fishName={fishDesign.name}
-              onNameChange={handleNameChange}
-              disabled={generationStatus === 'generating'}
-            />
-          </div>
         </main>
       </div>
     </Layout>

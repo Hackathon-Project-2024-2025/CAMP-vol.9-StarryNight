@@ -235,7 +235,7 @@ Response format:
 
 // メイン関数：プロンプトを構築
 export function buildAIPrompt(selections: AISelections): { system: string; user: string } {
-  const template = PROMPT_TEMPLATES[selections.model];
+  const template = PROMPT_TEMPLATES[selections.model as 'gemini' | 'chatgpt'];
   
   return {
     system: template.system,

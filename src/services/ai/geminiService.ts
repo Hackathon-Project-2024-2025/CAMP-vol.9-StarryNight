@@ -2,7 +2,7 @@ import type { AIGenerationResult, AIApiConfig } from '../../types/ai.types';
 
 // Gemini API設定
 const GEMINI_API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';
-const DEFAULT_MODEL = 'gemini-1.5-flash';
+const DEFAULT_MODEL = 'gemini-2.5-pro';
 
 // Gemini APIリクエスト用の型定義
 interface GeminiRequest {
@@ -248,8 +248,10 @@ export async function testGeminiConnection(): Promise<boolean> {
 // デバッグ用：利用可能なモデル一覧取得（実際のAPIでは異なる可能性があります）
 export function getAvailableGeminiModels(): string[] {
   return [
-    'gemini-1.5-flash',
+    'gemini-2.5-pro',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
     'gemini-1.5-pro',
-    'gemini-1.0-pro'
+    'gemini-1.5-flash'
   ];
 }

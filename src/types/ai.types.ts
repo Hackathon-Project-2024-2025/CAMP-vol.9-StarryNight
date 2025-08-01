@@ -1,7 +1,10 @@
 // AI金魚作成ツール専用の型定義
 
 // AI生成に使用するモデル
-export type AIModel = 'gemini' | 'chatgpt';
+export type AIModel = 'chatgpt' | 'gemini';
+
+// AI作成のステップ
+export type AIDesignStep = 'model' | 'basic' | 'details' | 'accessory' | 'generate';
 
 // AI生成の状態
 export type AIGenerationStatus = 'idle' | 'generating' | 'success' | 'error';

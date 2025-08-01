@@ -9,18 +9,18 @@ interface AIModelSelectorProps {
 // AIモデル情報定義
 const AI_MODELS: AIModelInfo[] = [
   {
-    id: 'gemini',
-    name: 'Google Gemini',
-    description: 'Googleの最新AI。創造性豊かで詳細な表現が得意',
-    features: ['高い創造性', '詳細な描写', '色彩表現豊か'],
-    icon: '🌟'
-  },
-  {
     id: 'chatgpt',
     name: 'OpenAI ChatGPT',
     description: 'OpenAIの高性能AI。バランスの取れたデザインが得意',
     features: ['バランス重視', '安定した品質', '実用的デザイン'],
     icon: '🤖'
+  },
+  {
+    id: 'gemini',
+    name: 'Google Gemini',
+    description: 'Googleの最新AI。創造性豊かで詳細な表現が得意',
+    features: ['高い創造性', '詳細な描写', '色彩表現豊か'],
+    icon: '🌟'
   }
 ];
 

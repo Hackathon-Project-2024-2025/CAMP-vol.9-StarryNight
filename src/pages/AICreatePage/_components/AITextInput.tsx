@@ -4,6 +4,7 @@ import './AITextInput.css';
 interface AITextInputProps {
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
 // 入力例のテンプレート
@@ -18,12 +19,12 @@ const INPUT_EXAMPLES = [
   '神秘的で幻想的な雰囲気'
 ];
 
-export default function AITextInput({ value, onChange }: AITextInputProps) {
+export default function AITextInput({ value, onChange, disabled = false }: AITextInputProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [charCount, setCharCount] = useState(value.length);
 
   const handleChange = (newValue: string) => {
-    if (newValue.length <= 200) { // 最大文字数制限
+    if (newValue.length <= 200 && !disabled) { // 最大文字数制限
       onChange(newValue);
       setCharCount(newValue.length);
     }
