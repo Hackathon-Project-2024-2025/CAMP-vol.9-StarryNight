@@ -130,6 +130,7 @@
 .action-button {
   flex: 1;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
@@ -142,6 +143,7 @@
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
+  min-width: 120px;
 }
 
 .action-button::before {
@@ -165,6 +167,7 @@
 
 .button-text {
   font-weight: inherit;
+  white-space: nowrap;
 }
 
 .action-button-reset {
