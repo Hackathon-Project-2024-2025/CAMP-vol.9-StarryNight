@@ -106,7 +106,11 @@ export function validateAndDebugFishDesign(design: AIFishDesign): {
   if (design.coloring) {
     const colorRegex = /^#[0-9a-fA-F]{6}$/;
     
-    if (!colorRegex.test(design.coloring.baseColor)) {
+    const baseColorString = typeof design.coloring.baseColor === 'string' 
+      ? design.coloring.baseColor 
+      : (design.coloring.baseColor as { startColor: string }).startColor;
+    
+    if (!colorRegex.test(baseColorString)) {
       errors.push('Invalid base color format');
     }
     
@@ -298,7 +302,7 @@ ${recoverySuggestions.map(s => `  • ${s}`).join('\n')}
 
 // デバッグ用のグローバル関数（開発時のみ）
 if (DEBUG_ENABLED && typeof window !== 'undefined') {
-  (window as any).aiDebug = {
+  (window as unknown as { aiDebug: unknown }).aiDebug = {
     debugLog,
     logGenerationProcess,
     validateAndDebugFishDesign,

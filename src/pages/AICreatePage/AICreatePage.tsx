@@ -1,23 +1,20 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout/Layout';
-import AIFishCanvas from '../../components/AIFishCanvas/AIFishCanvas';
-import type { AIFishCanvasRef } from '../../components/AIFishCanvas/AIFishCanvas';
+import AIImageDisplay from '../../components/AIImageDisplay/AIImageDisplay';
+import type { AIImageDisplayRef } from '../../components/AIImageDisplay/AIImageDisplay';
 import { generateWithChatGPT } from '../../services/ai/chatgptService';
 import { generateWithGemini } from '../../services/ai/geminiService';
-import { buildCreativeFishPrompt, validateCreativeAIResponse } from '../../services/ai/creativeFishPrompts';
+import { buildCreativeFishPrompt } from '../../services/ai/creativeFishPrompts';
 import { convertSelectionsToGenerationParams } from '../../services/ai/aiSelectionsConverter';
-import { convertAIResponseToFishDesign, createFallbackFishDesign } from '../../services/ai/aiResponseConverter';
-import { debugLog, logGenerationProcess, validateAndDebugFishDesign, generateErrorReport } from '../../services/ai/aiDebugUtils';
-import { convertAIFishToCompatibleDesign, validateCompatibleFishDesign } from '../../services/ai/aiFishCompatibilityConverter';
-import { saveFishToAquarium } from '../../services/storage/localStorage';
+import { debugLog, logGenerationProcess, generateErrorReport } from '../../services/ai/aiDebugUtils';
+import { saveFishImageToAquarium } from '../../services/storage/localStorage';
 import type { 
   AISelections, 
   AIGenerationResult, 
   AIGenerationStatus,
   AIDesignStep
 } from '../../types/ai.types';
-import type { AIFishDesign } from '../../types/aiFish.types';
 
 // 新しいステップコンポーネント
 import AIStepNavigation from './_components/AIStepNavigation';
@@ -45,23 +42,16 @@ const createDefaultAISelections = (): AISelections => ({
   customText: ''
 });
 
-// デフォルトのAI魚デザイン（生成前の状態）
-const createDefaultAIFishDesign = (): AIFishDesign | undefined => {
-  // 生成前は undefined を返す（AIFishCanvas側で適切に処理）
-  return undefined;
-};
-
-
 export default function AICreatePage() {
   const [currentStep, setCurrentStep] = useState<AIDesignStep>('model');
   const [aiSelections, setAiSelections] = useState<AISelections>(createDefaultAISelections());
-  const [aiFishDesign, setAiFishDesign] = useState<AIFishDesign | undefined>(createDefaultAIFishDesign());
+  const [generatedImageData, setGeneratedImageData] = useState<string>(''); // Base64画像データ
   const [generationStatus, setGenerationStatus] = useState<AIGenerationStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [fishName, setFishName] = useState<string>('AI生成金魚');
   const [customText, setCustomText] = useState<string>('');
   const [isMovingToAquarium, setIsMovingToAquarium] = useState<boolean>(false);
-  const aiFishCanvasRef = useRef<AIFishCanvasRef>(null);
+  const aiImageDisplayRef = useRef<AIImageDisplayRef>(null);
   const navigate = useNavigate();
 
   const handleStepChange = (step: AIDesignStep) => {
@@ -80,6 +70,9 @@ export default function AICreatePage() {
   const handleGenerate = async () => {
     setGenerationStatus('generating');
     setErrorMessage('');
+    
+    // スコープの外でgenerationParamsを定義
+    let generationParams = convertSelectionsToGenerationParams(aiSelections);
 
     try {
       const startTime = Date.now();
@@ -87,8 +80,7 @@ export default function AICreatePage() {
       // デバッグ: 生成プロセス開始
       logGenerationProcess('START', aiSelections);
       
-      // AISelections → AIGenerationParams への変換
-      const generationParams = convertSelectionsToGenerationParams(aiSelections);
+      // AISelections → AIGenerationParams の確認（既に作成済み）
       logGenerationProcess('CONVERT', aiSelections, generationParams);
       
       // 創造的プロンプトの構築
@@ -113,36 +105,17 @@ export default function AICreatePage() {
         });
       }
 
-      if (result.success && result.data) {
-        if (validateCreativeAIResponse(result.data)) {
-          // AI応答をAIFishDesignに変換
-          const aiDesign = convertAIResponseToFishDesign(
-            result.data, 
-            aiSelections.model === 'gemini' ? 'gemini-2.5-pro' : 'gpt-4'
-          );
-          
-          // 生成時間を設定
-          aiDesign.generationTime = Date.now() - startTime;
-          aiDesign.generationParams = generationParams;
-          
-          // デザイン検証
-          const validation = validateAndDebugFishDesign(aiDesign);
-          if (!validation.isValid) {
-            debugLog('VALIDATION', 'Fish design validation failed', validation.errors);
-          }
-          
-          setAiFishDesign(aiDesign);
-          setFishName(aiDesign.name);
-          setGenerationStatus('success');
-          
-          // 成功ログ
-          logGenerationProcess('SUCCESS', aiSelections, generationParams, aiDesign);
-          debugLog('SUCCESS', `AI Fish generated successfully: ${aiDesign.name} (${aiDesign.generationTime}ms)`);
-        } else {
-          throw new Error('AI応答の形式が不正です');
-        }
+      if (result.success && result.data && typeof result.data === 'string') {
+        // 画像データ（Base64）を直接設定
+        setGeneratedImageData(result.data);
+        setGenerationStatus('success');
+        
+        // 成功ログ
+        const generationTime = Date.now() - startTime;
+        logGenerationProcess('SUCCESS', aiSelections, generationParams, undefined);
+        debugLog('SUCCESS', `AI image generated successfully: ${fishName} (${generationTime}ms)`);
       } else {
-        throw new Error(result.error || 'AI生成に失敗しました');
+        throw new Error(result.error || 'AI画像生成に失敗しました');
       }
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Unknown error');
@@ -155,13 +128,11 @@ export default function AICreatePage() {
       });
       
       // デバッグログ
-      logGenerationProcess('ERROR', aiSelections, undefined, undefined, err);
+      logGenerationProcess('ERROR', aiSelections, generationParams, undefined, err);
       debugLog('ERROR', `Generation failed: ${err.message}`, { errorReport });
       
-      // エラー時はフォールバック魚を表示
-      const fallbackDesign = createFallbackFishDesign(err.message);
-      setAiFishDesign(fallbackDesign);
-      setFishName(fallbackDesign.name);
+      // エラー時は画像データをクリア
+      setGeneratedImageData('');
       
       setErrorMessage(err.message);
       setGenerationStatus('error');
@@ -169,12 +140,12 @@ export default function AICreatePage() {
   };
 
   const handleSave = () => {
-    if (aiFishCanvasRef.current && aiFishDesign) {
+    if (aiImageDisplayRef.current && generatedImageData) {
       const filename = fishName.replace(/\s+/g, '-').toLowerCase() || 'ai-generated-fish';
-      debugLog('EXPORT', `Exporting AI fish as image: ${filename}`);
-      aiFishCanvasRef.current.exportAsImage(filename, { format: 'png' });
+      debugLog('EXPORT', `Exporting AI image: ${filename}`);
+      aiImageDisplayRef.current.downloadImage(`${filename}.png`);
     } else {
-      debugLog('EXPORT', 'Cannot export - no canvas or fish design available');
+      debugLog('EXPORT', 'Cannot export - no image data available');
     }
   };
 
@@ -182,7 +153,7 @@ export default function AICreatePage() {
     debugLog('UI', 'Resetting AI fish creation form');
     setCurrentStep('model');
     setAiSelections(createDefaultAISelections());
-    setAiFishDesign(createDefaultAIFishDesign());
+    setGeneratedImageData('');
     setFishName('AI生成金魚');
     setCustomText('');
     setGenerationStatus('idle');
@@ -191,38 +162,30 @@ export default function AICreatePage() {
 
   const handleNameChange = (newName: string) => {
     setFishName(newName);
-    if (generationStatus === 'success' && aiFishDesign) {
-      setAiFishDesign(prev => prev ? ({ ...prev, name: newName }) : prev);
-    }
   };
 
   const handleMoveToAquarium = async () => {
-    if (!aiFishDesign) {
-      debugLog('AQUARIUM', 'Cannot move to aquarium - no fish design available');
+    if (!generatedImageData) {
+      debugLog('AQUARIUM', 'Cannot move to aquarium - no image data available');
       return;
     }
 
     try {
       setIsMovingToAquarium(true);
-      debugLog('AQUARIUM', `Moving AI fish to aquarium: ${aiFishDesign.name}`);
+      debugLog('AQUARIUM', `Moving AI generated image to aquarium: ${fishName}`);
       
-      // AI魚をFishDesign形式に変換（完全な互換性変換）
-      const compatibleFishDesign = convertAIFishToCompatibleDesign(aiFishDesign, fishName);
+      // 画像データを水槽に保存（新しい形式）
+      saveFishImageToAquarium({
+        id: `ai-fish-${Date.now()}`, // 一意のID生成
+        name: fishName,
+        imageData: generatedImageData, // Base64画像データ
+        type: 'ai-generated', // AI生成フラグ
+        aiModel: aiSelections.model,
+        generatedAt: new Date(),
+        selections: aiSelections // 生成時の設定も保存
+      });
       
-      // 変換結果の検証
-      const validation = validateCompatibleFishDesign(compatibleFishDesign);
-      if (!validation.isValid) {
-        debugLog('AQUARIUM', 'Compatibility conversion failed', validation.errors);
-        throw new Error(`互換性変換エラー: ${validation.errors.join(', ')}`);
-      }
-      
-      if (validation.warnings.length > 0) {
-        debugLog('AQUARIUM', 'Compatibility conversion warnings', validation.warnings);
-      }
-      
-      // 金魚を水槽に保存
-      saveFishToAquarium(compatibleFishDesign);
-      debugLog('AQUARIUM', 'Successfully saved AI fish to aquarium storage');
+      debugLog('AQUARIUM', 'Successfully saved AI image to aquarium storage');
       
       // 水槽ページに移動
       setTimeout(() => {
@@ -232,7 +195,7 @@ export default function AICreatePage() {
       
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Unknown aquarium error');
-      debugLog('AQUARIUM', `Failed to move fish to aquarium: ${err.message}`);
+      debugLog('AQUARIUM', `Failed to move image to aquarium: ${err.message}`);
       setIsMovingToAquarium(false);
     }
   };
@@ -316,12 +279,12 @@ export default function AICreatePage() {
         <main className="ai-fish-designer">
           <div className="ai-fish-preview-section">
             <div className="ai-fish-preview-area">
-              <AIFishCanvas
-                ref={aiFishCanvasRef}
-                fishDesign={aiFishDesign}
+              <AIImageDisplay
+                ref={aiImageDisplayRef}
+                imageData={generatedImageData}
                 width={420}
                 height={320}
-                backgroundColor="#f0f8ff"
+                alt={fishName}
                 className={`ai-main-preview ${generationStatus}`}
               />
             </div>

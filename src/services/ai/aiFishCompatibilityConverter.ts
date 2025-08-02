@@ -11,7 +11,7 @@ export function convertAIFishToCompatibleDesign(aiFish: AIFishDesign, fishName: 
     id: 'ai-generated-base',
     name: 'AI生成ベース',
     shape: inferBodyShapeFromAIFish(aiFish),
-    defaultColor: aiFish.coloring.baseColor,
+    defaultColor: extractColorFromGradient(aiFish.coloring.baseColor),
     size: { width: Math.abs(aiFish.boundingBox.width), height: Math.abs(aiFish.boundingBox.height) },
     description: aiFish.description || 'AI生成による美しい金魚'
   };
@@ -27,7 +27,7 @@ export function convertAIFishToCompatibleDesign(aiFish: AIFishDesign, fishName: 
       renderData: {
         shape: inferFinShape(aiFish.shape.dorsalFin),
         size: calculateFinSize(aiFish.shape.dorsalFin),
-        color: aiFish.coloring.finColors.dorsal || aiFish.coloring.baseColor
+        color: extractColorFromGradient(aiFish.coloring.finColors.dorsal || aiFish.coloring.baseColor)
       }
     },
     pectoralFins: {
@@ -39,7 +39,7 @@ export function convertAIFishToCompatibleDesign(aiFish: AIFishDesign, fishName: 
       renderData: {
         shape: inferFinShape(aiFish.shape.pectoralFin),
         size: calculateFinSize(aiFish.shape.pectoralFin),
-        color: aiFish.coloring.finColors.pectoral || aiFish.coloring.baseColor
+        color: extractColorFromGradient(aiFish.coloring.finColors.pectoral || aiFish.coloring.baseColor)
       }
     },
     tailFin: {
@@ -51,7 +51,7 @@ export function convertAIFishToCompatibleDesign(aiFish: AIFishDesign, fishName: 
       renderData: {
         shape: inferFinShape(aiFish.shape.tailFin),
         size: calculateFinSize(aiFish.shape.tailFin),
-        color: aiFish.coloring.finColors.tail || aiFish.coloring.baseColor
+        color: extractColorFromGradient(aiFish.coloring.finColors.tail || aiFish.coloring.baseColor)
       }
     },
     eyes: {
@@ -87,15 +87,15 @@ export function convertAIFishToCompatibleDesign(aiFish: AIFishDesign, fishName: 
       renderData: {
         shape: 'basic',
         size: 1.0,
-        color: aiFish.coloring.baseColor
+        color: extractColorFromGradient(aiFish.coloring.baseColor)
       }
     }
   };
 
   // カスタマイゼーション情報の構築
   const compatibleCustomizations: FishCustomizations = {
-    bodyColor: aiFish.coloring.baseColor,
-    finColor: aiFish.coloring.finColors.dorsal || aiFish.coloring.baseColor,
+    bodyColor: extractColorFromGradient(aiFish.coloring.baseColor),
+    finColor: extractColorFromGradient(aiFish.coloring.finColors.dorsal || aiFish.coloring.baseColor),
     eyeColor: aiFish.coloring.eyeColor,
     size: calculateOverallSize(aiFish),
     finSize: calculateAverageFinSize(aiFish),
@@ -149,8 +149,21 @@ function inferBodyShapeFromAIFish(aiFish: AIFishDesign): 'round' | 'streamlined'
   return 'round';
 }
 
+// ヒレデータポイントの型定義
+interface FinPoint {
+  x?: number;
+  y?: number;
+}
+
+import type { ColorGradient } from '../../types/aiFish.types';
+
+// ColorGradientを文字列に変換するヘルパー関数
+function extractColorFromGradient(color: string | ColorGradient): string {
+  return typeof color === 'string' ? color : color.startColor;
+}
+
 // AI魚のヒレデータからヒレの形状を推定
-function inferFinShape(finData: any): string {
+function inferFinShape(finData: unknown): string {
   if (!finData || !Array.isArray(finData)) return 'triangular';
   
   const pointCount = finData.length;
@@ -161,12 +174,12 @@ function inferFinShape(finData: any): string {
 }
 
 // ヒレのサイズを計算（正規化）
-function calculateFinSize(finData: any): number {
+function calculateFinSize(finData: unknown): number {
   if (!finData || !Array.isArray(finData) || finData.length < 2) return 1.0;
   
   // ヒレの点群から概算サイズを計算
-  const xs = finData.map((p: any) => p.x || 0);
-  const ys = finData.map((p: any) => p.y || 0);
+  const xs = finData.map((p: unknown) => (p as FinPoint).x || 0);
+  const ys = finData.map((p: unknown) => (p as FinPoint).y || 0);
   const width = Math.max(...xs) - Math.min(...xs);
   const height = Math.max(...ys) - Math.min(...ys);
   const size = Math.sqrt(width * width + height * height);

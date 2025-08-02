@@ -1,11 +1,14 @@
 import { useRef, useEffect, useCallback } from 'react';
 import type { FishDesign } from '../../../types/common.types';
-import { removeFishFromAquarium } from '../../../services/storage/localStorage';
+import type { AIFishImage } from '../../../services/storage/localStorage';
+import { removeFishFromAquarium, removeAIFishImageFromAquarium } from '../../../services/storage/localStorage';
 import './FishList.css';
 
 interface FishListProps {
   fishList: FishDesign[];
+  aiFishImages: AIFishImage[];
   onFishRemove: (fishId: string) => void;
+  onAIFishRemove: (imageId: string) => void;
 }
 
 interface FishThumbnailProps {
@@ -365,41 +368,95 @@ function FishThumbnail({ fish, onRemove }: FishThumbnailProps) {
   );
 }
 
-export default function FishList({ fishList, onFishRemove }: FishListProps) {
+// AI画像魚サムネイルコンポーネント
+function AIFishThumbnail({ aiFish, onRemove }: { aiFish: AIFishImage; onRemove: () => void }) {
+  const handleRemove = () => {
+    removeAIFishImageFromAquarium(aiFish.id);
+    onRemove();
+  };
+
+  return (
+    <div className="fish-item ai-fish-item">
+      <div className="fish-thumbnail ai-fish-thumbnail">
+        <img 
+          src={`data:image/png;base64,${aiFish.imageData}`}
+          alt={aiFish.name}
+          className="ai-fish-image"
+        />
+      </div>
+      
+      <div className="fish-info">
+        <div className="fish-name">{aiFish.name}</div>
+        <div className="fish-details">
+          <span className="fish-type">🤖 AI生成</span>
+          <span className="fish-model">{aiFish.aiModel}</span>
+        </div>
+      </div>
+      
+      <button 
+        className="remove-button"
+        onClick={handleRemove}
+        title="この金魚を削除"
+      >
+        🗑️
+      </button>
+    </div>
+  );
+}
+
+export default function FishList({ fishList, aiFishImages, onFishRemove, onAIFishRemove }: FishListProps) {
   const handleFishRemove = (fishId: string) => {
     onFishRemove(fishId);
   };
+
+  const handleAIFishRemove = (imageId: string) => {
+    onAIFishRemove(imageId);
+  };
+
+  const totalFishCount = fishList.length + aiFishImages.length;
 
   return (
     <div className="fish-list">
       <div className="list-header">
         <h3 className="list-title">🐠 水槽の金魚</h3>
         <span className="fish-count-badge">
-          {fishList.length}匹
+          {totalFishCount}匹
         </span>
       </div>
       
       <div className="fish-items">
-        {fishList.length === 0 ? (
+        {totalFishCount === 0 ? (
           <div className="empty-list">
             <div className="empty-icon">🐠</div>
             <p className="empty-text">
               まだ金魚がいません<br />
-              CreatePageで作成してください！
+              手作りまたはAI生成で作成してください！
             </p>
           </div>
         ) : (
-          fishList.map((fish) => (
-            <FishThumbnail
-              key={fish.id}
-              fish={fish}
-              onRemove={() => handleFishRemove(fish.id)}
-            />
-          ))
+          <>
+            {/* 手作り金魚（Canvas描画） */}
+            {fishList.map((fish) => (
+              <FishThumbnail
+                key={fish.id}
+                fish={fish}
+                onRemove={() => handleFishRemove(fish.id)}
+              />
+            ))}
+            
+            {/* AI生成金魚（画像） */}
+            {aiFishImages.map((aiFish) => (
+              <AIFishThumbnail
+                key={aiFish.id}
+                aiFish={aiFish}
+                onRemove={() => handleAIFishRemove(aiFish.id)}
+              />
+            ))}
+          </>
         )}
       </div>
       
-      {fishList.length > 0 && (
+      {totalFishCount > 0 && (
         <div className="list-footer">
           <p className="list-tip">
             💡 不要な金魚は🗑️ボタンで削除できます

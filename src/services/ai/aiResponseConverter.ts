@@ -23,7 +23,10 @@ export function convertAIResponseToFishDesign(
   ];
 
   // パスデータの解析とフォールバック
-  const parseDrawingData = (data: string | DrawingPoint[], fallback: DrawingPoint[]): DrawingPoint[] => {
+  const parseDrawingData = (data: string | DrawingPoint[] | undefined, fallback: DrawingPoint[]): DrawingPoint[] => {
+    if (!data) {
+      return fallback;
+    }
     if (Array.isArray(data)) {
       return data.length > 0 ? data : fallback;
     }
@@ -204,7 +207,7 @@ export function convertAIResponseToFishDesign(
         type: (pattern.type as 'spots' | 'stripes' | 'swirls' | 'scales' | 'abstract') || 'spots',
         color: validateColor(pattern.color, '#ffcccc'),
         opacity: validateNumber(pattern.opacity, 0, 1, 0.5),
-        scale: validateNumber((pattern as any).scale, 0.1, 3, 1),
+        scale: validateNumber((pattern as { scale?: number }).scale, 0.1, 3, 1),
         positions: Array.isArray(pattern.positions) 
           ? pattern.positions.map(pos => ({ x: pos.x || 0, y: pos.y || 0 }))
           : []

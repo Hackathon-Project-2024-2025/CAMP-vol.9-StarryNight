@@ -1,10 +1,12 @@
 import { useEffect, useRef, useCallback } from 'react';
 import type { FishDesign, Ripple } from '../../../types/common.types';
+import type { AIFishImage } from '../../../services/storage/localStorage';
 import { SwimmingFish } from './SwimmingFish';
 import './Aquarium.css';
 
 interface AquariumProps {
   fishList: FishDesign[];
+  aiFishImages: AIFishImage[];
   className?: string;
 }
 
@@ -16,7 +18,7 @@ interface Bubble {
   opacity: number;
 }
 
-export default function Aquarium({ fishList, className = '' }: AquariumProps) {
+export default function Aquarium({ fishList, aiFishImages, className = '' }: AquariumProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
   const swimmingFishRef = useRef<SwimmingFish[]>([]);
@@ -1078,7 +1080,7 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
       <div className="aquarium-header">
         <h2 className="aquarium-title">🐠 みんなの金魚水槽</h2>
         <div className="aquarium-controls">
-          <span className="fish-count">{fishList.length}匹が泳いでいます</span>
+          <span className="fish-count">{fishList.length + aiFishImages.length}匹が泳いでいます</span>
           <span className="ripple-hint">💧 クリックで波紋を作ろう！</span>
         </div>
       </div>
@@ -1089,13 +1091,38 @@ export default function Aquarium({ fishList, className = '' }: AquariumProps) {
           className="aquarium-canvas"
         />
         
-        {fishList.length === 0 && (
+        {/* AI画像魚の表示 */}
+        {aiFishImages.map((aiFish, index) => (
+          <div
+            key={aiFish.id}
+            className="ai-fish-floating"
+            style={{
+              position: 'absolute',
+              top: `${20 + (index * 15) % 60}%`,
+              left: `${10 + (index * 25) % 80}%`,
+              zIndex: 5
+            }}
+          >
+            <img
+              src={`data:image/png;base64,${aiFish.imageData}`}
+              alt={aiFish.name}
+              className="ai-fish-aquarium-image"
+              style={{
+                width: '80px',
+                height: '60px',
+                objectFit: 'contain'
+              }}
+            />
+          </div>
+        ))}
+
+        {fishList.length + aiFishImages.length === 0 && (
           <div className="empty-aquarium">
             <div className="empty-message">
               <span className="empty-icon">🐠</span>
               <p className="empty-text">
                 まだ金魚がいません<br />
-                CreatePageで金魚を作って水槽に移動してください！
+                手作りまたはAI生成で作成してください！
               </p>
             </div>
           </div>
