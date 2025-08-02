@@ -1,5 +1,6 @@
 .step-navigation {
-  background-color: var(--card-background);
+  /* background-color: rgba(59, 130, 246, 0.05); */
+  background-color: rgba(59, 130, 246, 0.1);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
@@ -27,20 +28,18 @@
 }
 
 .step-item:hover {
-  background-color: var(--surface-color);
+  background-color: rgba(59, 130, 246, 0.05);
   transform: translateY(-2px);
 }
 
 .step-item.active {
-  background-color: var(--primary-color);
-  border: 1px solid var(--secondary-color);
-  opacity: 0.8;
+  background-color: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.5);
 }
 
 .step-item.completed {
-  background-color: var(--success-color);
-  border: 1px solid var(--success-color);
-  opacity: 0.7;
+  background-color: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .step-icon {
@@ -71,11 +70,11 @@
 }
 
 .step-item.active .step-title {
-  color: var(--secondary-color);
+  color: rgba(59, 130, 246, 1);
 }
 
 .step-item.completed .step-title {
-  color: var(--success-color);
+  color: #4ade80;
 }
 
 /* ステップコネクター */
@@ -85,7 +84,7 @@
   left: 100%;
   width: calc(100% - var(--spacing-md));
   height: 2px;
-  background-color: var(--border-color);
+  background-color: rgba(59, 130, 246, 0.2);
   transform: translateY(-50%);
   z-index: -1;
   transition: background-color var(--transition-base);
@@ -93,7 +92,7 @@
 }
 
 .step-connector.completed {
-  background-color: var(--success-color);
+  background-color: rgba(34, 197, 94, 0.5);
 }
 
 /* ナビゲーションコントロール */
@@ -105,8 +104,8 @@
 }
 
 .step-button {
-  background-color: var(--card-background);
-  border: 1px solid var(--secondary-color);
+  background-color: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.5);
   color: var(--text-color);
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--border-radius-md);
@@ -118,8 +117,7 @@
 }
 
 .step-button:hover:not(:disabled) {
-  background-color: var(--secondary-color);
-  color: var(--background-color);
+  background-color: rgba(59, 130, 246, 0.3);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
@@ -127,18 +125,18 @@
 .step-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: var(--surface-color);
-  border-color: var(--border-color);
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
 .step-counter {
-  background-color: var(--accent-color);
-  color: var(--background-color);
+  background-color: rgba(139, 92, 246, 0.2);
+  color: rgba(139, 92, 246, 1);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--border-radius-full);
   font-size: var(--font-size-sm);
   font-weight: 600;
-  border: 1px solid rgba(244, 162, 97, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 /* モバイル対応 */

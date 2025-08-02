@@ -244,3 +244,65 @@
     max-height: calc(100vh - 200px);
   }
 }
+
+/* ライトモード対応 */
+[data-theme="light"] .fish-list {
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.08), rgba(255, 183, 197, 0.08));
+  border-color: rgba(244, 162, 97, 0.3);
+}
+
+[data-theme="light"] .list-header {
+  background: rgba(244, 162, 97, 0.1);
+  border-bottom-color: rgba(244, 162, 97, 0.25);
+}
+
+[data-theme="light"] .list-title {
+  color: var(--text-color);
+}
+
+[data-theme="light"] .fish-count {
+  background: rgba(244, 162, 97, 0.2);
+  color: #c2410c;
+  border-color: rgba(244, 162, 97, 0.4);
+}
+
+[data-theme="light"] .fish-item {
+  border-color: rgba(244, 162, 97, 0.15);
+}
+
+[data-theme="light"] .fish-item:hover {
+  background: rgba(244, 162, 97, 0.08);
+  border-color: rgba(244, 162, 97, 0.25);
+}
+
+[data-theme="light"] .fish-name {
+  color: var(--text-color);
+}
+
+[data-theme="light"] .fish-details {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .remove-button {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+}
+
+[data-theme="light"] .remove-button:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+[data-theme="light"] .empty-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .list-footer {
+  background: rgba(244, 162, 97, 0.08);
+  border-top-color: rgba(244, 162, 97, 0.25);
+}
+
+[data-theme="light"] .list-tip {
+  color: var(--text-secondary);
+}

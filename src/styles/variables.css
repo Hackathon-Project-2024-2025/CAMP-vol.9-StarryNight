@@ -51,14 +51,14 @@
   --surface-color: #B0E0E6;        /* パウダーブルー（より濃く） */
   --card-background: rgba(176, 224, 230, 0.9);  /* より濃い半透明サーフェス */
   
-  /* Text Colors */
-  --text-color: #2F4F4F;           /* ダークスレートグレー */
-  --text-secondary: #708090;       /* スレートグレー */
-  --text-muted: #9ACDDC;           /* より濃いライトスチールブルー */
+  /* Text Colors（視認性向上のため濃く調整） */
+  --text-color: #1a202c;           /* より濃いグレー */
+  --text-secondary: #4a5568;       /* より濃いセカンダリ */
+  --text-muted: #718096;           /* より濃いミュート */
   
-  /* Border & Divider（より濃く調整） */
-  --border-color: #87CEEB;         /* スカイブルー（より濃く） */
-  --divider-color: #87CEFA;        /* ライトスカイブルー */
+  /* Border & Divider（視認性向上のため濃く調整） */
+  --border-color: #5a9fd4;         /* より濃いスカイブルー */
+  --divider-color: #6bb6ff;        /* より濃いライトスカイブルー */
   
   /* Semantic Colors */
   --success-color: #20B2AA;        /* ライトシーグリーン */

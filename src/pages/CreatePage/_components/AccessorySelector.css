@@ -434,6 +434,120 @@
   line-height: 1.4;
 }
 
+/* ダークモード対応 */
+[data-theme="dark"] .accessory-selector {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .equipped-accessories {
+  background: rgba(255, 183, 197, 0.08);
+  border-color: rgba(255, 183, 197, 0.3);
+}
+
+[data-theme="dark"] .equipped-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .equipped-item:hover {
+  background: rgba(255, 183, 197, 0.15);
+  border-color: rgba(255, 183, 197, 0.4);
+}
+
+[data-theme="dark"] .category-tab {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .category-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 183, 197, 0.4);
+}
+
+[data-theme="dark"] .category-tab.active {
+  background: rgba(255, 183, 197, 0.25);
+  border-color: var(--accent-color);
+}
+
+[data-theme="dark"] .accessory-option {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .accessory-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 183, 197, 0.4);
+}
+
+[data-theme="dark"] .accessory-customization {
+  background: rgba(255, 255, 255, 0.01);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .setting-group {
+  background: rgba(255, 255, 255, 0.01);
+  border-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ライトモード対応 */
+[data-theme="light"] .accessory-selector {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .equipped-accessories {
+  background: rgba(255, 183, 197, 0.15);
+  border-color: rgba(255, 183, 197, 0.4);
+}
+
+[data-theme="light"] .equipped-item {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .equipped-item:hover {
+  background: rgba(255, 183, 197, 0.2);
+  border-color: rgba(255, 183, 197, 0.5);
+}
+
+[data-theme="light"] .category-tab {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+[data-theme="light"] .category-tab:hover {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 183, 197, 0.5);
+}
+
+[data-theme="light"] .category-tab.active {
+  background: rgba(255, 183, 197, 0.3);
+  border-color: var(--accent-color);
+}
+
+[data-theme="light"] .accessory-option {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .accessory-option:hover {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 183, 197, 0.5);
+}
+
+[data-theme="light"] .accessory-customization {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .setting-group {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
 /* レスポンシブ */
 @media (max-width: 768px) {
   .accessories-grid {

@@ -184,3 +184,22 @@
     min-height: 250px;
   }
 }
+
+/* ライトモード対応 */
+[data-theme="light"] .aquarium {
+  background: linear-gradient(135deg, rgba(135, 206, 235, 0.2), rgba(100, 149, 237, 0.2));
+  border-color: rgba(135, 206, 235, 0.5);
+}
+
+[data-theme="light"] .aquarium-header {
+  background: rgba(135, 206, 235, 0.15);
+  border-bottom-color: rgba(135, 206, 235, 0.3);
+}
+
+[data-theme="light"] .aquarium-title {
+  color: var(--text-color);
+}
+
+[data-theme="light"] .empty-text {
+  color: var(--text-secondary);
+}

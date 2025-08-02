@@ -31,9 +31,9 @@
   max-width: 1400px;
   margin: 0 auto;
   min-height: calc(100vh - 200px);
-  background: linear-gradient(180deg, 
+  /* background: linear-gradient(180deg, 
     rgba(240, 248, 255, 0.02) 0%, 
-    rgba(245, 245, 245, 0.05) 100%);
+    rgba(245, 245, 245, 0.05) 100%); */
   border-radius: var(--border-radius-lg);
 }
 
@@ -121,14 +121,11 @@
   }
 }
 
-/* プレビューエリアスタイル - AICreatePageと統一 */
+/* プレビューエリアスタイル - 背景色削除 */
 .fish-preview-section {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    rgba(255, 255, 255, 0.02) 50%, 
-    rgba(255, 255, 255, 0.05) 100%);
+  background: transparent;
   border-radius: var(--border-radius-lg);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border-color);
   padding: var(--spacing-lg);
   min-height: 420px;
   position: relative;
@@ -148,9 +145,9 @@
 }
 
 .fish-control-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
   border-radius: var(--border-radius-lg);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border-color);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -168,15 +165,53 @@
   pointer-events: none;
 }
 
-/* コントロールエリアスタイル - AICreatePageと統一 */
+/* コントロールエリアスタイル - 背景色削除 */
 .design-controls-section {
-  background-color: rgba(59, 130, 246, 0.05);
+  background: transparent;
   border-radius: var(--border-radius-lg);
-  border: 2px solid rgba(59, 130, 246, 0.2);
+  border: 2px solid var(--border-color);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
 }
 
+
+/* ダークモード対応 */
+[data-theme="dark"] .fish-preview-section {
+  border-color: var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .design-controls-section {
+  border-color: var(--border-color);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .fish-control-card {
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ライトモード対応 */
+[data-theme="light"] .fish-preview-section {
+  border-color: var(--border-color);
+  box-shadow: 0 4px 12px rgba(26, 32, 44, 0.1);
+}
+
+[data-theme="light"] .design-controls-section {
+  border-color: var(--border-color);
+  box-shadow: 0 3px 10px rgba(26, 32, 44, 0.08);
+}
+
+[data-theme="light"] .fish-control-card {
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px rgba(26, 32, 44, 0.06);
+}
+
+[data-theme="light"] .fish-designer {
+  background: linear-gradient(180deg, 
+    rgba(240, 248, 255, 0.3) 0%, 
+    rgba(245, 245, 245, 0.2) 100%);
+}
 
 /* モバイル専用の調整 */
 @media (max-width: 767px) {

@@ -98,7 +98,7 @@
   grid-template-columns: 300px 1fr;
   gap: var(--spacing-xl);
   height: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -196,4 +196,22 @@
   .aquarium-main {
     max-height: calc(100vh - 350px);
   }
+}
+
+/* ライトモード対応 */
+[data-theme="light"] .page-header {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), var(--surface-color));
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="light"] .loading-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .page-title {
+  color: var(--text-color);
+}
+
+[data-theme="light"] .page-description {
+  color: var(--text-secondary);
 }

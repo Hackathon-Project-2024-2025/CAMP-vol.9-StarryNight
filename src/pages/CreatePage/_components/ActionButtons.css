@@ -124,6 +124,7 @@
 /* アクションボタン */
 .button-group {
   display: flex;
+  justify-content: center;
   gap: var(--spacing-md);
 }
 
@@ -230,6 +231,66 @@
 
 .tip-text strong {
   color: var(--text-color);
+}
+
+/* ダークモード対応 */
+[data-theme="dark"] .action-button-reset {
+  background-color: rgba(156, 163, 175, 0.3);
+  color: #d1d5db;
+  border-color: rgba(156, 163, 175, 0.4);
+}
+
+[data-theme="dark"] .action-button-save {
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.4), rgba(255, 183, 197, 0.4));
+  color: var(--text-color);
+  border-color: rgba(244, 162, 97, 0.6);
+}
+
+[data-theme="dark"] .action-button-aquarium {
+  background: linear-gradient(135deg, rgba(135, 206, 235, 0.4), rgba(107, 183, 255, 0.4));
+  color: var(--text-color);
+  border-color: rgba(135, 206, 235, 0.6);
+}
+
+[data-theme="dark"] .name-input {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 183, 197, 0.4);
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .tips {
+  background-color: rgba(135, 206, 235, 0.15);
+  border-color: rgba(135, 206, 235, 0.4);
+}
+
+/* ライトモード対応 */
+[data-theme="light"] .action-button-reset {
+  background-color: rgba(156, 163, 175, 0.3);
+  color: #374151;
+  border-color: rgba(156, 163, 175, 0.5);
+}
+
+[data-theme="light"] .action-button-save {
+  background: linear-gradient(135deg, rgba(244, 162, 97, 0.4), rgba(255, 183, 197, 0.4));
+  color: var(--text-color);
+  border-color: rgba(244, 162, 97, 0.7);
+}
+
+[data-theme="light"] .action-button-aquarium {
+  background: linear-gradient(135deg, rgba(135, 206, 235, 0.4), rgba(107, 183, 255, 0.4));
+  color: var(--text-color);
+  border-color: rgba(135, 206, 235, 0.7);
+}
+
+[data-theme="light"] .name-input {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 183, 197, 0.5);
+  color: var(--text-color);
+}
+
+[data-theme="light"] .tips {
+  background-color: rgba(135, 206, 235, 0.2);
+  border-color: rgba(135, 206, 235, 0.5);
 }
 
 /* タブレット対応 */
