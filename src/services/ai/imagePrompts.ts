@@ -67,10 +67,11 @@ export function buildDALLEImagePrompt(params: AIGenerationParams): string {
     prompt += `Additional style: ${params.customRequest.trim()}. `;
   }
 
-  // DALL-E 3に最適化された技術指示
-  prompt += `Style: photorealistic digital art, high resolution, professional photography quality, `;
-  prompt += `clean white background, perfect lighting, fine details, artistic composition, `;
-  prompt += `inspired by traditional Japanese art and modern digital illustration techniques.`;
+  // アニメ調+透過背景に最適化された技術指示
+  prompt += `Style: anime illustration, cartoon art style, kawaii Japanese animation aesthetic, `;
+  prompt += `transparent background, no background, PNG format with transparency, `;
+  prompt += `bright vibrant colors, soft cel-shading, clean lineart, `;
+  prompt += `inspired by traditional Japanese kingyo art and modern anime character design.`;
 
   return prompt;
 }
@@ -94,8 +95,8 @@ export function buildImagenPrompt(params: AIGenerationParams): string {
     prompt += `${params.customRequest.trim()}. `;
   }
 
-  // Imagen 4に最適化された技術指示（よりシンプル）
-  prompt += `Photorealistic, high-detail, vibrant colors, clean background, professional quality.`;
+  // アニメ調+透過背景に最適化された技術指示（シンプル版）
+  prompt += `Anime style, cartoon illustration, transparent background, no background, vibrant colors, clean lineart.`;
 
   return prompt;
 }
