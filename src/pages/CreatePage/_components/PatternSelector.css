@@ -458,6 +458,78 @@
   }
 }
 
+/* ライトモード対応 */
+[data-theme="light"] .pattern-selector {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .pattern-option {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .pattern-option:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .pattern-option.selected {
+  background: rgba(0, 139, 139, 0.2);
+  border-color: var(--primary-color);
+}
+
+[data-theme="light"] .pattern-preview {
+  background: rgba(0, 139, 139, 0.15);
+}
+
+[data-theme="light"] .selected-indicator {
+  background: var(--primary-color);
+}
+
+[data-theme="light"] .pattern-customization {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .advanced-toggle {
+  background: rgba(0, 139, 139, 0.15);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .advanced-toggle:hover {
+  background: rgba(0, 139, 139, 0.25);
+  border-color: rgba(0, 139, 139, 0.6);
+}
+
+[data-theme="light"] .current-pattern {
+  background: rgba(0, 139, 139, 0.15);
+}
+
+[data-theme="light"] .advanced-settings {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="light"] .direction-button {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .direction-button:hover {
+  background: rgba(0, 139, 139, 0.15);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .direction-button.active {
+  background: rgba(0, 139, 139, 0.25);
+  border-color: var(--primary-color);
+}
+
+[data-theme="light"] .tip {
+  background: rgba(218, 165, 32, 0.15);
+  border-left-color: rgba(218, 165, 32, 0.4);
+}
+
 @media (max-width: 480px) {
   .patterns-grid {
     grid-template-columns: 1fr;

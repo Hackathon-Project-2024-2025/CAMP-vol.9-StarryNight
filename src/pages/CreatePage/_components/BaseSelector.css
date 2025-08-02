@@ -197,6 +197,52 @@
   }
 }
 
+/* ライトモード対応 */
+[data-theme="light"] .base-selector {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .base-option {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .base-option:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .base-option.selected {
+  background-color: rgba(0, 139, 139, 0.2);
+  border-color: rgba(0, 139, 139, 0.6);
+}
+
+[data-theme="light"] .base-option.selected::before {
+  background: linear-gradient(45deg, rgba(0, 139, 139, 0.15), transparent);
+}
+
+[data-theme="light"] .base-preview {
+  background: radial-gradient(circle, rgba(0, 139, 139, 0.2), transparent);
+}
+
+[data-theme="light"] .base-option.selected .base-name {
+  color: var(--primary-color);
+}
+
+[data-theme="light"] .selected-indicator {
+  background-color: var(--primary-color);
+}
+
+[data-theme="light"] .current-selection {
+  background-color: rgba(0, 139, 139, 0.15);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .selection-value {
+  color: var(--primary-color);
+  background-color: rgba(0, 139, 139, 0.2);
+}
+
 /* 小さな画面での調整 */
 @media (max-width: 480px) {
   .base-selector {
