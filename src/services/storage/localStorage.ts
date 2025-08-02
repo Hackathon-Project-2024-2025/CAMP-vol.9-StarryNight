@@ -1,9 +1,22 @@
 import type { Theme, UserPreferences, FishDesign } from '../../types/common.types';
+import type { AISelections } from '../../types/ai.types';
 
 const THEME_KEY = 'starry-night-theme';
 const DARK_MODE_KEY = 'starry-night-dark-mode';
 const USER_PREFERENCES_KEY = 'starry-night-preferences';
 const AQUARIUM_FISH_KEY = 'starry-night-aquarium-fish';
+const AI_FISH_IMAGES_KEY = 'starry-night-ai-fish-images';
+
+// AI生成画像魚の型定義
+export interface AIFishImage {
+  id: string;
+  name: string;
+  imageData: string; // Base64エンコード画像データ
+  type: 'ai-generated';
+  aiModel: 'chatgpt' | 'gemini';
+  generatedAt: Date;
+  selections: AISelections; // 生成時の設定
+}
 
 export const getStoredTheme = (): Theme | null => {
   try {
@@ -115,4 +128,59 @@ export const clearAquarium = (): void => {
   } catch (error) {
     console.error('Error clearing aquarium:', error);
   }
+};
+
+// AI生成画像魚の水槽関連機能
+export const saveFishImageToAquarium = (aiFishImage: AIFishImage): void => {
+  try {
+    const existingImages = getAIFishImages();
+    
+    // 同じIDの画像があれば更新、なければ追加
+    const imageIndex = existingImages.findIndex(img => img.id === aiFishImage.id);
+    if (imageIndex >= 0) {
+      existingImages[imageIndex] = aiFishImage;
+    } else {
+      existingImages.push(aiFishImage);
+    }
+    
+    localStorage.setItem(AI_FISH_IMAGES_KEY, JSON.stringify(existingImages));
+  } catch (error) {
+    console.error('Error saving AI fish image to aquarium:', error);
+  }
+};
+
+export const getAIFishImages = (): AIFishImage[] => {
+  try {
+    const imageData = localStorage.getItem(AI_FISH_IMAGES_KEY);
+    return imageData ? JSON.parse(imageData) : [];
+  } catch (error) {
+    console.error('Error loading AI fish images from aquarium:', error);
+    return [];
+  }
+};
+
+export const removeAIFishImageFromAquarium = (imageId: string): void => {
+  try {
+    const existingImages = getAIFishImages();
+    const updatedImages = existingImages.filter(img => img.id !== imageId);
+    localStorage.setItem(AI_FISH_IMAGES_KEY, JSON.stringify(updatedImages));
+  } catch (error) {
+    console.error('Error removing AI fish image from aquarium:', error);
+  }
+};
+
+export const clearAIFishImages = (): void => {
+  try {
+    localStorage.removeItem(AI_FISH_IMAGES_KEY);
+  } catch (error) {
+    console.error('Error clearing AI fish images:', error);
+  }
+};
+
+// 水槽の全データ取得（JSON魚と画像魚の混在対応）
+export const getAllAquariumData = (): { jsonFish: FishDesign[], aiFishImages: AIFishImage[] } => {
+  return {
+    jsonFish: getAquariumFish(),
+    aiFishImages: getAIFishImages()
+  };
 };
