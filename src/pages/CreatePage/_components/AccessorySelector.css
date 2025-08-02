@@ -224,7 +224,8 @@
   align-items: center;
   gap: var(--spacing-xs);
   font-size: var(--font-size-xs);
-  min-width: 60px;
+  min-width: 80px;
+  justify-content: center;
 }
 
 .accessory-button:hover {

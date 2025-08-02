@@ -37,7 +37,7 @@
   cursor: pointer;
   transition: all var(--transition-base);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .base-option:hover {
@@ -131,6 +131,7 @@
   font-size: var(--font-size-xs);
   font-weight: bold;
   animation: checkmark 0.3s ease-in-out;
+  z-index: 10;
 }
 
 @keyframes checkmark {
