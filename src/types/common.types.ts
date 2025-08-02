@@ -104,7 +104,7 @@ export interface BodyPattern {
 export interface Accessory {
   id: string;
   name: string;
-  category: 'crown' | 'hat' | 'glasses' | 'ribbon' | 'bow' | 'jewelry';
+  category: 'crown' | 'hat' | 'glasses' | 'ribbon' | 'bow';
   description: string;
   position: { x: number; y: number }; // 相対位置
   size: number; // サイズ倍率

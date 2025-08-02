@@ -472,3 +472,60 @@
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
+
+/* ライトモード対応 */
+[data-theme="light"] .ai-fish-preview-section {
+  border-color: var(--border-color);
+  box-shadow: 0 4px 12px rgba(26, 32, 44, 0.1);
+}
+
+[data-theme="light"] .ai-design-controls-section {
+  background-color: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 3px 10px rgba(26, 32, 44, 0.08);
+}
+
+[data-theme="light"] .ai-fish-control-card {
+  border-color: var(--border-color);
+  box-shadow: 0 2px 8px rgba(26, 32, 44, 0.06);
+}
+
+[data-theme="light"] .ai-action-button {
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .ai-save-button {
+  border-color: #16a34a;
+  color: #15803d;
+}
+
+[data-theme="light"] .ai-save-button:hover:not(:disabled) {
+  background: #16a34a;
+  color: white;
+}
+
+[data-theme="light"] .ai-reset-button {
+  border-color: #d97706;
+  color: #c2410c;
+}
+
+[data-theme="light"] .ai-reset-button:hover:not(:disabled) {
+  background: #d97706;
+  color: white;
+}
+
+[data-theme="light"] .ai-aquarium-button {
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+[data-theme="light"] .ai-aquarium-button:hover:not(:disabled) {
+  background: #2563eb;
+  color: white;
+}
+
+[data-theme="light"] .ai-name-input {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 183, 197, 0.5);
+  color: var(--text-color);
+}

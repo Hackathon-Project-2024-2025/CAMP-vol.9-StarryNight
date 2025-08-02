@@ -1035,7 +1035,8 @@ const FishPreview = forwardRef<FishPreviewRef, FishPreviewProps>(({ fishDesign, 
             height: '300px',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: 'var(--border-radius-md)',
-            background: 'linear-gradient(to bottom, rgba(135, 206, 235, 0.2), rgba(173, 216, 230, 0.3))'
+            background: 'linear-gradient(to bottom, rgba(64, 224, 208, 0.6), rgba(30, 144, 255, 0.5))'
+            // background: 'linear-gradient(to bottom, rgba(135, 206, 235, 0.2), rgba(173, 216, 230, 0.3))'
           }}
         />
       </div>

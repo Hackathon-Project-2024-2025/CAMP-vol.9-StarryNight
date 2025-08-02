@@ -315,7 +315,6 @@ export default function AICreatePage() {
                   disabled={generationStatus !== 'success'}
                   title="金魚を画像として保存"
                 >
-                  <span className="ai-button-icon">💾</span>
                   <span className="ai-button-text">保存</span>
                 </button>
                 
@@ -324,7 +323,6 @@ export default function AICreatePage() {
                   onClick={handleReset}
                   title="すべてリセット"
                 >
-                  <span className="ai-button-icon">🔄</span>
                   <span className="ai-button-text">リセット</span>
                 </button>
                 
@@ -334,7 +332,6 @@ export default function AICreatePage() {
                   disabled={generationStatus !== 'success' || isMovingToAquarium}
                   title="金魚を水槽に移動"
                 >
-                  <span className="ai-button-icon">🐠</span>
                   <span className="ai-button-text">
                     {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
                   </span>

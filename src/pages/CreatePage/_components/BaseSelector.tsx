@@ -1,9 +1,12 @@
-import type { FishBase } from '../../../types/common.types';
+import type { FishBase, FishDesign } from '../../../types/common.types';
+import RandomGenerator from './RandomGenerator';
 import './BaseSelector.css';
 
 interface BaseSelectorProps {
   selectedBase: FishBase;
   onBaseSelect: (base: FishBase) => void;
+  currentDesign?: FishDesign;
+  onDesignGenerate?: (newDesign: FishDesign) => void;
 }
 
 // 利用可能な魚の基本体型
@@ -42,7 +45,12 @@ const availableBases: FishBase[] = [
   }
 ];
 
-export default function BaseSelector({ selectedBase, onBaseSelect }: BaseSelectorProps) {
+export default function BaseSelector({ 
+  selectedBase, 
+  onBaseSelect, 
+  currentDesign, 
+  onDesignGenerate 
+}: BaseSelectorProps) {
   const handleBaseClick = (base: FishBase) => {
     onBaseSelect(base);
   };
@@ -178,6 +186,14 @@ export default function BaseSelector({ selectedBase, onBaseSelect }: BaseSelecto
           <span className="selection-value">{selectedBase.name}</span>
         </div>
       </div>
+
+      {/* ランダム生成機能 */}
+      {currentDesign && onDesignGenerate && (
+        <RandomGenerator
+          currentDesign={currentDesign}
+          onDesignGenerate={onDesignGenerate}
+        />
+      )}
     </div>
   );
 }

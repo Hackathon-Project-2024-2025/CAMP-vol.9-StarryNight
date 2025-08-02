@@ -124,7 +124,6 @@ export default function ActionButtons({
           onClick={onReset}
           title="すべてリセット"
         >
-          <span className="button-icon">🔄</span>
           <span className="button-text">リセット</span>
         </button>
         
@@ -133,7 +132,6 @@ export default function ActionButtons({
           onClick={onSave}
           title="魚を画像として保存"
         >
-          <span className="button-icon">📸</span>
           <span className="button-text">画像保存</span>
         </button>
         
@@ -143,7 +141,6 @@ export default function ActionButtons({
           disabled={isMovingToAquarium}
           title="魚を水槽に移動"
         >
-          <span className="button-icon">🐠</span>
           <span className="button-text">
             {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
           </span>

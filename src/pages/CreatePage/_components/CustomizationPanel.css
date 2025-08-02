@@ -252,6 +252,84 @@
   }
 }
 
+/* ライトモード対応 */
+[data-theme="light"] .customization-panel {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .panel-header {
+  border-bottom-color: rgba(0, 139, 139, 0.3);
+}
+
+[data-theme="light"] .customization-section {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .customization-section:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.3);
+}
+
+[data-theme="light"] .section-title {
+  border-bottom-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .position-group {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .position-label {
+  background-color: rgba(0, 139, 139, 0.2);
+}
+
+[data-theme="light"] .preset-button {
+  background: linear-gradient(135deg, rgba(0, 139, 139, 0.15), rgba(218, 165, 32, 0.15));
+  border-color: rgba(0, 139, 139, 0.4);
+  box-shadow: 0 2px 4px rgba(0, 139, 139, 0.2);
+}
+
+[data-theme="light"] .preset-button:hover {
+  background: linear-gradient(135deg, rgba(0, 139, 139, 0.25), rgba(218, 165, 32, 0.25));
+  border-color: rgba(0, 139, 139, 0.6);
+  box-shadow: 0 4px 8px rgba(0, 139, 139, 0.3);
+}
+
+[data-theme="light"] .preset-button::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+/* ライトモード専用ボーダー色 */
+[data-theme="light"] .customization-section:nth-child(1) {
+  border-left-color: rgba(0, 139, 139, 0.6);
+}
+
+[data-theme="light"] .customization-section:nth-child(2) {
+  border-left-color: rgba(218, 165, 32, 0.6);
+}
+
+[data-theme="light"] .customization-section:nth-child(3) {
+  border-left-color: rgba(70, 130, 180, 0.6);
+}
+
+[data-theme="light"] .customization-section:nth-child(4) {
+  border-left-color: rgba(60, 179, 113, 0.6);
+}
+
+/* ライトモード専用スクロールバー */
+[data-theme="light"] .customization-panel::-webkit-scrollbar-track {
+  background: rgba(0, 139, 139, 0.1);
+}
+
+[data-theme="light"] .customization-panel::-webkit-scrollbar-thumb {
+  background: rgba(0, 139, 139, 0.5);
+}
+
+[data-theme="light"] .customization-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 139, 139, 0.7);
+}
+
 /* ダークモード対応の追加効果 */
 @media (prefers-color-scheme: dark) {
   .customization-section {

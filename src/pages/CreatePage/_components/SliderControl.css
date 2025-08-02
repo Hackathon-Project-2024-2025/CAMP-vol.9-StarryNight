@@ -142,6 +142,42 @@
   }
 }
 
+/* ライトモード対応 */
+[data-theme="light"] .slider-control {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .slider-control:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .slider-value {
+  color: var(--primary-color);
+  background-color: rgba(0, 139, 139, 0.2);
+}
+
+[data-theme="light"] .slider-input {
+  background: rgba(0, 139, 139, 0.3);
+}
+
+[data-theme="light"] .slider-input::-webkit-slider-thumb {
+  background: linear-gradient(135deg, var(--primary-color), #4682b4);
+}
+
+[data-theme="light"] .slider-input::-moz-range-thumb {
+  background: linear-gradient(135deg, var(--primary-color), #4682b4);
+}
+
+[data-theme="light"] .slider-input::-moz-range-track {
+  background: rgba(0, 139, 139, 0.3);
+}
+
+[data-theme="light"] .slider-input:focus {
+  box-shadow: 0 0 0 2px rgba(0, 139, 139, 0.4);
+}
+
 /* タッチデバイス対応 */
 @media (hover: none) and (pointer: coarse) {
   .slider-input::-webkit-slider-thumb {

@@ -321,3 +321,70 @@
   margin: 0;
   font-style: italic;
 }
+
+/* ライトモード対応 */
+[data-theme="light"] .parts-selector {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .category-tab {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .category-tab:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .category-tab.active {
+  background-color: rgba(0, 139, 139, 0.2);
+  border-color: rgba(0, 139, 139, 0.6);
+  color: var(--primary-color);
+}
+
+[data-theme="light"] .part-option {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .part-option:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .part-option.selected {
+  background-color: rgba(0, 139, 139, 0.3);
+  border-color: rgba(0, 139, 139, 0.7);
+}
+
+[data-theme="light"] .part-preview {
+  background: radial-gradient(circle, rgba(0, 139, 139, 0.2), transparent);
+}
+
+[data-theme="light"] .part-option.selected .part-name {
+  color: var(--primary-color);
+}
+
+[data-theme="light"] .selected-indicator {
+  background-color: var(--primary-color);
+}
+
+[data-theme="light"] .current-selection {
+  background-color: rgba(0, 139, 139, 0.15);
+  border-color: rgba(0, 139, 139, 0.4);
+}
+
+[data-theme="light"] .selection-value {
+  color: var(--primary-color);
+  background-color: rgba(0, 139, 139, 0.2);
+}
+
+[data-theme="light"] .part-adjustment-panel {
+  /* background-color: rgba(0, 139, 139, 0.25); */
+  border-color: rgba(0, 139, 139, 0.5);
+}
+
+[data-theme="light"] .adjustment-title {
+  color: var(--primary-color);
+}
