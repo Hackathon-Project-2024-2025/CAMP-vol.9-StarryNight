@@ -381,7 +381,7 @@
 }
 
 [data-theme="light"] .part-adjustment-panel {
-  background-color: rgba(0, 139, 139, 0.25);
+  /* background-color: rgba(0, 139, 139, 0.25); */
   border-color: rgba(0, 139, 139, 0.5);
 }
 
