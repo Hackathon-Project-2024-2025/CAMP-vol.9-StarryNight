@@ -1,4 +1,5 @@
 import type { FishDesign, Ripple } from '../../../types/common.types';
+import type { AIFishImage } from '../../../services/storage/localStorage';
 
 export interface SwimmingFishState {
   x: number;
@@ -16,7 +17,8 @@ export interface SwimmingFishState {
 }
 
 export class SwimmingFish {
-  public fishDesign: FishDesign;
+  public fishData: FishDesign | AIFishImage; // FishDesignまたはAIFishImageを格納
+  public preloadedImage?: HTMLImageElement; // AI魚の場合の事前読み込み済み画像
   public state: SwimmingFishState;
   private aquariumWidth: number;
   private aquariumHeight: number;
@@ -24,20 +26,23 @@ export class SwimmingFish {
   private changeDirectionChance: number;
   private lastDirectionChange: number;
   private rippleChaseSpeed: number;  // 波紋追跡時の速度倍率
+  private isImageLoaded: boolean = false; // 画像読み込み状態
 
   constructor(
-    fishDesign: FishDesign, 
+    fishData: FishDesign | AIFishImage, 
     aquariumWidth: number, 
     aquariumHeight: number
   ) {
-    this.fishDesign = fishDesign;
+    this.fishData = fishData;
     this.aquariumWidth = aquariumWidth;
     this.aquariumHeight = aquariumHeight;
     
     // 魚ごとに異なる速度と行動パターンを設定
-    this.maxSpeed = 0.5 + Math.random() * 1.0; // 0.5-1.5の速度
-    this.rippleChaseSpeed = 1.5 + Math.random() * 0.5; // 波紋追跡時は1.5-2.0倍速
-    this.changeDirectionChance = 0.002 + Math.random() * 0.003; // 方向転換確率
+    // AI魚は少し速めに設定
+    const isAIFish = 'imageData' in fishData && fishData.type === 'ai-generated';
+    this.maxSpeed = isAIFish ? (0.8 + Math.random() * 1.2) : (0.5 + Math.random() * 1.0); // AI魚: 0.8-2.0, 通常魚: 0.5-1.5
+    this.rippleChaseSpeed = isAIFish ? (1.8 + Math.random() * 0.7) : (1.5 + Math.random() * 0.5); // AI魚は波紋追跡がより速い
+    this.changeDirectionChance = isAIFish ? (0.0025 + Math.random() * 0.0035) : (0.002 + Math.random() * 0.003); // AI魚はより活発
     this.lastDirectionChange = Date.now();
 
     // 初期位置をランダムに設定
@@ -49,7 +54,7 @@ export class SwimmingFish {
       targetX: 0,
       targetY: 0,
       angle: 0,
-      scale: 0.6 + Math.random() * 0.4, // 0.6-1.0のスケール
+      scale: isAIFish ? (0.7 + Math.random() * 0.5) : (0.6 + Math.random() * 0.4), // AI魚: 0.7-1.2, 通常魚: 0.6-1.0のスケール
       isVisible: true,
       isChasing: false,
       chasingRippleId: undefined,
@@ -57,6 +62,13 @@ export class SwimmingFish {
     };
 
     this.setRandomTarget();
+    
+    // AI魚の場合は画像を事前読み込み
+    if (this.isAIFish()) {
+      this.preloadAIFishImage();
+    } else {
+      this.isImageLoaded = true; // 通常魚は即座描画可能
+    }
   }
 
   private setRandomTarget(): void {
@@ -230,6 +242,55 @@ export class SwimmingFish {
     }
   }
 
+  // タイプガード関数：AI魚かどうかを判定
+  private isAIFish(): this is SwimmingFish & { fishData: AIFishImage } {
+    return 'imageData' in this.fishData && this.fishData.type === 'ai-generated';
+  }
+  
+  // AI魚の画像を事前読み込み
+  private preloadAIFishImage(): void {
+    if (!this.isAIFish()) return;
+    
+    const aiFishData = this.fishData as AIFishImage;
+    console.log(`🖼️ Preloading AI fish image: ${aiFishData.name}`);
+    
+    // 画像形式を自動判定
+    const detectImageFormat = (base64Data: string): string => {
+      if (base64Data.startsWith('/9j/')) {
+        return 'jpeg';
+      } else if (base64Data.startsWith('iVBORw0KGgo')) {
+        return 'png';
+      } else if (base64Data.startsWith('R0lGOD')) {
+        return 'gif';
+      } else if (base64Data.startsWith('UklGR')) {
+        return 'webp';
+      } else {
+        return 'jpeg';
+      }
+    };
+    
+    const imageFormat = detectImageFormat(aiFishData.imageData);
+    const img = new Image();
+    
+    img.onload = () => {
+      console.log(`✅ AI fish image loaded successfully: ${aiFishData.name} (${img.width}x${img.height})`);
+      this.preloadedImage = img;
+      this.isImageLoaded = true;
+    };
+    
+    img.onerror = (error) => {
+      console.error(`❌ Failed to preload AI fish image: ${aiFishData.name}`, error);
+      this.isImageLoaded = false;
+    };
+    
+    img.src = `data:image/${imageFormat};base64,${aiFishData.imageData}`;
+  }
+  
+  // 画像が描画可能かどうかを返す
+  public isReadyToDraw(): boolean {
+    return this.isImageLoaded;
+  }
+  
   public resize(newWidth: number, newHeight: number): void {
     // 水槽サイズが変更された場合の対応
     const ratioX = newWidth / this.aquariumWidth;

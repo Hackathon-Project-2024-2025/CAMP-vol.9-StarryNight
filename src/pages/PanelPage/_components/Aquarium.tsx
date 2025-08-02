@@ -20,8 +20,10 @@ interface Bubble {
 
 export default function Aquarium({ fishList, aiFishImages, className = '' }: AquariumProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const aquariumContainerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
   const swimmingFishRef = useRef<SwimmingFish[]>([]);
+  const swimmingAIFishRef = useRef<never[]>([]);  // 使用停止（削除予定）
   const bubblesRef = useRef<Bubble[]>([]);
   const ripplesRef = useRef<Ripple[]>([]);
   const rippleIdCounter = useRef(0);
@@ -634,15 +636,82 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     }
   }, [getBodyDimensions, getFishShapeFactorAtY]);
 
-  // 水槽用の魚描画関数（FishPreviewと完全一致）
-  const drawFish = useCallback((
+  // AI画像をCanvasに描画する関数
+  const drawAIFishImage = useCallback((
     ctx: CanvasRenderingContext2D,
-    design: FishDesign,
+    preloadedImage: HTMLImageElement,
+    fishName: string,
     x: number,
     y: number,
     scale: number,
     angle: number
   ) => {
+    console.log(`🎨 Drawing AI fish: ${fishName} at (${Math.round(x)}, ${Math.round(y)}) scale=${scale.toFixed(2)} angle=${(angle * 180 / Math.PI).toFixed(1)}°`);
+    
+    ctx.save();
+    
+    // 魚の向きを判定（左向きかどうか）
+    const isMovingLeft = Math.cos(angle) < 0;
+    
+    // 回転と位置を適用
+    ctx.translate(x, y);
+    
+    if (isMovingLeft) {
+      // 左向きの場合：X軸反転 + 角度補正
+      ctx.scale(-scale, scale);
+      ctx.rotate(Math.PI - angle);
+    } else {
+      // 右向きの場合：通常処理
+      ctx.scale(scale, scale);
+      ctx.rotate(angle);
+    }
+    
+    // 画像を描画（中央を原点とする）
+    const imageWidth = 80; // 表示サイズ
+    const imageHeight = 60;
+    
+    try {
+      ctx.drawImage(preloadedImage, -imageWidth/2, -imageHeight/2, imageWidth, imageHeight);
+      console.log(`✅ Successfully drew AI fish: ${fishName}`);
+    } catch (error) {
+      console.error(`❌ Failed to draw AI fish: ${fishName}`, error);
+    }
+    
+    ctx.restore();
+  }, []);
+
+  // 水槽用の魚描画関数（SwimmingFishインスタンスを使用）
+  const drawFish = useCallback((
+    ctx: CanvasRenderingContext2D,
+    swimmingFish: SwimmingFish,
+    x: number,
+    y: number,
+    scale: number,
+    angle: number
+  ) => {
+    // 描画処理開始ログ
+    const fishName = 'name' in swimmingFish.fishData ? swimmingFish.fishData.name : `fish-${swimmingFish.fishData.id}`;
+    
+    // AI生成画像かどうかを判定
+    if ('imageData' in swimmingFish.fishData && swimmingFish.fishData.type === 'ai-generated') {
+      // AI魚: 事前読み込み済み画像があるかチェック
+      if (!swimmingFish.isReadyToDraw()) {
+        console.log(`⏳ AI fish image not ready yet: ${fishName}`);
+        return;
+      }
+      
+      if (!swimmingFish.preloadedImage) {
+        console.error(`❗ AI fish has no preloaded image: ${fishName}`);
+        return;
+      }
+      
+      // AI画像を描画
+      drawAIFishImage(ctx, swimmingFish.preloadedImage, fishName, x, y, scale, angle);
+      return;
+    }
+    
+    // 通常のFishDesignを描画
+    const design = swimmingFish.fishData as FishDesign;
     ctx.save();
     
     // 魚の向きを判定（左向きかどうか）
@@ -982,7 +1051,7 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     updateRipples(ripplesRef.current);
     drawRipples(ctx, ripplesRef.current);
     
-    // 魚を更新・描画
+    // 通常の魚を更新・描画
     swimmingFishRef.current.forEach(swimmingFish => {
       if (swimmingFish.state.isVisible) {
         // 波紋の感知と追跡チェック
@@ -991,28 +1060,40 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
         
         swimmingFish.update();
         const pos = swimmingFish.getPosition();
-        drawFish(ctx, swimmingFish.fishDesign, pos.x, pos.y, pos.scale, pos.angle);
+        drawFish(ctx, swimmingFish, pos.x, pos.y, pos.scale, pos.angle);
       }
     });
+
+    // SwimmingAIFishシステムは使用停止（空の配列になっているので処理なし）
     
     animationRef.current = requestAnimationFrame(animate);
   }, [drawAquariumBg, updateBubbles, drawBubbles, updateRipples, drawRipples, drawFish]);
 
-  // 魚リストが変更された時の処理
+  // 魚リストが変更された時の処理（通常魚とAI魚を統合）
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const { width, height } = canvas;
     
-    // 新しい魚のSwimmingFishインスタンスを作成
-    swimmingFishRef.current = fishList.map(fish => 
-      new SwimmingFish(fish, width, height)
+    // SwimmingAIFishシステムは使用停止（空配列なのでクリーンアップ不要）
+    
+    // 通常魚とAI魚を統合したSwimmingFishインスタンスを作成
+    const allFishData = [...fishList, ...aiFishImages];
+    
+    swimmingFishRef.current = allFishData.map(fishData => 
+      new SwimmingFish(fishData, width, height)
     );
+    
+    // AI魚のSwimmingAIFishシステムは使用停止（空の配列で初期化）
+    swimmingAIFishRef.current = [];
     
     // 泡を初期化
     bubblesRef.current = initBubbles(width, height);
-  }, [fishList, initBubbles]);
+    
+    console.log(`🐠 Created ${swimmingFishRef.current.length} swimming fish (${fishList.length} regular + ${aiFishImages.length} AI)`);
+  }, [fishList, aiFishImages, initBubbles]);
+
 
   // マウスクリックハンドラ
   const handleCanvasClick = useCallback((event: MouseEvent) => {
@@ -1048,6 +1129,8 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
       swimmingFishRef.current.forEach(fish => {
         fish.resize(rect.width, rect.height);
       });
+      
+      // SwimmingAIFishシステムは使用停止（空配列なので処理なし）
     };
 
     updateCanvasSize();
@@ -1072,6 +1155,7 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      // SwimmingAIFishシステムは使用停止（空配列なのでクリーンアップ不要）
     };
   }, [animate]);
 
@@ -1085,36 +1169,13 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
         </div>
       </div>
       
-      <div className="aquarium-container">
+      <div className="aquarium-container" ref={aquariumContainerRef}>
         <canvas
           ref={canvasRef}
           className="aquarium-canvas"
         />
         
-        {/* AI画像魚の表示 */}
-        {aiFishImages.map((aiFish, index) => (
-          <div
-            key={aiFish.id}
-            className="ai-fish-floating"
-            style={{
-              position: 'absolute',
-              top: `${20 + (index * 15) % 60}%`,
-              left: `${10 + (index * 25) % 80}%`,
-              zIndex: 5
-            }}
-          >
-            <img
-              src={`data:image/png;base64,${aiFish.imageData}`}
-              alt={aiFish.name}
-              className="ai-fish-aquarium-image"
-              style={{
-                width: '80px',
-                height: '60px',
-                objectFit: 'contain'
-              }}
-            />
-          </div>
-        ))}
+        {/* AI画像魚はSwimmingAIFishクラスが動的に生成・管理 */}
 
         {fishList.length + aiFishImages.length === 0 && (
           <div className="empty-aquarium">

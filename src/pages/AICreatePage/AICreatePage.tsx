@@ -8,6 +8,7 @@ import { generateWithGemini } from '../../services/ai/geminiService';
 import { convertSelectionsToGenerationParams } from '../../services/ai/aiSelectionsConverter';
 import { debugLog, logGenerationProcess, generateErrorReport } from '../../services/ai/aiDebugUtils';
 import { saveFishImageToAquarium } from '../../services/storage/localStorage';
+import { compressBase64Image, formatBytes, calculateBase64Size } from '../../services/storage/imageCompression';
 import type { 
   AISelections, 
   AIGenerationResult, 
@@ -170,18 +171,35 @@ export default function AICreatePage() {
       setIsMovingToAquarium(true);
       debugLog('AQUARIUM', `Moving AI generated image to aquarium: ${fishName}`);
       
-      // 画像データを水槽に保存（新しい形式）
+      // 元画像サイズをログ出力
+      const originalSize = calculateBase64Size(generatedImageData);
+      debugLog('COMPRESSION', `Original image size: ${formatBytes(originalSize)}`);
+      
+      // 画像を圧縮（水槽表示用に最適化）
+      debugLog('COMPRESSION', 'Compressing image for aquarium storage...');
+      const compressedImageData = await compressBase64Image(
+        generatedImageData,
+        400, // maxWidth: 400px (水槽表示に適したサイズ)
+        300, // maxHeight: 300px
+        0.8  // quality: 80% (品質と容量のバランス)
+      );
+      
+      const compressedSize = calculateBase64Size(compressedImageData);
+      const compressionRatio = Math.round((compressedSize / originalSize) * 100);
+      debugLog('COMPRESSION', `Compressed image size: ${formatBytes(compressedSize)} (${compressionRatio}% of original)`);
+      
+      // 圧縮済み画像データを水槽に保存
       saveFishImageToAquarium({
         id: `ai-fish-${Date.now()}`, // 一意のID生成
         name: fishName,
-        imageData: generatedImageData, // Base64画像データ
+        imageData: compressedImageData, // 圧縮済みBase64画像データ
         type: 'ai-generated', // AI生成フラグ
         aiModel: aiSelections.model,
-        generatedAt: new Date(),
+        generatedAt: new Date().toISOString(), // ISO文字列として保存
         selections: aiSelections // 生成時の設定も保存
       });
       
-      debugLog('AQUARIUM', 'Successfully saved AI image to aquarium storage');
+      debugLog('AQUARIUM', 'Successfully saved compressed AI image to aquarium storage');
       
       // 水槽ページに移動
       setTimeout(() => {
@@ -191,7 +209,19 @@ export default function AICreatePage() {
       
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Unknown aquarium error');
-      debugLog('AQUARIUM', `Failed to move image to aquarium: ${err.message}`);
+      
+      // QuotaExceededErrorの場合は分かりやすいメッセージ
+      if (err.name === 'QuotaExceededError' || err.message.includes('quota')) {
+        debugLog('AQUARIUM', 'Storage quota exceeded. Please delete some old fish images.');
+        setErrorMessage('容量不足のため保存できません。古い金魚画像を削除してください。');
+      } else if (err.message.includes('compression')) {
+        debugLog('AQUARIUM', `Image compression failed: ${err.message}`);
+        setErrorMessage('画像圧縮中にエラーが発生しました。再試行してください。');
+      } else {
+        debugLog('AQUARIUM', `Failed to move image to aquarium: ${err.message}`);
+        setErrorMessage('水槽への移動中にエラーが発生しました。');
+      }
+      
       setIsMovingToAquarium(false);
     }
   };
