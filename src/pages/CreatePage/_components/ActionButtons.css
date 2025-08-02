@@ -264,6 +264,26 @@
 }
 
 /* ライトモード対応 */
+[data-theme="light"] .name-display-container {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: var(--border-color);
+}
+
+[data-theme="light"] .name-display-container:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .name-input {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 139, 139, 0.4);
+  color: var(--text-color);
+}
+
+[data-theme="light"] .name-input:focus {
+  border-color: rgba(0, 139, 139, 0.6);
+  box-shadow: 0 0 0 2px rgba(0, 139, 139, 0.2);
+}
+
 [data-theme="light"] .action-button-reset {
   background-color: rgba(156, 163, 175, 0.3);
   color: #374151;
@@ -280,12 +300,6 @@
   background: linear-gradient(135deg, rgba(135, 206, 235, 0.4), rgba(107, 183, 255, 0.4));
   color: var(--text-color);
   border-color: rgba(135, 206, 235, 0.7);
-}
-
-[data-theme="light"] .name-input {
-  background-color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 183, 197, 0.5);
-  color: var(--text-color);
 }
 
 [data-theme="light"] .tips {

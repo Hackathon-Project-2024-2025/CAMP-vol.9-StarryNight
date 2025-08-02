@@ -354,8 +354,8 @@
 }
 
 [data-theme="light"] .part-option.selected {
-  background-color: rgba(0, 139, 139, 0.2);
-  border-color: rgba(0, 139, 139, 0.6);
+  background-color: rgba(0, 139, 139, 0.3);
+  border-color: rgba(0, 139, 139, 0.7);
 }
 
 [data-theme="light"] .part-preview {
@@ -381,8 +381,8 @@
 }
 
 [data-theme="light"] .part-adjustment-panel {
-  background-color: rgba(0, 139, 139, 0.15);
-  border-color: rgba(0, 139, 139, 0.4);
+  background-color: rgba(0, 139, 139, 0.25);
+  border-color: rgba(0, 139, 139, 0.5);
 }
 
 [data-theme="light"] .adjustment-title {
