@@ -5,7 +5,6 @@ import AIImageDisplay from '../../components/AIImageDisplay/AIImageDisplay';
 import type { AIImageDisplayRef } from '../../components/AIImageDisplay/AIImageDisplay';
 import { generateWithChatGPT } from '../../services/ai/chatgptService';
 import { generateWithGemini } from '../../services/ai/geminiService';
-import { buildCreativeFishPrompt } from '../../services/ai/creativeFishPrompts';
 import { convertSelectionsToGenerationParams } from '../../services/ai/aiSelectionsConverter';
 import { debugLog, logGenerationProcess, generateErrorReport } from '../../services/ai/aiDebugUtils';
 import { saveFishImageToAquarium } from '../../services/storage/localStorage';
@@ -72,7 +71,7 @@ export default function AICreatePage() {
     setErrorMessage('');
     
     // スコープの外でgenerationParamsを定義
-    let generationParams = convertSelectionsToGenerationParams(aiSelections);
+    const generationParams = convertSelectionsToGenerationParams(aiSelections);
 
     try {
       const startTime = Date.now();
@@ -83,25 +82,22 @@ export default function AICreatePage() {
       // AISelections → AIGenerationParams の確認（既に作成済み）
       logGenerationProcess('CONVERT', aiSelections, generationParams);
       
-      // 創造的プロンプトの構築
-      const { system, user } = buildCreativeFishPrompt(generationParams);
-      logGenerationProcess('PROMPT', aiSelections, generationParams);
-      
-      debugLog('PROMPT', 'Generated creative prompt', { system: system.substring(0, 200) + '...', user: user.substring(0, 200) + '...' });
+      // ★★★ 修正：buildCreativeFishPromptを削除し、直接generationParamsを渡す ★★★
+      debugLog('PROMPT', 'Using image generation parameters directly', { generationParams });
       
       let result: AIGenerationResult;
       
       if (aiSelections.model === 'gemini') {
-        result = await generateWithGemini(system, user, {
+        result = await generateWithGemini(generationParams, {
           model: aiSelections.model,
           temperature: 0.8,
-          maxTokens: 3000 // 複雑な描画データのため増量
+          maxTokens: 3000 // 複雑な描画データのため増量（実際は画像生成では不要）
         });
       } else {
-        result = await generateWithChatGPT(system, user, {
+        result = await generateWithChatGPT(generationParams, {
           model: aiSelections.model,
           temperature: 0.8,
-          maxTokens: 3000
+          maxTokens: 3000 // 複雑な描画データのため増量（実際は画像生成では不要）
         });
       }
 

@@ -1,6 +1,8 @@
 // src/services/ai/geminiService.ts (Imagen 4対応版)
 
 import type { AIGenerationResult, AIApiConfig } from '../../types/ai.types';
+import type { AIGenerationParams } from '../../types/aiFish.types';
+import { buildImagenPrompt, debugImagePrompt, validateImagePrompt } from './imagePrompts';
 
 // 変更点: Vertex AI APIを使用してImagen 4にアクセス
 const VERTEX_AI_BASE_URL = 'https://us-central1-aiplatform.googleapis.com/v1';
@@ -64,15 +66,21 @@ function getGoogleCloudAuth(): { accessToken: string; projectId: string } {
 }
 
 // プロンプトからImagen 4リクエストを構築
-function buildImagenRequest(systemPrompt: string, userPrompt: string): ImagenRequest {
-
-  // 修正前
-  const fullPrompt = `${systemPrompt}. ${userPrompt}. Create a high-quality, detailed image of a goldfish. Style: photorealistic, clean background, vibrant colors, good lighting.`;
-  // ★★★ この行を追加して、送信するプロンプトをコンソールで確認できるようにする ★★★
-  console.log("【送信するプロンプト】:", fullPrompt);
+function buildImagenRequest(params: AIGenerationParams): ImagenRequest {
+  // ★★★ 修正：systemPromptを完全に削除し、画像生成専用プロンプトを使用 ★★★
+  const fullPrompt = buildImagenPrompt(params);
+  
+  // プロンプトの検証とデバッグ出力
+  const validation = validateImagePrompt(fullPrompt);
+  if (!validation.isValid) {
+    console.warn('🚨 Image prompt validation warnings:', validation.warnings);
+  }
+  
+  debugImagePrompt('gemini', params, fullPrompt);
+  
+  // ★★★ コンソールでも確認できるようにする ★★★
+  console.log("【Imagen 4送信プロンプト】:", fullPrompt);
   // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-  // 修正後：原因切り分けのため、非常にシンプルで安全なプロンプトに書き換える
-  // const fullPrompt = "a photorealistic image of a single goldfish, swimming in clear water, white background";
 
   return {
     instances: [{
@@ -139,15 +147,14 @@ async function makeRequestWithRetry(
 
 // メイン関数：Imagen 4 APIを使用して画像を生成
 export async function generateWithGemini(
-  systemPrompt: string,
-  userPrompt: string,
+  params: AIGenerationParams,
   config: AIApiConfig = { model: 'gemini' }
 ): Promise<AIGenerationResult> {
   const startTime = Date.now();
   
   try {
     const { accessToken, projectId } = getGoogleCloudAuth();
-    const request = buildImagenRequest(systemPrompt, userPrompt);
+    const request = buildImagenRequest(params);
     
     // 将来の拡張用にconfigをログ出力
     console.log('Using Imagen 4 with config:', config.model);
@@ -226,9 +233,19 @@ export async function generateWithGemini(
 // Imagen 4画像生成の接続テスト
 export async function testGeminiConnection(): Promise<boolean> {
   try {
+    // テスト用のシンプルなパラメータ
+    const testParams: AIGenerationParams = {
+      concept: 'elegant',
+      mood: 'calm',
+      colorTone: 'warm',
+      scale: 'small',
+      complexity: 'simple',
+      creativityLevel: 0.5,
+      customRequest: 'simple test goldfish'
+    };
+    
     const result = await generateWithGemini(
-      'You are a test image generator.',
-      'Create a simple test image of a small goldfish',
+      testParams,
       { model: 'gemini', temperature: 0.1, maxTokens: 100 }
     );
     

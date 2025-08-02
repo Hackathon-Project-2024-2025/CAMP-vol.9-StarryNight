@@ -1,6 +1,8 @@
 // src/services/ai/chatgptService.ts (修正後)
 
 import type { AIGenerationResult, AIApiConfig } from '../../types/ai.types';
+import type { AIGenerationParams } from '../../types/aiFish.types';
+import { buildDALLEImagePrompt, debugImagePrompt, validateImagePrompt } from './imagePrompts';
 
 const OPENAI_API_BASE_URL = 'https://api.openai.com/v1';
 // 変更点: 画像生成モデルに変更
@@ -57,9 +59,21 @@ function getOpenAIApiKey(): string {
 }
 
 // 変更点: プロンプトからDALL-E 3リクエストを構築
-function buildOpenAIImageRequest(systemPrompt: string, userPrompt: string): OpenAImageRequest {
-  // DALL-E 3は自動でプロンプトを改良するため、結合して渡すのが効果的
-  const fullPrompt = `${systemPrompt}. ${userPrompt}`;
+function buildOpenAIImageRequest(params: AIGenerationParams): OpenAImageRequest {
+  // ★★★ 修正：systemPromptを完全に削除し、画像生成専用プロンプトを使用 ★★★
+  const fullPrompt = buildDALLEImagePrompt(params);
+  
+  // プロンプトの検証とデバッグ出力
+  const validation = validateImagePrompt(fullPrompt);
+  if (!validation.isValid) {
+    console.warn('🚨 Image prompt validation warnings:', validation.warnings);
+  }
+  
+  debugImagePrompt('chatgpt', params, fullPrompt);
+  
+  // ★★★ コンソールでも確認できるようにする ★★★
+  console.log("【DALL-E 3送信プロンプト】:", fullPrompt);
+  // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
   
   return {
     model: DEFAULT_MODEL,
@@ -118,15 +132,14 @@ async function makeRequestWithRetry(
 
 // メイン関数：ChatGPT (DALL-E 3) APIを使用して画像を生成
 export async function generateWithChatGPT(
-  systemPrompt: string,
-  userPrompt: string,
+  params: AIGenerationParams,
   config: AIApiConfig = { model: 'chatgpt' }
 ): Promise<AIGenerationResult> {
   const startTime = Date.now();
   
   try {
     const apiKey = getOpenAIApiKey();
-    const request = buildOpenAIImageRequest(systemPrompt, userPrompt);
+    const request = buildOpenAIImageRequest(params);
     
     // 将来の拡張用にconfigをログ出力
     console.log('Using DALL-E 3 with config:', config.model);
@@ -204,9 +217,19 @@ export async function generateWithChatGPT(
 // 画像生成の接続テスト
 export async function testChatGPTConnection(): Promise<boolean> {
   try {
+    // テスト用のシンプルなパラメータ
+    const testParams: AIGenerationParams = {
+      concept: 'elegant',
+      mood: 'calm',
+      colorTone: 'warm',
+      scale: 'small',
+      complexity: 'simple',
+      creativityLevel: 0.5,
+      customRequest: 'simple test goldfish'
+    };
+    
     const result = await generateWithChatGPT(
-      'You are a test image generator.',
-      'Create a simple test image of a small goldfish',
+      testParams,
       { model: 'chatgpt', temperature: 0.1, maxTokens: 100 }
     );
     
