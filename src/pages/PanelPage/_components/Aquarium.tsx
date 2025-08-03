@@ -646,7 +646,6 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     scale: number,
     angle: number
   ) => {
-    console.log(`🎨 Drawing AI fish: ${fishName} at (${Math.round(x)}, ${Math.round(y)}) scale=${scale.toFixed(2)} angle=${(angle * 180 / Math.PI).toFixed(1)}°`);
     
     ctx.save();
     
@@ -672,7 +671,6 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     
     try {
       ctx.drawImage(preloadedImage, -imageWidth/2, -imageHeight/2, imageWidth, imageHeight);
-      console.log(`✅ Successfully drew AI fish: ${fishName}`);
     } catch (error) {
       console.error(`❌ Failed to draw AI fish: ${fishName}`, error);
     }
@@ -690,7 +688,9 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     angle: number
   ) => {
     // 描画処理開始ログ
-    const fishName = swimmingFish.fishData.name || `fish-${swimmingFish.fishData.id}`;
+    const fishData = swimmingFish.fishData;
+    const fishName = fishData.name || ('id' in fishData ? fishData.id : 'unknown-fish');
+
     
     // AI生成画像かどうかを判定
     if ('imageData' in swimmingFish.fishData && swimmingFish.fishData.type === 'ai-generated') {

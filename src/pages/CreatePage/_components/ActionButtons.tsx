@@ -142,7 +142,6 @@ export default function ActionButtons({
             <span className="button-text">画像保存</span>
           </button>
         </div>
-
         <div className="button-group aquarium-share-group">
           <button
             className="action-button action-button-aquarium"
@@ -154,7 +153,6 @@ export default function ActionButtons({
               {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
             </span>
           </button>
-
           <button
             className="action-button action-button-twitter"
             onClick={handleShareToX}

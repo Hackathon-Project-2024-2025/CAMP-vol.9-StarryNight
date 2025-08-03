@@ -8,13 +8,17 @@ import { generateWithGemini } from '../../services/ai/geminiService';
 import { convertSelectionsToGenerationParams } from '../../services/ai/aiSelectionsConverter';
 import { debugLog, logGenerationProcess, generateErrorReport } from '../../services/ai/aiDebugUtils';
 import { saveFishImageToAquarium } from '../../services/storage/localStorage';
-import { compressBase64Image, formatBytes, calculateBase64Size } from '../../services/storage/imageCompression';
+import { compressBase64Image, compressBase64ImageWithTransparency, formatBytes, calculateBase64Size } from '../../services/storage/imageCompression';
+import { removeBackground, analyzeTransparency } from '../../services/image/backgroundRemovalService';
 import type { 
   AISelections, 
   AIGenerationResult, 
   AIGenerationStatus,
-  AIDesignStep
+  AIDesignStep,
+  GenerationMode
 } from '../../types/ai.types';
+import type { BaseImageData, I2IGenerationParams } from '../../types/i2i.types';
+import { generateI2I } from '../../services/ai/i2iService';
 
 // 新しいステップコンポーネント
 import AIStepNavigation from './_components/AIStepNavigation';
@@ -51,6 +55,7 @@ export default function AICreatePage() {
   const [fishName, setFishName] = useState<string>('AI生成金魚');
   const [customText, setCustomText] = useState<string>('');
   const [isMovingToAquarium, setIsMovingToAquarium] = useState<boolean>(false);
+  const [, setBaseImageData] = useState<BaseImageData | null>(null);
   const aiImageDisplayRef = useRef<AIImageDisplayRef>(null);
   const navigate = useNavigate();
 
@@ -62,9 +67,65 @@ export default function AICreatePage() {
     setAiSelections(prev => ({ ...prev, ...newSelections }));
   };
 
+  const handleGenerationModeChange = (mode: GenerationMode) => {
+    setAiSelections(prev => ({ ...prev, generationMode: mode }));
+    // i2iモードでない場合はベース画像をクリア
+    if (mode !== 'i2i') {
+      setBaseImageData(null);
+    }
+  };
+
   const handleCustomTextChange = (text: string) => {
     setCustomText(text);
     setAiSelections(prev => ({ ...prev, customText: text }));
+  };
+
+  // i2i生成ハンドラー
+  const handleI2IGenerate = async (baseImage: BaseImageData) => {
+    setGenerationStatus('generating');
+    setErrorMessage('');
+    setBaseImageData(baseImage);
+
+    try {
+      const startTime = Date.now();
+      
+      // デバッグ: i2i生成プロセス開始
+      console.log('Starting i2i generation with base image:', baseImage.id);
+      
+      // i2i生成パラメータの構築
+      const i2iParams: I2IGenerationParams = {
+        baseImage,
+        aiSelections,
+        prompt: customText || 'Transform this goldfish based on the selected settings',
+        strength: 0.7,
+        preserveStyle: true
+      };
+
+      const result = await generateI2I(i2iParams, aiSelections.model);
+      
+      if (result.success && result.data?.imageData) {
+        setGeneratedImageData(result.data.imageData);
+        setGenerationStatus('success');
+        setFishName(`AI変換金魚_${Date.now()}`);
+        
+        console.log('i2i generation completed successfully:', {
+          duration: Date.now() - startTime,
+          model: result.data.model
+        });
+      } else {
+        throw new Error(result.error || 'i2i生成に失敗しました');
+      }
+      
+    } catch (error) {
+      console.error('i2i generation failed:', error);
+      
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'i2i生成中に不明なエラーが発生しました';
+      
+      setErrorMessage(errorMessage);
+      setGenerationStatus('error');
+    }
   };
 
   const handleGenerate = async () => {
@@ -175,18 +236,44 @@ export default function AICreatePage() {
       const originalSize = calculateBase64Size(generatedImageData);
       debugLog('COMPRESSION', `Original image size: ${formatBytes(originalSize)}`);
       
-      // 画像を圧縮（水槽表示用に最適化）
-      debugLog('COMPRESSION', 'Compressing image for aquarium storage...');
-      const compressedImageData = await compressBase64Image(
-        generatedImageData,
+      // 背景透過処理を実行
+      debugLog('BACKGROUND_REMOVAL', 'Analyzing transparency and removing background...');
+      const transparencyAnalysis = await analyzeTransparency(generatedImageData);
+      debugLog('BACKGROUND_REMOVAL', `Transparency analysis: ${Math.round(transparencyAnalysis.transparencyRatio * 100)}% transparent`);
+      
+      let processedImageData = generatedImageData;
+      if (transparencyAnalysis.transparencyRatio < 0.5) {
+        // 透過度が50%未満の場合は背景除去処理を実行
+        debugLog('BACKGROUND_REMOVAL', 'Low transparency detected, applying background removal...');
+        const backgroundRemovalResult = await removeBackground(generatedImageData, {
+          colorTolerance: 35,
+          edgeSmoothing: 3,
+          transparencyStrength: 1.0,
+          autoDetectBackground: true
+        });
+        
+        if (backgroundRemovalResult.success && backgroundRemovalResult.imageData) {
+          processedImageData = backgroundRemovalResult.imageData;
+          debugLog('BACKGROUND_REMOVAL', `Background removal completed: ${backgroundRemovalResult.removedPixels}/${backgroundRemovalResult.processedPixels} pixels removed`);
+        } else {
+          debugLog('BACKGROUND_REMOVAL', `Background removal failed: ${backgroundRemovalResult.error}, using original image`);
+        }
+      } else {
+        debugLog('BACKGROUND_REMOVAL', 'Sufficient transparency detected, skipping background removal');
+      }
+      
+      // 透過保持圧縮（水槽表示用に最適化）
+      debugLog('COMPRESSION', 'Compressing image with transparency preservation...');
+      const compressedImageData = await compressBase64ImageWithTransparency(
+        processedImageData,
         400, // maxWidth: 400px (水槽表示に適したサイズ)
-        300, // maxHeight: 300px
-        0.8  // quality: 80% (品質と容量のバランス)
+        300  // maxHeight: 300px
       );
       
       const compressedSize = calculateBase64Size(compressedImageData);
-      const compressionRatio = Math.round((compressedSize / originalSize) * 100);
-      debugLog('COMPRESSION', `Compressed image size: ${formatBytes(compressedSize)} (${compressionRatio}% of original)`);
+      const processedSize = calculateBase64Size(processedImageData);
+      const compressionRatio = Math.round((compressedSize / processedSize) * 100);
+      debugLog('COMPRESSION', `Compressed image size: ${formatBytes(compressedSize)} (${compressionRatio}% of processed)`);
       
       // 圧縮済み画像データを水槽に保存
       saveFishImageToAquarium({
@@ -250,6 +337,8 @@ export default function AICreatePage() {
           <Step1ModelSelection
             selectedModel={aiSelections.model}
             onModelChange={(model) => handleSelectionsChange({ model })}
+            generationMode={aiSelections.generationMode}
+            onGenerationModeChange={handleGenerationModeChange}
           />
         );
       case 'basic':
@@ -280,6 +369,7 @@ export default function AICreatePage() {
             customText={customText}
             onCustomTextChange={handleCustomTextChange}
             onGenerate={handleGenerate}
+            onI2IGenerate={handleI2IGenerate}
             generationStatus={generationStatus}
             errorMessage={errorMessage}
           />
@@ -287,6 +377,12 @@ export default function AICreatePage() {
       default:
         return null;
     }
+  };
+
+  const handleShareToX = () => {
+    const tweetText = encodeURIComponent(`🎣 ぼくの作った魚「${fishName}」を見てみて！ #自作魚`);
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+    window.open(tweetUrl, "_blank");
   };
 
   return (
@@ -365,6 +461,14 @@ export default function AICreatePage() {
                   <span className="ai-button-text">
                     {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
                   </span>
+                </button>
+
+                <button
+                  className="action-button action-button-twitter"
+                  onClick={handleShareToX}
+                  title="Xに投稿"
+                >
+                  <span className="button-text">Xに投稿</span>
                 </button>
               </div>
             </div>
