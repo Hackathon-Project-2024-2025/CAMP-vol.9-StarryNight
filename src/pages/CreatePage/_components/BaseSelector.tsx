@@ -5,8 +5,8 @@ import './BaseSelector.css';
 interface BaseSelectorProps {
   selectedBase: FishBase;
   onBaseSelect: (base: FishBase) => void;
-  currentDesign?: FishDesign;
-  onDesignGenerate?: (newDesign: FishDesign) => void;
+  currentDesign: FishDesign;
+  onDesignGenerate: (newDesign: FishDesign) => void;
 }
 
 // 利用可能な魚の基本体型
@@ -188,12 +188,10 @@ export default function BaseSelector({
       </div>
 
       {/* ランダム生成機能 */}
-      {currentDesign && onDesignGenerate && (
-        <RandomGenerator
-          currentDesign={currentDesign}
-          onDesignGenerate={onDesignGenerate}
-        />
-      )}
+      <RandomGenerator
+        currentDesign={currentDesign}
+        onDesignGenerate={onDesignGenerate}
+      />
     </div>
   );
 }

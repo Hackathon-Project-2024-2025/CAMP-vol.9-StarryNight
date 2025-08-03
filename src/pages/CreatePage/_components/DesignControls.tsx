@@ -4,7 +4,6 @@ import PartsSelector from './PartsSelector';
 import PatternSelector from './PatternSelector';
 import AccessorySelector from './AccessorySelector';
 import CustomizationPanel from './CustomizationPanel';
-import RandomGenerator from './RandomGenerator';
 import type { FishDesign, DesignStep, FishBase, FishPart, BodyPattern, Accessory } from '../../../types/common.types';
 import './DesignControls.css';
 
@@ -83,6 +82,8 @@ export default function DesignControls({
           <BaseSelector
             selectedBase={fishDesign.base}
             onBaseSelect={handleBaseChange}
+            currentDesign={fishDesign}
+            onDesignGenerate={handleRandomGenerate}
           />
         );
       case 'parts':
@@ -104,23 +105,10 @@ export default function DesignControls({
         );
       case 'accessory':
         return (
-          <div className="accessory-step">
-            <AccessorySelector
-              accessories={fishDesign.accessories || []}
-              onAccessoriesChange={handleAccessoriesChange}
-            />
-            
-            <div className="step-divider">
-              <div className="divider-line"></div>
-              <span className="divider-text">または</span>
-              <div className="divider-line"></div>
-            </div>
-            
-            <RandomGenerator
-              currentDesign={fishDesign}
-              onDesignGenerate={handleRandomGenerate}
-            />
-          </div>
+          <AccessorySelector
+            accessories={fishDesign.accessories || []}
+            onAccessoriesChange={handleAccessoriesChange}
+          />
         );
       case 'customize':
         return (
