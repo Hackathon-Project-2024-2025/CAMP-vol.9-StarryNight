@@ -58,7 +58,9 @@ export function buildDALLEImagePrompt(params: AIGenerationParams): string {
   const complexity = IMAGE_COMPLEXITY[params.complexity] || IMAGE_COMPLEXITY.moderate;
 
   // DALL-E 3は詳細な記述を好むため、リッチな表現を使用
-  let prompt = `A beautiful Japanese goldfish (kingyo) artwork featuring ${concept}. `;
+  // 最優先：右向き指示
+  let prompt = `MANDATORY ORIENTATION: The goldfish must be facing RIGHT with head pointing to the RIGHT side and tail on the LEFT side for aquarium compatibility. `;
+  prompt += `A beautiful Japanese goldfish (kingyo) artwork featuring ${concept}. `;
   prompt += `The goldfish displays ${mood}, with ${scale} and ${complexity}. `;
   prompt += `Color scheme: ${colorTone}. `;
   
@@ -87,7 +89,9 @@ export function buildImagenPrompt(params: AIGenerationParams): string {
   const complexity = IMAGE_COMPLEXITY[params.complexity] || IMAGE_COMPLEXITY.moderate;
 
   // Imagen 4はシンプルで具体的な指示を好むため、簡潔に構築
-  let prompt = `A Japanese goldfish (kingyo), ${concept}, ${mood}. `;
+  // 最優先：右向き指示
+  let prompt = `MANDATORY ORIENTATION: The goldfish must be facing RIGHT with head pointing to the RIGHT side and tail on the LEFT side for aquarium compatibility. `;
+  prompt += `A Japanese goldfish (kingyo), ${concept}, ${mood}. `;
   prompt += `${colorTone}, ${scale}, ${complexity}. `;
   
   // カスタム要求があれば追加

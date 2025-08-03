@@ -1,4 +1,4 @@
-/* Step 5: Generate */
+/* Step 5: Generate (i2i対応拡張版) */
 .step5-generate {
   padding: var(--spacing-lg);
 }
@@ -436,6 +436,43 @@
   position: absolute;
   left: 0;
   top: 0;
+}
+
+/* i2i専用スタイル */
+.step5-base-image-preview {
+  margin: var(--spacing-lg) 0;
+}
+
+.i2i-button {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.i2i-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.i2i-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--border-radius-md);
+  margin-top: var(--spacing-md);
+}
+
+.notice-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+.notice-text {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
 }
 
 /* Responsive Design */

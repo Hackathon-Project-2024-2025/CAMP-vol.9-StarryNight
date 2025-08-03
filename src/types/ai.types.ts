@@ -3,6 +3,9 @@
 // AI生成に使用するモデル
 export type AIModel = 'chatgpt' | 'gemini';
 
+// AI生成モード（Gemini専用）
+export type GenerationMode = 'initial' | 'i2i';
+
 // AI作成のステップ
 export type AIDesignStep = 'model' | 'basic' | 'details' | 'accessory' | 'generate';
 
@@ -13,6 +16,9 @@ export type AIGenerationStatus = 'idle' | 'generating' | 'success' | 'error';
 export interface AISelections {
   // AI モデル選択
   model: AIModel;
+  
+  // 生成モード（Gemini選択時のみ有効）
+  generationMode?: GenerationMode;
   
   // 基本特徴
   bodyType: 'round' | 'streamlined' | 'flat' | 'elongated';

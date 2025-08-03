@@ -43,11 +43,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### 主要機能
 
 - **金魚カスタマイズ**: 手動による詳細な金魚デザイン作成
-- **AI金魚生成**: ChatGPT/Gemini APIを使用した自動金魚生成
-- **Canvas描画システム**: リアルタイム金魚プレビューとエクスポート
+- **AI金魚生成**: ChatGPT/Gemini APIを使用した画像生成システム
+- **i2i (Image-to-Image) 変換**: AI設定からCanvas描画した金魚をベースにしたAI変換
+- **Canvas描画システム**: リアルタイム金魚プレビューとエクスポート（手動作成・i2iベース画像）
+- **AI画像表示システム**: Base64画像データの表示・管理システム
+- **背景透過処理**: AI生成画像の自動背景除去・透過化システム
 - **水槽管理**: 作成済み金魚の表示・管理・アニメーション
 - **ダークモード**: テーマ切り替え機能
-- **LocalStorage**: データ永続化
+- **LocalStorage**: データ永続化（透過保持圧縮対応）
 
 ### 開発方針
 - **React.FC使用禁止**: 通常の関数定義を使用
@@ -103,108 +106,113 @@ npm run preview
 ```
 starry-night/
 ├── src/
-│   ├── App.tsx                 # ルーティング設定
-│   ├── main.tsx                # エントリーポイント
+│   ├── App.tsx                             # ルーティング設定
+│   ├── main.tsx                            # エントリーポイント
 │   │
-│   ├── pages/                  # ページコンポーネント
+│   ├── pages/                              # ページコンポーネント
 │   │   ├── Home/
-│   │   │   └── Home.tsx        # ホームページ（バブルアニメーション）
-│   │   ├── CreatePage/         # 手動金魚作成ページ
+│   │   │   └── Home.tsx                    # ホームページ（バブルアニメーション）
+│   │   ├── CreatePage/                     # 手動金魚作成ページ
 │   │   │   ├── CreatePage.tsx
 │   │   │   ├── CreatePage.css
-│   │   │   └── _components/    # 15個の専用コンポーネント
-│   │   │       ├── FishPreview.tsx        # Canvas描画プレビュー
-│   │   │       ├── DesignControls.tsx     # デザイン制御パネル
-│   │   │       ├── ActionButtons.tsx      # 保存・リセットボタン
-│   │   │       ├── StepNavigation.tsx     # ステップナビゲーション
-│   │   │       ├── BaseSelector.tsx       # 体型選択
-│   │   │       ├── PartsSelector.tsx      # パーツ選択
-│   │   │       ├── ColorPicker.tsx        # 色選択
-│   │   │       ├── PatternSelector.tsx    # 模様選択
-│   │   │       ├── AccessorySelector.tsx  # アクセサリー選択
-│   │   │       ├── CustomizationPanel.tsx # カスタマイズパネル
-│   │   │       ├── SliderControl.tsx      # スライダー制御
-│   │   │       └── RandomGenerator.tsx    # ランダム生成
-│   │   ├── AICreatePage/       # AI金魚生成ページ
+│   │   │   └── _components/                # 15個の専用コンポーネント
+│   │   │       ├── FishPreview.tsx         # Canvas描画プレビュー
+│   │   │       ├── DesignControls.tsx      # デザイン制御パネル
+│   │   │       ├── ActionButtons.tsx       # 保存・リセットボタン
+│   │   │       ├── StepNavigation.tsx      # ステップナビゲーション
+│   │   │       ├── BaseSelector.tsx        # 体型選択
+│   │   │       ├── PartsSelector.tsx       # パーツ選択
+│   │   │       ├── ColorPicker.tsx         # 色選択
+│   │   │       ├── PatternSelector.tsx     # 模様選択
+│   │   │       ├── AccessorySelector.tsx   # アクセサリー選択
+│   │   │       ├── CustomizationPanel.tsx  # カスタマイズパネル
+│   │   │       ├── SliderControl.tsx       # スライダー制御
+│   │   │       └── RandomGenerator.tsx     # ランダム生成
+│   │   ├── AICreatePage/                   # AI金魚生成ページ
 │   │   │   ├── AICreatePage.tsx
 │   │   │   ├── AICreatePage.css
-│   │   │   └── _components/    # 13個のAI専用コンポーネント
-│   │   │       ├── AIStepNavigation.tsx   # AIステップナビ
-│   │   │       ├── Step1ModelSelection.tsx # AIモデル選択
+│   │   │   └── _components/                # 7個のAI専用コンポーネント
+│   │   │       ├── AIStepNavigation.tsx    # AIステップナビ
+│   │   │       ├── Step1ModelSelection.tsx # AIモデル選択（i2i対応）
 │   │   │       ├── Step2BasicFeatures.tsx  # 基本特徴設定
 │   │   │       ├── Step3DetailSettings.tsx # 詳細設定
 │   │   │       ├── Step4Accessories.tsx    # アクセサリー設定
-│   │   │       ├── Step5Generate.tsx       # 生成実行
-│   │   │       ├── AIModelSelector.tsx     # モデル選択UI
-│   │   │       ├── AIFeatureSelector.tsx   # 特徴選択UI
-│   │   │       ├── AITextInput.tsx         # テキスト入力
-│   │   │       ├── AIGenerateButton.tsx    # 生成ボタン
-│   │   │       ├── AIStatusIndicator.tsx   # 状態表示
-│   │   │       └── AIActionButtons.tsx     # アクション
-│   │   └── PanelPage/          # 水槽管理ページ
+│   │   │       └── Step5Generate.tsx       # 生成実行（i2i統合）
+│   │   └── PanelPage/                      # 水槽管理ページ
 │   │       ├── PanelPage.tsx
 │   │       ├── PanelPage.css
 │   │       └── _components/
 │   │           ├── Aquarium.tsx            # 水槽表示
 │   │           ├── FishList.tsx            # 金魚一覧
-│   │           └── SwimmingFish.ts         # 金魚アニメーション
+│   │           ├── SwimmingFish.ts         # 金魚アニメーション
+│   │           └── SwimmingAIFish.ts       # AI金魚アニメーション
 │   │
-│   ├── components/             # 共通コンポーネント
+│   ├── components/                         # 共通コンポーネント
 │   │   ├── Layout/
-│   │   │   ├── Layout.tsx      # 全体レイアウト（ダークモード）
+│   │   │   ├── Layout.tsx                  # 全体レイアウト（ダークモード）
 │   │   │   ├── Layout.css
 │   │   │   └── _components/
-│   │   │       ├── Header.tsx  # ナビゲーション
+│   │   │       ├── Header.tsx              # ナビゲーション
 │   │   │       └── Footer.tsx
-│   │   └── AIFishCanvas/       # AI用Canvas描画
-│   │       ├── AIFishCanvas.tsx
-│   │       ├── AIFishCanvas.css
-│   │       ├── CreativeControls.tsx
-│   │       └── CreativeControls.css
+│   │   ├── AIImageDisplay/                 # AI画像表示システム
+│   │   │   ├── AIImageDisplay.tsx
+│   │   │   └── AIImageDisplay.css
+│   │   └── BaseImagePreview/               # i2iベース画像プレビュー
+│   │       ├── BaseImagePreview.tsx        # Canvas描画金魚プレビュー
+│   │       └── BaseImagePreview.css
 │   │
-│   ├── hooks/                  # カスタムフック
-│   │   └── useTheme.ts         # テーマ管理
+│   ├── hooks/                              # カスタムフック
+│   │   ├── useTheme.ts                     # テーマ管理
+│   │   └── useFishCanvas.ts                # Canvas描画ロジック共通化
 │   │
-│   ├── services/               # サービス層
-│   │   ├── ai/                 # AI統合サービス
-│   │   │   ├── aiPromptBuilder.ts         # AI プロンプト構築
-│   │   │   ├── chatgptService.ts          # ChatGPT API統合
-│   │   │   ├── creativeFishPrompts.ts     # クリエイティブプロンプト
-│   │   │   ├── geminiImageService.ts      # Gemini画像生成
-│   │   │   └── geminiService.ts           # Gemini API統合
+│   ├── services/                           # サービス層
+│   │   ├── ai/                             # AI統合サービス
+│   │   │   ├── aiDebugUtils.ts             # AI デバッグ・ログユーティリティ
+│   │   │   ├── aiSelectionsConverter.ts    # UI選択→生成パラメータ変換
+│   │   │   ├── aiToCreateConverter.ts      # AI設定→FishDesign変換（i2i用）
+│   │   │   ├── chatgptService.ts           # ChatGPT DALL-E 3 API統合
+│   │   │   ├── geminiService.ts            # Gemini Imagen 4 API統合
+│   │   │   ├── imagePrompts.ts             # 画像生成専用プロンプト（右向き対応）
+│   │   │   ├── i2iService.ts               # 統合i2i (Image-to-Image) サービス
+│   │   │   ├── openaiI2IService.ts         # OpenAI DALL-E 3 i2i API統合
+│   │   │   └── geminiI2IService.ts         # Gemini Imagen 4 i2i API統合
+│   │   ├── image/                          # 画像処理サービス
+│   │   │   └── backgroundRemovalService.ts # 背景透過処理・分析サービス
 │   │   └── storage/
-│   │       └── localStorage.ts            # データ永続化
+│   │       ├── localStorage.ts             # データ永続化
+│   │       └── imageCompression.ts         # 画像圧縮（透過保持対応）
 │   │
-│   ├── types/                  # 型定義
-│   │   ├── common.types.ts     # 共通型定義（金魚デザイン等）
-│   │   ├── ai.types.ts         # AI生成専用型定義
-│   │   └── aiFish.types.ts     # AI金魚専用型定義
+│   ├── types/                              # 型定義
+│   │   ├── common.types.ts                 # 共通型定義（金魚デザイン等）
+│   │   ├── ai.types.ts                     # AI生成専用型定義（i2iモード追加）
+│   │   ├── aiFish.types.ts                 # AI金魚専用型定義
+│   │   └── i2i.types.ts                    # i2i (Image-to-Image) 専用型定義
 │   │
-│   ├── styles/                 # スタイル関連
+│   ├── styles/                             # スタイル関連
 │   │   ├── App.css
-│   │   ├── Home.css            # ホームページ専用スタイル
-│   │   ├── global.css          # グローバルスタイル
+│   │   ├── Home.css                        # ホームページ専用スタイル
+│   │   ├── global.css                      # グローバルスタイル
 │   │   ├── index.css
-│   │   ├── reset.css           # CSSリセット
-│   │   └── variables.css       # CSS変数定義
+│   │   ├── reset.css                       # CSSリセット
+│   │   └── variables.css                   # CSS変数定義
 │   │
-│   ├── assets/                 # 静的アセット
-│   └── vite-env.d.ts           # Vite型定義
+│   ├── assets/                             # 静的アセット
+│   └── vite-env.d.ts                       # Vite型定義
 │
-├── public/                     # 静的ファイル
-│   └── images/                 # 背景画像
+├── public/                                 # 静的ファイル
+│   └── images/                             # 背景画像
 │       ├── background.png
 │       ├── back1.png
 │       ├── back2.png
 │       ├── back3.png
 │       └── back4.png
-├── index.html                  # HTMLエントリーポイント
-├── vite.config.ts              # Vite設定
-├── tsconfig.json               # TypeScript設定（ルート）
-├── tsconfig.app.json           # アプリケーション用TypeScript設定
-├── tsconfig.node.json          # Node.js用TypeScript設定
-├── eslint.config.js            # ESLint設定
-└── package.json                # プロジェクト設定と依存関係
+├── index.html                              # HTMLエントリーポイント
+├── vite.config.ts                          # Vite設定
+├── tsconfig.json                           # TypeScript設定（ルート）
+├── tsconfig.app.json                       # アプリケーション用TypeScript設定
+├── tsconfig.node.json                      # Node.js用TypeScript設定
+├── eslint.config.js                        # ESLint設定
+└── package.json                            # プロジェクト設定と依存関係
 ```
 
 ## ルーティング構成
@@ -228,32 +236,45 @@ starry-night/
 
 ### 3. AI作成ページ (`/ai-create`)
 - **5ステップウィザード**: Model → Basic → Details → Accessory → Generate
-- **デュアルAI統合**: ChatGPTとGemini APIの選択式使用
-- **プロンプトエンジニアリング**: 構造化されたAI指示生成
-- **JSONバリデーション**: AI応答の形式検証
-- **水槽連携**: 生成後の直接水槽保存
+- **デュアルAI統合**: DALL-E 3 (ChatGPT) とImagen 4 (Gemini) による画像生成
+- **i2i (Image-to-Image) 機能**: AI設定からCanvas描画→AI変換の高品質生成
+  - **右向き保証**: 水槽アニメーション対応の右向き金魚生成
+  - **透過背景確保**: 完全透過背景での高品質出力
+  - **ベース画像プレビュー**: リアルタイムCanvas描画プレビュー
+- **画像生成専用プロンプト**: 最適化されたプロンプトエンジニアリング（右向き指示強化）
+- **背景透過処理**: AI生成画像の自動背景除去・透過化
+- **Base64画像処理**: 生成画像のBase64エンコード・デコード・表示（二重プレフィックス修正済み）
+- **水槽連携**: 生成後の直接水槽保存（透過保持圧縮対応）
 
 ### 4. 水槽管理ページ (`/panel`)
-- **アニメーション水槽**: 作成済み金魚の泌遊アニメーション
+- **ハイブリッド水槽**: 手動作成金魚（Canvas描画）とAI生成金魚（画像表示）の統合
+- **デュアルアニメーション**: SwimmingFish（手動）とSwimmingAIFish（AI）システム
 - **金魚管理**: サイドバーでの一覧表示・削除機能
 - **自動更新**: ページ可視性変化時のデータ再読み込み
 
 ## AI統合機能
 
 ### 対応モデル
-- **ChatGPT**: OpenAI API統合
-- **Gemini**: Google Generative AI統合
+- **DALL-E 3**: OpenAI の最新画像生成モデル（ChatGPTサービス経由）
+- **Imagen 4**: Google の最新画像生成モデル（Vertex AI経由）
 
 ### AI機能特徴
-- **プロンプトビルダー**: 構造化された指示生成
-- **JSONレスポンス**: 一貫したデータ形式
-- **エラーハンドリング**: API限制・ネットワークエラー対応
-- **バリデーション**: AI応答の形式・内容検証
+- **i2i (Image-to-Image) 生成**: Canvas描画ベース画像からのAI変換システム
+- **専用画像プロンプト**: 画像生成に最適化された指示システム（右向き指示強化）
+- **右向き保証システム**: `MANDATORY ORIENTATION`による水槽アニメーション対応
+- **透過背景システム**: 自動背景除去・透過化処理
+- **Base64画像レスポンス**: 直接的な画像データ取得（二重プレフィックス修正済み）
+- **リトライ機構**: API制限・ネットワークエラー自動対応
+- **デバッグシステム**: 包括的なログ・デバッグユーティリティ
+- **透過保持圧縮**: PNG形式による透過背景保持圧縮
 
 ## データ管理
 
 ### LocalStorage機能
-- **金魚データ永続化**: 作成した金魚の保存・読み込み
+- **ハイブリッド金魚データ**: 手動作成金魚（FishDesign）とAI生成金魚（AIFishImage）の統合管理
+- **透過保持圧縮システム**: AI生成画像の透過背景保持・容量最適化保存
+- **i2i生成履歴**: Image-to-Image生成結果の履歴管理
+- **背景透過分析**: 画像の透過度分析・品質評価
 - **テーマ設定**: ダークモード状態の保存
 - **CRUD操作**: 作成・読み込み・更新・削除
 
@@ -262,8 +283,12 @@ starry-night/
 プロジェクトルートに `.env` ファイルを作成し、以下のAPIキーを設定してください:
 
 ```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-VITE_CHATGPT_API_KEY=your_chatgpt_api_key_here
+# ChatGPT (DALL-E 3) 用
+VITE_OPENAI_API_KEY=your_openai_api_key_here
+
+# Gemini (Imagen 4) 用
+VITE_GOOGLE_ACCESS_TOKEN=your_google_access_token_here
+VITE_GOOGLE_CLOUD_PROJECT_ID=your_project_id_here
 ```
 
 ## コーディング規約
@@ -328,8 +353,39 @@ export default function Component() { ... }
 
 ## 開発時の注意事項
 
-- **APIキー設定**: AI機能を使用するためには `.env` ファイルにAPIキーを設定してください
-- **LocalStorage**: 金魚データはLocalStorageに保存されるため、ブラウザーのデータクリアで消失します
-- **Canvas描画**: 金魚のCanvas描画はパフォーマンスを考慮した実装です
-- **エラーハンドリング**: AI APIのレートリミットやネットワークエラーに対する適切なエラーメッセージが表示されます
+- **APIキー設定**: AI画像生成機能を使用するためには `.env` ファイルに適切なAPIキーを設定してください
+  - **OpenAI**: `VITE_OPENAI_API_KEY` （DALL-E 3用）
+  - **Google Cloud**: `VITE_GOOGLE_ACCESS_TOKEN` + `VITE_GOOGLE_CLOUD_PROJECT_ID` （Imagen 4用）
+- **ハイブリッドデータ**: 手動作成金魚（Canvas）とAI生成金魚（Base64画像）の2つのデータ形式が混在します
+- **i2i生成フロー**: Gemini選択時にi2iモードが利用可能、Canvas描画→AI変換の2段階処理
+- **透過背景処理**: AI生成画像は自動的に背景透過処理されPNG形式で保存されます
+- **右向き保証**: 全AI生成画像は水槽アニメーション対応の右向きで生成されます
+- **LocalStorage容量**: AI生成画像は透過保持圧縮されますが、大量生成時は容量制限にご注意ください
+- **画像生成レート**: DALL-E 3とImagen 4はそれぞれ異なるレート制限があります
+- **Base64処理**: 二重プレフィックス問題は修正済み、安全にBase64画像を処理できます
+
+---
+
+## 最新更新情報（2025年1月）
+
+### プロジェクト最適化完了
+- **削除されたファイル**: 21個（未使用コンポーネント・サービス）
+- **バンドルサイズ**: JavaScript 366.74 kB (110.43 kB gzip)
+- **ビルド時間**: 1.77秒（最適化後）
+- **コードベース健全性**: TypeScript・ESLint エラーなし
+
+### i2i (Image-to-Image) 機能実装完了 ✨
+- **新機能**: Canvas描画ベース画像からのAI変換システム
+- **追加コンポーネント**: BaseImagePreview（i2iプレビュー）
+- **追加サービス**: i2iService, openaiI2IService, geminiI2IService, backgroundRemovalService
+- **追加フック**: useFishCanvas（Canvas描画ロジック共通化）
+- **透過背景保証**: 自動背景除去・PNG透過保持圧縮
+- **右向き保証**: 水槽アニメーション対応の`MANDATORY ORIENTATION`指示
+- **Base64修正**: 二重プレフィックス問題解決
+
+### 現在のアクティブ構成
+- **AICreatePageコンポーネント**: 7個（i2i統合済み）
+- **AIサービス**: 10個（i2i関連+背景透過追加）
+- **画像生成システム**: DALL-E 3 + Imagen 4 + i2i変換統合
+- **型定義**: i2i.types.ts追加（包括的なi2i型システム）
 </project_info>
