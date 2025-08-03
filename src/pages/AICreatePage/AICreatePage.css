@@ -5,7 +5,7 @@
 
 .ai-page-header {
   text-align: center;
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-xl) 0;
   background: linear-gradient(135deg, var(--card-background), var(--surface-color));
   border-bottom: 2px solid var(--border-color);
 }
