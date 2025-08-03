@@ -30,7 +30,7 @@
 }
 
 /* ページヘッダー */
-.page-header {
+.panel-page-header {
   text-align: center;
   padding: var(--spacing-xl) var(--spacing-lg);
   background: linear-gradient(135deg, var(--card-background), var(--surface-color));
@@ -44,7 +44,7 @@
   font-weight: 700;
 }
 
-.page-description {
+.panel-page-description {
   font-size: var(--font-size-lg);
   color: var(--text-secondary);
   margin: 0 0 var(--spacing-lg) 0;
@@ -54,6 +54,7 @@
 .header-actions {
   display: flex;
   justify-content: center;
+  gap: var(--spacing-md);
 }
 
 .create-fish-button {
@@ -125,7 +126,7 @@
 }
 
 @media (max-width: 768px) {
-  .page-header {
+  .panel-page-header {
     padding: var(--spacing-lg) var(--spacing-md);
   }
   
@@ -133,7 +134,7 @@
     font-size: var(--font-size-2xl);
   }
   
-  .page-description {
+  .panel-page-description {
     font-size: var(--font-size-md);
   }
   
@@ -163,7 +164,7 @@
 }
 
 @media (max-width: 480px) {
-  .page-header {
+  .panel-page-header {
     padding: var(--spacing-md);
   }
   
@@ -199,7 +200,7 @@
 }
 
 /* ライトモード対応 */
-[data-theme="light"] .page-header {
+[data-theme="light"] .panel-page-header {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), var(--surface-color));
   border-bottom-color: var(--border-color);
 }
@@ -212,6 +213,6 @@
   color: var(--text-color);
 }
 
-[data-theme="light"] .page-description {
+[data-theme="light"] .panel-page-description {
   color: var(--text-secondary);
 }

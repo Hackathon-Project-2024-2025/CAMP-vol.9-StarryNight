@@ -690,6 +690,7 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     // 描画処理開始ログ
     const fishData = swimmingFish.fishData;
     const fishName = fishData.name || ('id' in fishData ? fishData.id : 'unknown-fish');
+
     
     // AI生成画像かどうかを判定
     if ('imageData' in swimmingFish.fishData && swimmingFish.fishData.type === 'ai-generated') {

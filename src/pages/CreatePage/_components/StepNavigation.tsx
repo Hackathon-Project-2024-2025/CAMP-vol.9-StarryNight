@@ -18,7 +18,7 @@ const steps: StepInfo[] = [
     key: 'base',
     title: 'ベース選択',
     icon: '🐟',
-    description: '魚の基本体型を選択'
+    description: '魚の基本体型を選択またはランダム生成'
   },
   {
     key: 'parts',
@@ -36,7 +36,7 @@ const steps: StepInfo[] = [
     key: 'accessory',
     title: 'アクセサリー',
     icon: '👑',
-    description: 'アクセサリーまたはランダム生成'
+    description: 'アクセサリーを選択'
   },
   {
     key: 'customize',

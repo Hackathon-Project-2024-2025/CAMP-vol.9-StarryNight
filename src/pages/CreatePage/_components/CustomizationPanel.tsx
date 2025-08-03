@@ -8,10 +8,6 @@ interface CustomizationPanelProps {
   onCustomize: (property: string, value: string | number | { x: number; y: number }) => void;
 }
 
-// バッチ更新用の型定義
-interface BatchUpdate {
-  [key: string]: string | number | { x: number; y: number };
-}
 
 export default function CustomizationPanel({ fishDesign, onCustomize }: CustomizationPanelProps) {
   const { customizations } = fishDesign;
@@ -37,15 +33,6 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
     onCustomize(property, newPosition);
   };
 
-  // バッチ更新のヘルパー関数
-  const applyBatchUpdates = (updates: BatchUpdate) => {
-    // タイマーを使用して順次適用（React の状態更新を確実にするため）
-    Object.entries(updates).forEach(([property, value], index) => {
-      setTimeout(() => {
-        onCustomize(property, value);
-      }, index * 50); // 50ms間隔で順次適用
-    });
-  };
 
   return (
     <div className="customization-panel">
@@ -255,68 +242,6 @@ export default function CustomizationPanel({ fishDesign, onCustomize }: Customiz
           </div>
         </section>
 
-        {/* プリセット */}
-        <section className="customization-section">
-          <h4 className="section-title">⚡ クイック設定</h4>
-          
-          <div className="preset-buttons">
-            <button
-              className="preset-button"
-              onClick={() => {
-                applyBatchUpdates({
-                  size: 1.5,
-                  finSize: 1.3,
-                  eyeSize: 1.2
-                });
-              }}
-            >
-              <span className="preset-icon">🐲</span>
-              <span className="preset-text">大きめ</span>
-            </button>
-            
-            <button
-              className="preset-button"
-              onClick={() => {
-                applyBatchUpdates({
-                  size: 0.8,
-                  finSize: 0.9,
-                  eyeSize: 1.3
-                });
-              }}
-            >
-              <span className="preset-icon">🐣</span>
-              <span className="preset-text">小さめ</span>
-            </button>
-            
-            <button
-              className="preset-button"
-              onClick={() => {
-                applyBatchUpdates({
-                  bodyColor: '#ffd700',
-                  finColor: '#ffed4e',
-                  eyeColor: '#000000'
-                });
-              }}
-            >
-              <span className="preset-icon">👑</span>
-              <span className="preset-text">金色</span>
-            </button>
-            
-            <button
-              className="preset-button"
-              onClick={() => {
-                applyBatchUpdates({
-                  bodyColor: '#ff6b6b',
-                  finColor: '#ff9999',
-                  eyeColor: '#000000'
-                });
-              }}
-            >
-              <span className="preset-icon">🌸</span>
-              <span className="preset-text">桜色</span>
-            </button>
-          </div>
-        </section>
       </div>
     </div>
   );
