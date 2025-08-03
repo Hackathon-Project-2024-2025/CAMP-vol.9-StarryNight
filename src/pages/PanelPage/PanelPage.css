@@ -1,0 +1,199 @@
+.panel-page {
+  min-height: 100vh;
+}
+
+/* ローディング状態 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--spacing-2xl);
+}
+
+.loading-spinner {
+  font-size: 4rem;
+  animation: float 2s ease-in-out infinite;
+  margin-bottom: var(--spacing-lg);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.loading-text {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ページヘッダー */
+.page-header {
+  text-align: center;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  background: linear-gradient(135deg, var(--card-background), var(--surface-color));
+  border-bottom: 2px solid var(--border-color);
+}
+
+.page-title {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+.page-description {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+  line-height: 1.5;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.create-fish-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: linear-gradient(135deg, 
+    rgba(244, 162, 97, 0.3), 
+    rgba(255, 183, 197, 0.3)
+  );
+  color: var(--text-color);
+  border: 2px solid rgba(244, 162, 97, 0.5);
+  border-radius: var(--border-radius-full);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.create-fish-button:hover {
+  background: linear-gradient(135deg, 
+    rgba(244, 162, 97, 0.4), 
+    rgba(255, 183, 197, 0.4)
+  );
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.button-icon {
+  font-size: var(--font-size-lg);
+}
+
+/* メインコンテンツ */
+.page-content {
+  padding: var(--spacing-xl) var(--spacing-lg);
+  height: calc(100vh - 200px);
+}
+
+.aquarium-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--spacing-xl);
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.fish-list-sidebar {
+  height: 100%;
+  max-height: calc(100vh - 240px);
+}
+
+.aquarium-main {
+  height: 100%;
+  max-height: calc(100vh - 240px);
+}
+
+.main-aquarium {
+  height: 100%;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 1024px) {
+  .aquarium-layout {
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .page-description {
+    font-size: var(--font-size-md);
+  }
+  
+  .create-fish-button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+  }
+  
+  .page-content {
+    padding: var(--spacing-lg) var(--spacing-md);
+    height: calc(100vh - 180px);
+  }
+  
+  .aquarium-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 200px 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .fish-list-sidebar {
+    max-height: 200px;
+  }
+  
+  .aquarium-main {
+    max-height: calc(100vh - 420px);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    padding: var(--spacing-md);
+  }
+  
+  .page-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .create-fish-button {
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+  
+  .button-text {
+    display: none;
+  }
+  
+  .page-content {
+    padding: var(--spacing-md);
+    height: calc(100vh - 160px);
+  }
+  
+  .aquarium-layout {
+    gap: var(--spacing-sm);
+    grid-template-rows: 150px 1fr;
+  }
+  
+  .fish-list-sidebar {
+    max-height: 150px;
+  }
+  
+  .aquarium-main {
+    max-height: calc(100vh - 350px);
+  }
+}

@@ -1,0 +1,128 @@
+/* ===== 共通設定（テーマ非依存） ===== */
+:root {
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Typography */
+  --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans JP', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+  
+  /* Borders */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 1rem;
+  --border-radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+  
+  /* Layout */
+  --max-width-sm: 640px;
+  --max-width-md: 768px;
+  --max-width-lg: 1024px;
+  --max-width-xl: 1280px;
+}
+
+/* ===== ライトモード（南国の海テーマ） ===== */
+:root,
+[data-theme="light"] {
+  /* Primary Colors - 南国の海をモチーフ（より濃く調整） */
+  --primary-color: #008B8B;        /* ダークシアン（より濃く） */
+  --secondary-color: #FF6347;      /* トマト（より濃いコーラル） */
+  --accent-color: #DAA520;         /* ゴールデンロッド（より濃いゴールド） */
+  
+  /* Background Colors（より濃く調整） */
+  --background-color: #E0F8FF;     /* ライトブルー（より濃いアズール） */
+  --surface-color: #B0E0E6;        /* パウダーブルー（より濃く） */
+  --card-background: rgba(176, 224, 230, 0.9);  /* より濃い半透明サーフェス */
+  
+  /* Text Colors */
+  --text-color: #2F4F4F;           /* ダークスレートグレー */
+  --text-secondary: #708090;       /* スレートグレー */
+  --text-muted: #9ACDDC;           /* より濃いライトスチールブルー */
+  
+  /* Border & Divider（より濃く調整） */
+  --border-color: #87CEEB;         /* スカイブルー（より濃く） */
+  --divider-color: #87CEFA;        /* ライトスカイブルー */
+  
+  /* Semantic Colors */
+  --success-color: #20B2AA;        /* ライトシーグリーン */
+  --warning-color: #FFA500;        /* オレンジ */
+  --error-color: #DC143C;          /* クリムゾン */
+  --info-color: #4682B4;           /* スチールブルー */
+  
+  /* Japanese-inspired colors */
+  --sakura-pink: #FFB6C1;          /* ライトピンク */
+  --ocean-blue: #4169E1;           /* ロイヤルブルー */
+  --coral-accent: #FF6347;         /* トマト */
+  --pearl-white: #F8F8FF;          /* ゴーストホワイト */
+  
+  /* Shadows - ライトモード用 */
+  --shadow-sm: 0 1px 2px 0 rgba(47, 79, 79, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(47, 79, 79, 0.15);
+  --shadow-lg: 0 10px 15px -3px rgba(47, 79, 79, 0.2);
+  
+  /* Bubble Animation Colors（より濃く調整） */
+  --bubble-color: rgba(0, 139, 139, 0.4);  /* ダークシアンベース */
+  --bubble-highlight: rgba(255, 255, 255, 0.7);
+  --bubble-shadow: rgba(0, 139, 139, 0.15);
+}
+
+/* ===== ダークモード（深海と黄色い光テーマ） ===== */
+[data-theme="dark"] {
+  /* Primary Colors - 深海と黄色い光をモチーフ */
+  --primary-color: #003366;        /* 深い青 */
+  --secondary-color: #FFD700;      /* ゴールド */
+  --accent-color: #FFA500;         /* 琥珀色 */
+  
+  /* Background Colors */
+  --background-color: #001122;     /* 深海色 */
+  --surface-color: #003355;        /* 深い青緑 */
+  --card-background: rgba(0, 51, 85, 0.8);  /* 半透明サーフェス */
+  
+  /* Text Colors */
+  --text-color: #E6E6FA;           /* ラベンダー */
+  --text-secondary: #B0C4DE;       /* ライトスチールブルー */
+  --text-muted: #778899;           /* ライトスレートグレー */
+  
+  /* Border & Divider */
+  --border-color: #2F4F4F;         /* ダークスレートグレー */
+  --divider-color: #4682B4;        /* スチールブルー */
+  
+  /* Semantic Colors */
+  --success-color: #32CD32;        /* ライムグリーン */
+  --warning-color: #FFD700;        /* ゴールド */
+  --error-color: #FF6347;          /* トマト */
+  --info-color: #87CEEB;           /* スカイブルー */
+  
+  /* Japanese-inspired colors */
+  --sakura-pink: #DDA0DD;          /* プラム */
+  --ocean-blue: #4169E1;           /* ロイヤルブルー */
+  --coral-accent: #FF7F50;         /* コーラル */
+  --pearl-white: #F0F8FF;          /* アリスブルー */
+  
+  /* Shadows - ダークモード用 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  
+  /* Bubble Animation Colors */
+  --bubble-color: rgba(255, 215, 0, 0.2);
+  --bubble-highlight: rgba(255, 165, 0, 0.4);
+  --bubble-shadow: rgba(255, 215, 0, 0.1);
+}

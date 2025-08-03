@@ -1,0 +1,156 @@
+import StepNavigation from './StepNavigation';
+import BaseSelector from './BaseSelector';
+import PartsSelector from './PartsSelector';
+import PatternSelector from './PatternSelector';
+import AccessorySelector from './AccessorySelector';
+import CustomizationPanel from './CustomizationPanel';
+import RandomGenerator from './RandomGenerator';
+import type { FishDesign, DesignStep, FishBase, FishPart, BodyPattern, Accessory } from '../../../types/common.types';
+import './DesignControls.css';
+
+interface DesignControlsProps {
+  currentStep: DesignStep;
+  onStepChange: (step: DesignStep) => void;
+  fishDesign: FishDesign;
+  onDesignChange: (design: FishDesign) => void;
+}
+
+export default function DesignControls({ 
+  currentStep, 
+  onStepChange, 
+  fishDesign, 
+  onDesignChange 
+}: DesignControlsProps) {
+  
+  const handleBaseChange = (newBase: FishBase) => {
+    const updatedDesign = {
+      ...fishDesign,
+      base: newBase,
+      customizations: {
+        ...fishDesign.customizations,
+        bodyColor: newBase.defaultColor
+      }
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handlePartsChange = (category: string, newPart: FishPart) => {
+    const updatedDesign = {
+      ...fishDesign,
+      parts: {
+        ...fishDesign.parts,
+        [category]: newPart
+      }
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handleCustomizationChange = (property: string, value: string | number | { x: number; y: number }) => {
+    const updatedDesign = {
+      ...fishDesign,
+      customizations: {
+        ...fishDesign.customizations,
+        [property]: value
+      }
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handlePatternChange = (pattern?: BodyPattern) => {
+    const updatedDesign = {
+      ...fishDesign,
+      bodyPattern: pattern
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handleAccessoriesChange = (accessories: Accessory[]) => {
+    const updatedDesign = {
+      ...fishDesign,
+      accessories
+    };
+    onDesignChange(updatedDesign);
+  };
+
+  const handleRandomGenerate = (newDesign: FishDesign) => {
+    onDesignChange(newDesign);
+  };
+
+  const renderCurrentStepContent = () => {
+    switch (currentStep) {
+      case 'base':
+        return (
+          <BaseSelector
+            selectedBase={fishDesign.base}
+            onBaseSelect={handleBaseChange}
+          />
+        );
+      case 'parts':
+        return (
+          <PartsSelector
+            selectedParts={fishDesign.parts}
+            onPartSelect={handlePartsChange}
+            fishDesign={fishDesign}
+            onCustomize={handleCustomizationChange}
+          />
+        );
+      case 'pattern':
+        return (
+          <PatternSelector
+            selectedPattern={fishDesign.bodyPattern}
+            onPatternSelect={handlePatternChange}
+            baseColor={fishDesign.customizations.bodyColor}
+          />
+        );
+      case 'accessory':
+        return (
+          <div className="accessory-step">
+            <AccessorySelector
+              accessories={fishDesign.accessories || []}
+              onAccessoriesChange={handleAccessoriesChange}
+            />
+            
+            <div className="step-divider">
+              <div className="divider-line"></div>
+              <span className="divider-text">または</span>
+              <div className="divider-line"></div>
+            </div>
+            
+            <RandomGenerator
+              currentDesign={fishDesign}
+              onDesignGenerate={handleRandomGenerate}
+            />
+          </div>
+        );
+      case 'customize':
+        return (
+          <CustomizationPanel
+            fishDesign={fishDesign}
+            onCustomize={handleCustomizationChange}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="design-controls">
+      <div className="controls-header">
+        <h2 className="controls-title">🎨 デザイン設定</h2>
+        <p className="controls-description">
+          ステップに従って魚をカスタマイズしましょう
+        </p>
+      </div>
+
+      <StepNavigation
+        currentStep={currentStep}
+        onStepChange={onStepChange}
+      />
+
+      <div className="step-content">
+        {renderCurrentStepContent()}
+      </div>
+    </div>
+  );
+}
