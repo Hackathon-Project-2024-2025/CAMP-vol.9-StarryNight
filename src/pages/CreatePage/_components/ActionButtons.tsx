@@ -157,7 +157,6 @@ export default function ActionButtons({
           onClick={handleShareToX}
           title="Xに投稿"
         >
-          <span className="button-icon">🐦</span>
           <span className="button-text">Xに投稿</span>
         </button>
 
