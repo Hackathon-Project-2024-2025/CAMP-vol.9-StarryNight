@@ -10,7 +10,7 @@ export default function Header({ isDarkMode, onToggleDarkMode }: HeaderProps) {
     <header className="header">
       <div className="header-container">
         <div className="header-logo">
-          <Link to="/" className="logo-text">星空の夜</Link>
+          <Link to="/" className="logo-text">Uo/Code</Link>
         </div>
         <nav className="header-nav">
           <ul className="nav-list">
