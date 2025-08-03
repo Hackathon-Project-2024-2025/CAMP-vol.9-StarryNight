@@ -388,7 +388,7 @@ function AIFishThumbnail({ aiFish, onRemove }: { aiFish: AIFishImage; onRemove: 
       <div className="fish-info">
         <div className="fish-name">{aiFish.name}</div>
         <div className="fish-details">
-          <span className="fish-type">🤖 AI生成</span>
+          <span className="ai-generated-label">AI生成</span>
           <span className="fish-model">{aiFish.aiModel}</span>
         </div>
       </div>

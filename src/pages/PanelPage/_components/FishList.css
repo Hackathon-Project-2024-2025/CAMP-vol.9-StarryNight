@@ -95,9 +95,36 @@
   position: relative;
 }
 
+/* AI金魚専用サムネイル */
+.ai-fish-thumbnail {
+  flex-shrink: 0;
+  width: 60px;
+  height: 45px;
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1), 
+    rgba(99, 102, 241, 0.15)
+  );
+  border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .fish-canvas {
   width: 100%;
   height: 100%;
+  display: block;
+}
+
+/* AI金魚画像専用スタイル */
+.ai-fish-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
   display: block;
 }
 
@@ -120,6 +147,28 @@
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+/* AI生成ラベル（PanelPage専用） */
+.ai-generated-label {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fish-model {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
 }
 
 .remove-button {
@@ -202,6 +251,11 @@
   }
   
   .fish-thumbnail {
+    width: 50px;
+    height: 38px;
+  }
+  
+  .ai-fish-thumbnail {
     width: 50px;
     height: 38px;
   }
@@ -305,4 +359,33 @@
 
 [data-theme="light"] .list-tip {
   color: var(--text-secondary);
+}
+
+/* AI生成要素のテーマ対応 */
+[data-theme="light"] .ai-generated-label {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="light"] .ai-fish-thumbnail {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.08), 
+    rgba(99, 102, 241, 0.12)
+  );
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+[data-theme="dark"] .ai-generated-label {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .ai-fish-thumbnail {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.15), 
+    rgba(99, 102, 241, 0.2)
+  );
+  border-color: rgba(59, 130, 246, 0.4);
 }
