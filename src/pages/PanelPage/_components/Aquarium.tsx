@@ -690,7 +690,7 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     angle: number
   ) => {
     // 描画処理開始ログ
-    const fishName = 'name' in swimmingFish.fishData ? swimmingFish.fishData.name : `fish-${swimmingFish.fishData.id}`;
+    const fishName = swimmingFish.fishData.name || `fish-${swimmingFish.fishData.id}`;
     
     // AI生成画像かどうかを判定
     if ('imageData' in swimmingFish.fishData && swimmingFish.fishData.type === 'ai-generated') {
@@ -778,7 +778,7 @@ export default function Aquarium({ fishList, aiFishImages, className = '' }: Aqu
     }
     
     ctx.restore();
-  }, [adjustBrightness, getBodyDimensions, drawFishShapeDetailed, drawBodyPattern, drawFins, drawScales, drawEyes, drawMouth, drawAccessories]);
+  }, [adjustBrightness, getBodyDimensions, drawFishShapeDetailed, drawBodyPattern, drawFins, drawScales, drawEyes, drawMouth, drawAccessories, drawAIFishImage]);
 
   // 泡を初期化
   const initBubbles = useCallback((width: number, height: number) => {

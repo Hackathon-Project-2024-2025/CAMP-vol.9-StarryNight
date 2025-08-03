@@ -122,7 +122,20 @@
 }
 
 /* アクションボタン */
+.button-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
 .button-group {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}
+
+.reset-save-group,
+.aquarium-share-group {
   display: flex;
   justify-content: center;
   gap: var(--spacing-md);
@@ -213,6 +226,18 @@
   transform: none;
 }
 
+.action-button-twitter {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.3), rgba(26, 140, 216, 0.3));
+  color: var(--text-color);
+  border: 1px solid rgba(29, 161, 242, 0.5);
+}
+
+.action-button-twitter:hover {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.4), rgba(26, 140, 216, 0.4));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
 /* ヒント */
 .tips {
   background-color: rgba(135, 206, 235, 0.1);
@@ -250,6 +275,18 @@
   background: linear-gradient(135deg, rgba(135, 206, 235, 0.4), rgba(107, 183, 255, 0.4));
   color: var(--text-color);
   border-color: rgba(135, 206, 235, 0.6);
+}
+
+[data-theme="dark"] .action-button-twitter {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.4), rgba(26, 140, 216, 0.4));
+  color: #1da1f2;
+  border-color: rgba(29, 161, 242, 0.6);
+}
+
+[data-theme="dark"] .action-button-twitter:hover {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.5), rgba(26, 140, 216, 0.5));
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
 }
 
 [data-theme="dark"] .name-input {
@@ -302,6 +339,18 @@
   border-color: rgba(135, 206, 235, 0.7);
 }
 
+[data-theme="light"] .action-button-twitter {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.2), rgba(135, 206, 250, 0.3));
+  color: #1565c0;
+  border-color: rgba(29, 161, 242, 0.6);
+}
+
+[data-theme="light"] .action-button-twitter:hover {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.3), rgba(135, 206, 250, 0.4));
+  color: #0d47a1;
+  box-shadow: 0 4px 15px rgba(29, 161, 242, 0.2);
+}
+
 [data-theme="light"] .tips {
   background-color: rgba(135, 206, 235, 0.2);
   border-color: rgba(135, 206, 235, 0.5);
@@ -329,6 +378,10 @@
     padding: var(--spacing-md) var(--spacing-sm);
     gap: var(--spacing-md);
     margin: var(--spacing-md) 0;
+  }
+  
+  .button-groups {
+    gap: var(--spacing-sm);
   }
   
   .button-group {
