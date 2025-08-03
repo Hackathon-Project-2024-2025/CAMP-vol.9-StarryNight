@@ -54,6 +54,7 @@
 .header-actions {
   display: flex;
   justify-content: center;
+  gap: var(--spacing-md);
 }
 
 .create-fish-button {
