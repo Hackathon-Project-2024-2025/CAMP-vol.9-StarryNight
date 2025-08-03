@@ -289,6 +289,12 @@ export default function AICreatePage() {
     }
   };
 
+  const handleShareToX = () => {
+    const tweetText = encodeURIComponent(`🎣 ぼくの作った魚「${fishName}」を見てみて！ #自作魚`);
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
+    window.open(tweetUrl, "_blank");
+  };
+
   return (
     <Layout>
       <div className="ai-create-page">
@@ -365,6 +371,14 @@ export default function AICreatePage() {
                   <span className="ai-button-text">
                     {isMovingToAquarium ? '移動中...' : '水槽へ移動'}
                   </span>
+                </button>
+
+                <button
+                  className="action-button action-button-twitter"
+                  onClick={handleShareToX}
+                  title="Xに投稿"
+                >
+                  <span className="button-text">Xに投稿</span>
                 </button>
               </div>
             </div>
