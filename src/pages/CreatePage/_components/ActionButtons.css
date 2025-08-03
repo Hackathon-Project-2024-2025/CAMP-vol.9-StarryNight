@@ -283,6 +283,7 @@
 }
 
 [data-theme="dark"] .action-button-twitter {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.3) 0%, rgba(29, 161, 242, 0.15) 100%);
   border-color: rgba(29, 161, 242, 0.5);
 }
 
@@ -356,6 +357,7 @@
 }
 
 [data-theme="light"] .action-button-twitter {
+  background: linear-gradient(135deg, rgba(29, 161, 242, 0.3) 0%, rgba(29, 161, 242, 0.15) 100%);
   border-color: rgba(29, 161, 242, 0.5);
 }
 
