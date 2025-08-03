@@ -127,19 +127,19 @@ export default function ActionButtons({
       <div className="button-groups">
         <div className="button-group reset-save-group">
           <button
-            className="action-button action-button-reset"
-            onClick={onReset}
-            title="すべてリセット"
-          >
-            <span className="button-text">リセット</span>
-          </button>
-          
-          <button
             className="action-button action-button-save"
             onClick={onSave}
             title="魚を画像として保存"
           >
             <span className="button-text">画像保存</span>
+          </button>
+
+          <button
+            className="action-button action-button-reset"
+            onClick={onReset}
+            title="すべてリセット"
+          >
+            <span className="button-text">リセット</span>
           </button>
         </div>
         <div className="button-group aquarium-share-group">
