@@ -120,6 +120,8 @@
 
 .footer-section {
   color: var(--text-secondary);
+  justify-self: end;
+  text-align: right;
 }
 
 .footer-title {
